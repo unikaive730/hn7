@@ -18,3 +18,5 @@ __pycache__/
 *.pyc
 mlruns/
 lab/data/raw/
+.api.log
+lab/results/
