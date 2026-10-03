@@ -11,3 +11,10 @@ dist/
 # local notes and recordings
 .notes/
 *.mp4
+
+# Python lab environment
+lab/.venv/
+__pycache__/
+*.pyc
+mlruns/
+lab/data/raw/

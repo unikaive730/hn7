@@ -1,0 +1,38 @@
+# Lab environment for the agentic discovery workflow (Python 3.12, installed with uv)
+# chemistry / molecules
+rdkit
+pubchempy
+chembl-webresource-client
+# materials (fallback topics)
+pymatgen
+mp-api
+# ML and experiment selection
+numpy
+scipy
+pandas
+polars
+pyarrow
+scikit-learn
+lightgbm
+xgboost
+optuna
+torch
+botorch
+# tracking and Databricks
+mlflow
+databricks-sdk
+# literature and evidence
+pyalex
+arxiv
+httpx
+requests
+# knowledge graph, plots
+networkx
+matplotlib
+plotly
+# tools exposed to Omnigent agents
+mcp
+pydantic
+fastapi
+uvicorn
+python-dotenv
