@@ -1,0 +1,19 @@
+{
+  "name": "hn7",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hack-Nation 7th Global AI Hackathon entry (name to be decided)",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22.12" },
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm:dev -w @hn7/api\" \"npm:dev -w @hn7/web\"",
+    "build": "npm run build -w @hn7/web",
+    "start": "npm run start -w @hn7/api",
+    "test": "npm test -w @hn7/api"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}
