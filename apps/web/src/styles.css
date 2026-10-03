@@ -1,7 +1,79 @@
-:root {
-  color-scheme: light dark;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  line-height: 1.5;
+@import 'tailwindcss';
+
+@theme {
+  --color-hive-50: #fffbeb;
+  --color-hive-200: #fde68a;
+  --color-hive-400: #fbbf24;
+  --color-hive-500: #f59e0b;
+  --color-hive-600: #d97706;
+
+  --color-night-900: #0a0a0f;
+  --color-night-800: #12121a;
+  --color-night-700: #1c1c27;
+  --color-night-600: #2a2a38;
+
+  --color-signal: #34d399;
+  --color-warn: #fb7185;
+
+  --font-display: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
-body { margin: 0; }
-.shell { max-width: 720px; margin: 0 auto; padding: 32px 16px; }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-night-900);
+    color: #e8e8ef;
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-hive-400);
+    color: var(--color-night-900);
+  }
+}
+
+@layer utilities {
+  /* A faint honeycomb, so the page has texture without an image file. */
+  .hex-field {
+    background-image:
+      radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.06) 0 2px, transparent 2px),
+      radial-gradient(circle at 0% 50%, rgba(251, 191, 36, 0.04) 0 2px, transparent 2px);
+    background-size: 44px 76px;
+    background-position: 0 0, 22px 38px;
+  }
+
+  .glass {
+    background: linear-gradient(145deg, rgba(42, 42, 56, 0.55), rgba(18, 18, 26, 0.75));
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(14px);
+  }
+
+  .lift {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.05) inset,
+      0 18px 40px -22px rgba(0, 0, 0, 0.9);
+  }
+
+  .glow-amber {
+    box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.35), 0 0 32px -6px rgba(251, 191, 36, 0.4);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+
+.drift {
+  animation: drift 7s ease-in-out infinite;
+}

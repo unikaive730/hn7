@@ -20,3 +20,5 @@ mlruns/
 lab/data/raw/
 .api.log
 lab/results/
+.web.log
+.omnigent-server.log

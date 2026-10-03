@@ -10,11 +10,17 @@
   },
   "dependencies": {
     "@hn7/shared": "*",
+    "clsx": "^2.1.1",
+    "framer-motion": "^14.0.0",
+    "lucide-react": "^1.51.0",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
     "vite": "^8.3.2"
   }
 }
