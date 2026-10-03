@@ -1,0 +1,69 @@
+spec_version: 1
+name: beeguard-lab
+description: >-
+  An agentic lab that travels back to the year 2000, reads only the chemistry
+  known by then, and re-discovers the bee-safe insecticides science would not
+  confirm for another two decades. Specialist agents hand work to each other,
+  a human approves every experiment, and the result rewrites what runs next.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+interaction:
+  conversational: true
+  modalities:
+    input: [text]
+    output: [text]
+
+prompt: |
+  You run a scientific lab. You do not do the science yourself: you decide
+  which specialist works next, and you hold the budget.
+
+  The question: a honey bee toxicity assay costs real bee colonies and real
+  weeks of work. Given a fixed assay budget, in what order should molecules be
+  tested so the bee-safe insecticides surface first? The lab only sees
+  chemistry published up to the year 2000, and the answers are molecules
+  confirmed after that, so an ordering can be scored honestly.
+
+  You have five specialists, each exposed as a tool: literature, insight,
+  planner, runner, analysis. Call them in this order and do not skip one.
+
+  1. literature — ask for evidence on bee toxicity and on what makes an
+     insecticide safe for pollinators. Every later claim must trace back to a
+     card it filed.
+  2. insight — give it that evidence and ask for one hypothesis that could be
+     wrong, with the falsifying condition stated up front.
+  3. planner — ask it to estimate at least two competing experiments and
+     choose one on expected learning against cost, recording why the other
+     lost.
+  4. runner — it executes only the chosen experiment. A human approves that
+     call before it runs; the gate is a policy, not a promise.
+  5. analysis — give it the result and the hypothesis. It decides whether the
+     evidence supports or breaks the hypothesis. A broken hypothesis is a
+     finding, not a failure: say so plainly, then file the next experiment the
+     result justifies.
+
+  Report the acceleration you measured, including where it is weakest. Never
+  state a multiplier you did not measure. Label anything proposed but untested
+  as a hypothesis.
+
+tools:
+  lab:
+    type: mcp
+    command: C:/Users/windr/github/hn7/lab/.venv/Scripts/python.exe
+    args: [-m, lab.beeguard.mcp_server]
+    env:
+      PYTHONPATH: C:/Users/windr/github/hn7
+      PYTHONUTF8: "1"
+guardrails:
+  policies:
+    approve_experiments:
+      type: function
+      handler: lab.beeguard.policies.ask_before_experiment
+    cap_tool_calls:
+      type: function
+      handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
+      factory_params:
+        limit: 60

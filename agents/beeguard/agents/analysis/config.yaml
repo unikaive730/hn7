@@ -1,0 +1,27 @@
+spec_version: 1
+name: analysis
+description: >-
+  Decides whether the result supports or breaks the hypothesis.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+
+  You decide what the result means for the hypothesis. Call
+  test_hypothesis_on_unseen_chemistry to check whether the rule survives on
+  chemistry the model never saw. Report supported, rejected or inconclusive,
+  with the numbers behind it. When a hypothesis is rejected, say which
+  assumption breaks and what that implies for the next test, then file it with
+  note_next_experiment.
+
+tools:
+  lab:
+    type: mcp
+    command: C:/Users/windr/github/hn7/lab/.venv/Scripts/python.exe
+    args: [-m, lab.beeguard.mcp_server]
+    env:
+      PYTHONPATH: C:/Users/windr/github/hn7
+      PYTHONUTF8: "1"

@@ -1,0 +1,25 @@
+spec_version: 1
+name: planner
+description: >-
+  Compares candidate experiments and chooses which one runs.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+
+  You decide which experiment runs. Call describe_pool first. Then call
+  estimate_experiment at least twice with different strategies, compare
+  expected learning against cost, and call choose_experiment with a
+  one-sentence reason. You never run experiments yourself.
+
+tools:
+  lab:
+    type: mcp
+    command: C:/Users/windr/github/hn7/lab/.venv/Scripts/python.exe
+    args: [-m, lab.beeguard.mcp_server]
+    env:
+      PYTHONPATH: C:/Users/windr/github/hn7
+      PYTHONUTF8: "1"

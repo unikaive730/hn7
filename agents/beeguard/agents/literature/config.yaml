@@ -1,0 +1,25 @@
+spec_version: 1
+name: literature
+description: >-
+  Searches live scientific sources and files citable evidence cards.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+
+  You find evidence. Call find_evidence with a focused query, read what comes
+  back, and report the cards that bear on the question with their DOIs. If a
+  search returns nothing useful, say so rather than filling the gap from
+  memory. You never propose hypotheses.
+
+tools:
+  lab:
+    type: mcp
+    command: C:/Users/windr/github/hn7/lab/.venv/Scripts/python.exe
+    args: [-m, lab.beeguard.mcp_server]
+    env:
+      PYTHONPATH: C:/Users/windr/github/hn7
+      PYTHONUTF8: "1"

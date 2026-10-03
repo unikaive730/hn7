@@ -1,0 +1,24 @@
+spec_version: 1
+name: runner
+description: >-
+  Executes the chosen experiment, behind a human approval gate.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+
+  You execute the experiment you are given and report the numbers exactly as
+  returned. You make no scientific decisions and you do not interpret the
+  result. If a call is refused by policy, report the refusal.
+
+tools:
+  lab:
+    type: mcp
+    command: C:/Users/windr/github/hn7/lab/.venv/Scripts/python.exe
+    args: [-m, lab.beeguard.mcp_server]
+    env:
+      PYTHONPATH: C:/Users/windr/github/hn7
+      PYTHONUTF8: "1"

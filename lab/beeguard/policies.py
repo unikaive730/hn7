@@ -16,7 +16,7 @@ GATED_TOOLS = {
     "test_hypothesis_on_unseen_chemistry",
 }
 
-_ALLOW: dict[str, Any] = {"decision": "ALLOW"}
+_ALLOW: dict[str, Any] = {"result": "ALLOW"}
 
 
 def ask_before_experiment(event: dict[str, Any]) -> dict[str, Any]:
@@ -45,6 +45,6 @@ def ask_before_experiment(event: dict[str, Any]) -> dict[str, Any]:
         summary = "Run the falsification test on unseen chemistry"
 
     return {
-        "decision": "ASK",
+        "result": "ASK",
         "reason": f"{summary}. A scientist approves before the lab spends budget.",
     }
