@@ -80,7 +80,7 @@ export default function Ledger() {
           {[0, 1, 2].map((i) => (
             <div key={i} className="h-4 animate-pulse rounded bg-white/[0.04]" style={{ width: `${80 - i * 18}%` }} />
           ))}
-          <p className="pt-1 font-mono cap text-white/30">counting files, reading imports…</p>
+          <p className="pt-1 font-mono cap text-white/55">counting files, reading imports…</p>
         </div>
       </Shell>
     );
@@ -120,7 +120,7 @@ function Shell({ ledger, children }) {
           <h3 className="mt-1.5 font-mono text-[13px] uppercase tracking-[0.14em] text-white/75">What the lab runs on, counted on request</h3>
         </div>
         {ledger && (
-          <span className="font-mono cap text-white/35">
+          <span className="font-mono cap text-white/60">
             inventory built {clock(ledger.computed_at)} in {ledger.computed_ms} ms
           </span>
         )}
@@ -175,7 +175,7 @@ function Readout({ ledger, live }) {
             {cell.value}
           </div>
           <div className="mt-0.5 cap text-white/55">{cell.label}</div>
-          <div className="font-mono cap-sm text-white/25">{cell.sub}</div>
+          <div className="font-mono cap-sm text-white/50">{cell.sub}</div>
         </motion.div>
       ))}
       </div>
@@ -188,10 +188,10 @@ function Rack({ icon: Icon, label, note, children }) {
     <div className="grid gap-3 border-b border-white/[0.06] px-5 py-4 last:border-b-0 md:grid-cols-[9.5rem_1fr]">
       <div className="flex items-start gap-2 md:flex-col md:gap-1">
         <div className="flex items-center gap-1.5">
-          <Icon className="h-3.5 w-3.5 text-white/35" />
+          <Icon className="h-3.5 w-3.5 text-white/60" />
           <span className="font-mono cap-sm text-white/45">{label}</span>
         </div>
-        {note && <span className="truncate font-mono cap-sm text-white/20 md:max-w-full">{note}</span>}
+        {note && <span className="truncate font-mono cap-sm text-white/45 md:max-w-full">{note}</span>}
       </div>
       <div className="min-w-0">{children}</div>
     </div>
@@ -208,7 +208,7 @@ function Datasets({ datasets, derived }) {
     <div>
       <div className="overflow-hidden rounded-lg border border-white/[0.06]">
         <table className="w-full text-left text-xs">
-          <thead className="bg-white/[0.03] font-mono cap-sm uppercase tracking-wider text-white/35">
+          <thead className="bg-white/[0.03] font-mono cap-sm uppercase tracking-wider text-white/60">
             <tr>
               <th className="px-3 py-2 font-normal">file</th>
               <th className="px-3 py-2 text-right font-normal">rows</th>
@@ -230,7 +230,7 @@ function Datasets({ datasets, derived }) {
                     {file.sha256.slice(0, 10)}
                     {file.matches_manifest === true && <Check className="h-3 w-3 text-signal" />}
                     {file.matches_manifest === false && <AlertTriangle className="h-3 w-3 text-warn" />}
-                    {file.matches_manifest == null && <span className="cap-sm text-white/25">no manifest</span>}
+                    {file.matches_manifest == null && <span className="cap-sm text-white/50">no manifest</span>}
                   </span>
                 </td>
                 <td
@@ -254,7 +254,7 @@ function Datasets({ datasets, derived }) {
 
       {derived.files > 0 && (
         <div className="mt-3">
-          <div className="font-mono cap-sm uppercase tracking-wider text-white/30">
+          <div className="font-mono cap-sm uppercase tracking-wider text-white/55">
             {derived.path} · {int(derived.files)} files · {bytes(derived.bytes)}
           </div>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -265,7 +265,7 @@ function Datasets({ datasets, derived }) {
                 title={`modified ${entry.modified}`}
               >
                 {entry.name}
-                <span className="ml-1 text-white/25">
+                <span className="ml-1 text-white/50">
                   {entry.kind === 'folder' ? `${entry.files} files, ` : ''}
                   {bytes(entry.bytes)}
                 </span>
@@ -323,7 +323,7 @@ function Sources({ live, error, probing, onRefresh }) {
         </div>
       )}
       {!live && !error && (
-        <p className="font-mono cap text-white/35">sending one request to each source…</p>
+        <p className="font-mono cap text-white/60">sending one request to each source…</p>
       )}
 
       <div className="space-y-1.5">
@@ -346,7 +346,7 @@ function Sources({ live, error, probing, onRefresh }) {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <span className="text-sm font-medium text-white/85">{row.name}</span>
-                  <span className="truncate font-mono cap-sm text-white/30">{row.host}</span>
+                  <span className="truncate font-mono cap-sm text-white/55">{row.host}</span>
                 </div>
               </div>
               <div className="text-right font-mono cap">
@@ -374,7 +374,7 @@ function Sources({ live, error, probing, onRefresh }) {
                     </span>
                   ))}
                   {row.error && <span className="text-warn">{row.error}</span>}
-                  <span className="text-white/30">{usage}</span>
+                  <span className="text-white/55">{usage}</span>
                 </div>
               </div>
             </div>
@@ -383,7 +383,7 @@ function Sources({ live, error, probing, onRefresh }) {
       </div>
 
       {live && (
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-2 cap text-white/35">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2 cap text-white/60">
           <span>
             Cached {Math.round(live.ttl_seconds / 60)} min, this result is {live.age_seconds}s old. A 429 or a
             timeout is shown as it came back.
@@ -423,12 +423,12 @@ function PythonPackages({ python }) {
             <span className="font-mono text-white/80">
               {pkg.distribution}
               {pkg.module !== pkg.distribution.toLowerCase() && (
-                <span className="ml-1 text-white/30">({pkg.module})</span>
+                <span className="ml-1 text-white/55">({pkg.module})</span>
               )}
             </span>
             <span className="flex items-baseline gap-2 font-mono">
               <span className="text-hive-400/90">{pkg.version ?? 'not installed'}</span>
-              <span className="w-12 whitespace-nowrap text-right cap-sm text-white/30">{pkg.files.length} file{pkg.files.length > 1 ? 's' : ''}</span>
+              <span className="w-12 whitespace-nowrap text-right cap-sm text-white/55">{pkg.files.length} file{pkg.files.length > 1 ? 's' : ''}</span>
             </span>
           </div>
         ))}
@@ -438,7 +438,7 @@ function PythonPackages({ python }) {
         {python.standard_library.length} standard-library modules.
       </p>
       {python.declared_not_imported?.length > 0 && (
-        <p className="mt-1 cap leading-relaxed text-white/30">
+        <p className="mt-1 cap leading-relaxed text-white/55">
           Listed in lab/requirements.txt but not imported by the lab code, so not counted above:{' '}
           <span className="font-mono text-white/40">{python.declared_not_imported.join(', ')}</span>.
         </p>
@@ -458,11 +458,11 @@ function JsPackages({ js }) {
           >
             <span className="min-w-0 truncate font-mono text-white/80">
               {pkg.name}
-              {pkg.kind === 'build' && <span className="ml-1.5 cap-sm text-white/30">build</span>}
+              {pkg.kind === 'build' && <span className="ml-1.5 cap-sm text-white/55">build</span>}
             </span>
             <span className="flex shrink-0 items-baseline gap-2 font-mono">
               <span className="text-hive-400/90">{pkg.installed ?? pkg.declared}</span>
-              <span className={`w-14 whitespace-nowrap text-right cap-sm ${pkg.imported_in ? 'text-white/30' : 'text-white/20'}`}>
+              <span className={`w-14 whitespace-nowrap text-right cap-sm ${pkg.imported_in ? 'text-white/55' : 'text-white/45'}`}>
                 {pkg.imported_in ? `${pkg.imported_in} file${pkg.imported_in > 1 ? 's' : ''}` : 'unused'}
               </span>
             </span>
@@ -493,7 +493,7 @@ function McpTools({ mcp }) {
           >
             <div className="flex flex-wrap items-baseline gap-x-2">
               <span className="font-mono text-xs text-white/85">{tool.name}</span>
-              <span className="font-mono cap-sm text-white/30">({tool.params.join(', ')})</span>
+              <span className="font-mono cap-sm text-white/55">({tool.params.join(', ')})</span>
               {tool.gated && (
                 <span className="inline-flex items-center gap-1 font-mono cap-sm uppercase tracking-wider text-hive-400">
                   <Lock className="h-3 w-3" /> asks a person first
@@ -527,7 +527,7 @@ function Agents({ agents, mcp }) {
       <div className="rounded-lg border border-hive-400/25 bg-hive-400/[0.04] px-3 py-2">
         <div className="flex flex-wrap items-baseline gap-x-2">
           <span className="font-mono text-xs text-hive-400">{root.name}</span>
-          <span className="font-mono cap-sm text-white/30">
+          <span className="font-mono cap-sm text-white/55">
             orchestrator · {root.harness} · {root.prompt_words} prompt words
           </span>
         </div>
@@ -547,9 +547,9 @@ function Agents({ agents, mcp }) {
             >
               <span className="absolute -left-4 top-[1.05rem] h-px w-3 bg-white/15" />
               <div className="flex flex-wrap items-baseline gap-x-2">
-                <span className="font-mono cap-sm text-white/25">{String(index + 1).padStart(2, '0')}</span>
+                <span className="font-mono cap-sm text-white/50">{String(index + 1).padStart(2, '0')}</span>
                 <span className="font-mono text-xs text-white/85">{agent.name}</span>
-                <span className="font-mono cap-sm text-white/30">
+                <span className="font-mono cap-sm text-white/55">
                   {usesLab ? `${mcp.tools.length} MCP tools` : 'no tools'} · {agent.prompt_words} words
                 </span>
               </div>
@@ -569,7 +569,7 @@ function Agents({ agents, mcp }) {
             >
               policy {policy.name}
               {Object.entries(policy.params).map(([k, v]) => (
-                <span key={k} className="text-white/30">
+                <span key={k} className="text-white/55">
                   {' '}
                   {k}={String(v)}
                 </span>

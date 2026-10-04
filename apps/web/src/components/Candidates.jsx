@@ -48,12 +48,13 @@ const smilesSvg = (smiles, size) =>
   `/api/structure/smiles.svg?smiles=${encodeURIComponent(smiles)}&size=${size}`;
 
 function Funnel({ funnel }) {
-  // Bar length is log10(count) so the last cut stays visible beside the first; labels carry the real count.
+  // Bar length is the count itself: a bar's job is length from zero, and the
+  // late cuts being slivers is the funnel's point. Labels carry the count.
   const rows = FUNNEL.filter(([k]) => funnel[k] != null).map(([k, label]) => ({
     key: k,
     label,
     value: funnel[k],
-    length: Math.log10(Math.max(funnel[k], 1)),
+    length: funnel[k],
   }));
   return (
     <div className="h-64 w-full">
@@ -118,12 +119,12 @@ function CandidateRow({ row, rank }) {
       transition={{ duration: 0.25 }}
       className="grid grid-cols-1 gap-3 border-t border-white/5 py-3 sm:grid-cols-[28px_96px_1fr_auto] sm:items-center sm:gap-4"
     >
-      <span className="hidden text-right font-mono text-xs tabular text-white/30 sm:block">{rank}</span>
+      <span className="hidden text-right font-mono text-xs tabular text-white/55 sm:block">{rank}</span>
 
       {/* The 72px drawing is an illegible smudge on a phone, so it starts at sm. */}
       <div className="hidden h-24 w-24 items-center justify-center rounded-md border border-white/6 bg-night-900/60 sm:flex">
         {broken ? (
-          <span className="px-1 text-center cap-sm text-white/30">no drawing</span>
+          <span className="px-1 text-center cap-sm text-white/55">no drawing</span>
         ) : (
           <img
             src={smilesSvg(row.smiles, 192)}
@@ -137,7 +138,7 @@ function CandidateRow({ row, rank }) {
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="font-mono cap text-white/30 sm:hidden">#{rank}</span>
+          <span className="font-mono cap text-white/55 sm:hidden">#{rank}</span>
           <a
             href={`https://www.ebi.ac.uk/chembl/compound_report_card/${row.chembl_id}/`}
             target="_blank"
@@ -146,9 +147,9 @@ function CandidateRow({ row, rank }) {
             className="tap inline-flex min-w-0 max-w-full items-center gap-1 text-sm text-white/90 hover:text-hive-400"
           >
             <span className="truncate">{row.name ?? row.chembl_id}</span>
-            <ExternalLink className="h-3 w-3 shrink-0 text-white/25" />
+            <ExternalLink className="h-3 w-3 shrink-0 text-white/50" />
           </a>
-          {row.name && <span className="font-mono cap-sm text-white/30">{row.chembl_id}</span>}
+          {row.name && <span className="font-mono cap-sm text-white/55">{row.chembl_id}</span>}
           <span className="rounded border border-hive-400/30 px-1.5 py-0.5 font-mono cap-sm text-hive-400/85">
             hypothesis, needs bee assay
           </span>
@@ -156,10 +157,10 @@ function CandidateRow({ row, rank }) {
 
         <div className="mt-1 text-xs text-white/55">
           <span className="italic text-white/70">{row.pest}</span>
-          <span className="text-white/25"> · </span>
+          <span className="text-white/50"> · </span>
           <span className="font-mono tabular text-white/80">{mgL(row.potency_mg_l)}</span> mg/L{' '}
-          <span className="text-white/35">({row.potency_basis})</span>
-          {row.year && <span className="text-white/30"> · {row.year}</span>}
+          <span className="text-white/60">({row.potency_basis})</span>
+          {row.year && <span className="text-white/55"> · {row.year}</span>}
         </div>
 
         <div className="mt-1 line-clamp-2 cap text-white/40 sm:truncate" title={row.assay_description}>
@@ -176,7 +177,7 @@ function CandidateRow({ row, rank }) {
       </div>
 
       <div className="hidden w-44 space-y-1.5 sm:block">
-        <div className="font-mono cap-sm text-white/35">bee-safe score</div>
+        <div className="font-mono cap-sm text-white/60">bee-safe score</div>
         <SafeBar value={row.bee_safe_score} />
         <div className="flex items-center gap-2 cap">
           <span className="rounded border border-white/10 px-1.5 py-0.5 font-mono text-white/55">
@@ -192,7 +193,7 @@ function CandidateRow({ row, rank }) {
               CID {row.cid}
             </a>
           ) : (
-            <span className="text-white/25">no PubChem CID</span>
+            <span className="text-white/50">no PubChem CID</span>
           )}
         </div>
       </div>
@@ -238,7 +239,7 @@ export default function Candidates() {
           </p>
         </div>
         {data && (
-          <div className="font-mono cap-sm leading-relaxed text-white/30 sm:text-right">
+          <div className="font-mono cap-sm leading-relaxed text-white/55 sm:text-right">
             {data.total_ranked} ranked
             {data.ranked_scaffolds ? ` on ${data.ranked_scaffolds} Murcko scaffolds` : ''}
             <br />
@@ -258,7 +259,7 @@ export default function Candidates() {
         <>
           <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_1.1fr]">
             <div>
-              <div className="mb-1 cap-sm text-white/35">
+              <div className="mb-1 cap-sm text-white/60">
                 How the list was cut (log scale)
               </div>
               <Funnel funnel={data.funnel} />
@@ -266,19 +267,19 @@ export default function Candidates() {
             <div className="space-y-3 text-xs leading-relaxed text-white/50">
               <div className="rounded-lg border border-white/6 bg-white/[0.02] p-3 font-mono cap leading-relaxed text-white/55">
                 <div>
-                  <span className="text-white/30">active </span>
+                  <span className="text-white/55">active </span>
                   {data.rules.active}
                 </div>
                 <div className="mt-1">
-                  <span className="text-white/30">safe </span>
+                  <span className="text-white/55">safe </span>
                   {data.rules.bee_safe}
                 </div>
                 <div className="mt-1">
-                  <span className="text-white/30">domain </span>
+                  <span className="text-white/55">domain </span>
                   {data.rules.domain}
                 </div>
                 <div className="mt-1">
-                  <span className="text-white/30">sort </span>
+                  <span className="text-white/55">sort </span>
                   {data.rules.sort}
                 </div>
               </div>
@@ -307,7 +308,7 @@ export default function Candidates() {
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-1.5">
-            <Filter className="mr-1 h-3.5 w-3.5 text-white/30" />
+            <Filter className="mr-1 h-3.5 w-3.5 text-white/55" />
             <button
               onClick={() => {
                 setPest(null);
@@ -360,7 +361,7 @@ export default function Candidates() {
             </button>
           )}
           {data.total_ranked > data.rows.length && (
-            <p className="mt-2 cap text-white/30">
+            <p className="mt-2 cap text-white/55">
               Showing the top {data.rows.length} of {data.total_ranked}. The rest are in
               lab/data/derived/chembl_external.json.
             </p>

@@ -34,6 +34,14 @@ const TIMELINE_COLORS = {
   'c:bee_acute': '#c4b5fd',
   'c:selectivity': '#a1a1aa',
 };
+// Identity is never colour alone: each concept line also carries its own dash.
+const TIMELINE_DASH = {
+  molecules_bee: '4 3',
+  'c:neonicotinoid': '7 3',
+  'c:pollinator': '2 3',
+  'c:bee_acute': '9 3 2 3',
+  'c:selectivity': '1 3',
+};
 const SHORT_CONCEPT = {
   'c:neonicotinoid': 'neonics',
   'c:pollinator': 'pollinator',
@@ -524,7 +532,7 @@ function GraphCanvas({ data, selected, onSelect, pinned, onPin }) {
             </div>
             <div className="mt-1 line-clamp-3 leading-snug text-white/85">{tipNode.ref.title}</div>
             {tipNode.ref.venue && (
-              <div className="mt-1 truncate text-white/35">{tipNode.ref.venue}</div>
+              <div className="mt-1 truncate text-white/60">{tipNode.ref.venue}</div>
             )}
             {tipNode.ref.doi && pinned === tipNode.id && (
               <a
@@ -538,7 +546,7 @@ function GraphCanvas({ data, selected, onSelect, pinned, onPin }) {
               </a>
             )}
             {pinned !== tipNode.id && (
-              <div className="mt-1.5 text-white/30">click to pin</div>
+              <div className="mt-1.5 text-white/55">click to pin</div>
             )}
           </motion.div>
         )}
@@ -634,7 +642,7 @@ function YearBars({ molecule, cutoff }) {
         </ResponsiveContainer>
       </div>
       {older > 0 && (
-        <p className="mt-1 font-mono cap-sm text-white/30">
+        <p className="mt-1 font-mono cap-sm text-white/55">
           {older} record{older > 1 ? 's' : ''} dated before {first} not drawn
         </p>
       )}
@@ -665,11 +673,11 @@ function PaperRow({ paper, moleculeId, strict = false }) {
         ) : (
           <span className="line-clamp-2 text-[12.5px] leading-snug text-white/80">{paper.title}</span>
         )}
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 font-mono cap-sm text-white/35">
+        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 font-mono cap-sm text-white/60">
           <span className="truncate">{paper.venue ?? 'no venue listed'}</span>
           <span>cited {fmt(paper.cited_by)}</span>
           {moleculeId && (
-            <span className={named ? 'text-white/55' : strict ? 'text-warn/85' : 'text-white/35'}>
+            <span className={named ? 'text-white/55' : strict ? 'text-warn/85' : 'text-white/60'}>
               {named ? 'name in title' : strict ? 'abstract match only' : 'name in abstract'}
             </span>
           )}
@@ -703,11 +711,11 @@ function MoleculeDetail({ data, molecule, papersById }) {
     >
       <div className="flex items-start gap-3">
         <div className="shrink-0 text-right">
-          <div className="font-mono cap-sm uppercase tracking-widest text-white/30">rank</div>
+          <div className="font-mono cap-sm uppercase tracking-widest text-white/55">rank</div>
           <div className="font-mono text-3xl font-semibold leading-none text-hive-400 tabular">
             {molecule.rank}
           </div>
-          <div className="mt-0.5 font-mono cap-sm text-white/30">of {data.lab.pool_size}</div>
+          <div className="mt-0.5 font-mono cap-sm text-white/55">of {data.lab.pool_size}</div>
         </div>
         <div className="min-w-0 border-l border-white/8 pl-3">
           <h3 className="truncate text-lg font-medium text-white/95">{molecule.label}</h3>
@@ -715,7 +723,7 @@ function MoleculeDetail({ data, molecule, papersById }) {
             CID {molecule.cid} · in ApisTox from {molecule.apistox_year} ·{' '}
             {molecule.scaffold_seen ? 'scaffold seen before' : 'scaffold new to the model'}
           </p>
-          <p className="mt-0.5 font-mono cap-sm text-white/30">
+          <p className="mt-0.5 font-mono cap-sm text-white/55">
             query {molecule.query} ({molecule.term_from})
           </p>
         </div>
@@ -742,24 +750,24 @@ function MoleculeDetail({ data, molecule, papersById }) {
         </div>
         <dl className="grid grid-cols-2 gap-x-3 gap-y-2 font-mono cap">
           <div>
-            <dt className="cap-sm uppercase tracking-wider text-white/30">by {cutoff}</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/55">by {cutoff}</dt>
             <dd className="text-xl tabular" style={{ color: a.before ? EARLY : 'rgba(255,255,255,0.85)' }}>
               {fmt(a.before)}
             </dd>
           </div>
           <div>
-            <dt className="cap-sm uppercase tracking-wider text-white/30">after</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/55">after</dt>
             <dd className="text-xl tabular text-white/85">{fmt(a.after)}</dd>
           </div>
           <div>
-            <dt className="cap-sm uppercase tracking-wider text-white/30">bee, by {cutoff}</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/55">bee, by {cutoff}</dt>
             <dd className="tabular text-white/70">{fmt(b.before)}</dd>
           </div>
           <div>
-            <dt className="cap-sm uppercase tracking-wider text-white/30">bee, after</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/55">bee, after</dt>
             <dd className="tabular text-hive-400">{fmt(b.after)}</dd>
           </div>
-          <div className="col-span-2 cap-sm text-white/35">
+          <div className="col-span-2 cap-sm text-white/60">
             first bee record: {b.first_year ?? 'none'}
           </div>
         </dl>
@@ -795,7 +803,7 @@ function MoleculeDetail({ data, molecule, papersById }) {
         )}
       </ul>
       {tab === 'early' && (
-        <p className="mt-2 cap leading-relaxed text-white/35">
+        <p className="mt-2 cap leading-relaxed text-white/60">
           {lit} matched these on title or abstract. Where the title does not name the
           molecule, open the record before trusting the date: indexes sometimes attach a later
           abstract to an old entry.
@@ -809,16 +817,16 @@ function ConceptDetail({ data, concept, papersById }) {
   const cited = concept.top_paper_ids.map((id) => papersById.get(id)).filter(Boolean);
   return (
     <motion.div key={concept.id} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}>
-      <div className="font-mono cap-sm uppercase tracking-widest text-white/30">concept</div>
+      <div className="font-mono cap-sm uppercase tracking-widest text-white/55">concept</div>
       <h3 className="mt-1 text-lg font-medium text-white/95">{concept.label}</h3>
-      <p className="mt-1 font-mono cap-sm text-white/35">query {concept.query}</p>
+      <p className="mt-1 font-mono cap-sm text-white/60">query {concept.query}</p>
       <div className="mt-3 flex gap-6 font-mono">
         <div>
-          <div className="cap-sm uppercase tracking-wider text-white/30">by {data.cutoff_year}</div>
+          <div className="cap-sm uppercase tracking-wider text-white/55">by {data.cutoff_year}</div>
           <div className="text-xl tabular text-white/85">{fmt(concept.before)}</div>
         </div>
         <div>
-          <div className="cap-sm uppercase tracking-wider text-white/30">after</div>
+          <div className="cap-sm uppercase tracking-wider text-white/55">after</div>
           <div className="text-xl tabular text-white/85">{fmt(concept.after)}</div>
         </div>
       </div>
@@ -837,7 +845,7 @@ function LagRows({ data, selected, onSelect }) {
   const cutoff = data.cutoff_year;
   const rows = [...data.molecules].sort((x, y) => (x.rank ?? 1e9) - (y.rank ?? 1e9));
   const max = Math.max(1, ...rows.map((m) => Math.max(m.all?.before ?? 0, m.all?.after ?? 0)));
-  const scale = (n) => (n > 0 ? Math.max(4, (Math.log10(n + 1) / Math.log10(max + 1)) * 100) : 0);
+  const scale = (n) => (n > 0 ? Math.max(1.5, (n / max) * 100) : 0);
   const suspect = (m) => m.bee?.first_year != null && m.bee.first_year < m.apistox_year - 10;
   const flagged = rows.filter(suspect).map((m) => m.label);
   const cols =
@@ -845,7 +853,7 @@ function LagRows({ data, selected, onSelect }) {
 
   return (
     <div>
-      <div className={`grid ${cols} items-end gap-x-2 border-b border-white/8 pb-1.5 font-mono cap-sm uppercase tracking-wider text-white/30`}>
+      <div className={`grid ${cols} items-end gap-x-2 border-b border-white/8 pb-1.5 font-mono cap-sm uppercase tracking-wider text-white/55`}>
         <span>rank</span>
         <span>molecule</span>
         <span>by {cutoff}</span>
@@ -896,7 +904,7 @@ function LagRows({ data, selected, onSelect }) {
                   </span>
                   <span className="w-[4.4rem] shrink-0 whitespace-nowrap text-right font-mono cap-sm tabular text-white/80">
                     {fmt(a.after)}
-                    <span className={b.after > 0 ? 'text-hive-400' : 'text-white/25'}> · {fmt(b.after)}</span>
+                    <span className={b.after > 0 ? 'text-hive-400' : 'text-white/50'}> · {fmt(b.after)}</span>
                   </span>
                 </span>
                 <span className="hidden text-right font-mono cap-sm tabular text-white/45 sm:block">
@@ -908,7 +916,7 @@ function LagRows({ data, selected, onSelect }) {
           );
         })}
       </ul>
-      <p className="mt-2 font-mono cap-sm leading-relaxed text-white/30">
+      <p className="mt-2 font-mono cap-sm leading-relaxed text-white/55">
         Bars are log scale. Amber count: records that also name bees or pollinators.
         {flagged.length > 0 &&
           ` ? marks a first bee record more than 10 years older than the molecule's ApisTox entry (${flagged.join(', ')}); its "dated by ${cutoff}" list shows which record that is.`}
@@ -986,11 +994,11 @@ function Timeline({ timeline, cutoff }) {
                 <Line
                   key={s.id}
                   dataKey={s.id}
-                  type="monotone"
+                  type="linear"
                   stroke={TIMELINE_COLORS[s.id] ?? '#fff'}
                   strokeWidth={s.id === 'molecules' ? 2.2 : 1.2}
                   strokeOpacity={s.id.startsWith('molecules') ? 1 : 0.75}
-                  strokeDasharray={s.id === 'molecules_bee' ? '4 3' : undefined}
+                  strokeDasharray={TIMELINE_DASH[s.id]}
                   dot={false}
                   connectNulls
                   isAnimationActive={false}
@@ -1020,7 +1028,7 @@ function Timeline({ timeline, cutoff }) {
                   style={{ background: TIMELINE_COLORS[s.id] ?? '#fff' }}
                 />
                 <span className="shrink-0 whitespace-nowrap text-white/75">{s.label}</span>
-                <span className="hidden min-w-0 truncate font-mono cap-sm text-white/30 sm:inline" title={s.query}>
+                <span className="hidden min-w-0 truncate font-mono cap-sm text-white/55 sm:inline" title={s.query}>
                   {s.query}
                 </span>
               </button>
@@ -1028,7 +1036,7 @@ function Timeline({ timeline, cutoff }) {
           );
         })}
       </ul>
-      <p className="mt-2 font-mono cap-sm leading-relaxed text-white/30">
+      <p className="mt-2 font-mono cap-sm leading-relaxed text-white/55">
         Records per publication year, log scale.{lastFull ? ` ${lastFull} is a partial year.` : ''}
         {omittedText &&
           ` Dated before ${from} and left off the chart, still counted in the totals: ${omittedText}.`}
@@ -1094,7 +1102,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
     return (
       <section className="glass rounded-xl p-5">
         <div className="flex items-center gap-2 font-mono cap text-white/40">
-          <Network className="h-4 w-4 animate-pulse text-white/30" />
+          <Network className="h-4 w-4 animate-pulse text-white/55" />
           loading the literature fetch for {cutoffYear}
         </div>
         <div className="mt-4 h-72 animate-pulse rounded-lg bg-white/[0.03]" />
@@ -1153,7 +1161,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
             {failures.length ? <span className="text-warn"> · {failures.length} failed</span> : null}
           </div>
           {fallback && (
-            <div className="max-w-xs text-white/35 lg:ml-auto">
+            <div className="max-w-xs text-white/60 lg:ml-auto">
               {fallbackLimited
                 ? `${fallback} refused the first request with 429 (no API key, daily budget for this IP used up), so the records come from ${lit}.`
                 : `${fallback} did not answer the first request, so the records come from ${lit}.`}
@@ -1163,7 +1171,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
           <button
             onClick={refresh}
             disabled={refreshing}
-            className="mt-1 inline-flex items-center gap-1.5 text-white/50 transition hover:text-hive-400 disabled:text-white/30"
+            className="mt-1 inline-flex items-center gap-1.5 text-white/50 transition hover:text-hive-400 disabled:text-white/55"
           >
             <RefreshCw className={`h-3 w-3 ${refreshing ? 'animate-spin' : ''}`} />
             {refreshing
@@ -1200,7 +1208,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
 
       <div className="relative grid grid-cols-1 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
         <div className="min-w-0 border-b border-white/6 p-3 sm:p-4 lg:border-b-0 lg:border-r">
-          <div className="mb-1 flex items-center gap-2 px-1 font-mono cap-sm text-white/35">
+          <div className="mb-1 flex items-center gap-2 px-1 font-mono cap-sm text-white/60">
             <Network className="h-3.5 w-3.5" />
             {data.molecules.length} molecules · {data.concepts.length} concepts · {data.papers.length} papers ·{' '}
             {data.edges.length} links
@@ -1264,7 +1272,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
         </div>
       </div>
 
-      <footer className="relative border-t border-white/6 px-5 py-3 font-mono cap-sm leading-relaxed text-white/30">
+      <footer className="relative border-t border-white/6 px-5 py-3 font-mono cap-sm leading-relaxed text-white/55">
         Source: {data.method} Bee subset adds {data.bee_terms}. Names: ApisTox, or the PubChem synonym where ApisTox
         lists an IUPAC-style name. Solid line: the paper came back from that node&apos;s query.
         Dashed: the node&apos;s name appears in the paper&apos;s title or abstract. Rank: position in

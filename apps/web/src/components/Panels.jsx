@@ -21,9 +21,9 @@ export function StrategyCompare({ data }) {
   return (
     <section className="glass lift rounded-xl p-5">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <GitCompare className="h-4 w-4 text-white/35" />
+        <GitCompare className="h-4 w-4 text-white/60" />
         <h3 className="font-mono cap text-white/45">Same budget, three orderings</h3>
-        <span className="basis-full text-xs text-white/35">
+        <span className="basis-full text-xs text-white/60">
           {data.budget} assays each. Random order over the whole pool finds a median of{' '}
           {data.random_median_found}.
         </span>
@@ -120,16 +120,16 @@ export function EraPanel({ data }) {
   return (
     <section className="glass lift rounded-xl p-5">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <Clock className="h-4 w-4 text-white/35" />
+        <Clock className="h-4 w-4 text-white/60" />
         <h3 className="font-mono cap text-white/45">Three cutoffs, each retrained</h3>
-        <span className="basis-full text-xs text-white/35">
+        <span className="basis-full text-xs text-white/60">
           Retrained at each cutoff, {data.budget} assays each. Precomputed, not a control.
         </span>
       </div>
 
       <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[19rem] text-sm">
-          <thead className="font-mono cap-sm text-white/35">
+          <thead className="font-mono cap-sm text-white/60">
             <tr className="border-b border-white/8 text-right">
               <th className="pb-2 text-left font-normal">cutoff</th>
               <th className="pb-2 font-normal">known by then</th>
@@ -155,7 +155,7 @@ export function EraPanel({ data }) {
                 <td className="py-2.5">{era.pool_molecules}</td>
                 <td className="whitespace-nowrap py-2.5">
                   <span className="text-white/90">{era.found}</span>
-                  <span className="text-white/35"> / {era.targets}</span>
+                  <span className="text-white/60"> / {era.targets}</span>
                 </td>
                 <td className="py-2.5 font-mono text-hive-400">
                   {era.speedup != null ? `${era.speedup}×` : 'n/a'}
@@ -191,11 +191,11 @@ export function RecordPanel({ rows }) {
   return (
     <section className="glass lift rounded-xl p-5">
       <div className="flex items-center gap-2">
-        <Layers className="h-4 w-4 text-white/35" />
+        <Layers className="h-4 w-4 text-white/60" />
         <h3 className="font-mono cap text-white/45">
           Research record
         </h3>
-        <span className="ml-auto text-xs text-white/30">{rows.length} rows</span>
+        <span className="ml-auto text-xs text-white/55">{rows.length} rows</span>
       </div>
 
       <div className="mt-3 max-h-56 space-y-1.5 overflow-y-auto pr-1">
@@ -218,12 +218,12 @@ export function RecordPanel({ rows }) {
                 row.query ??
                 `${row.found ?? ''} found, ${row.speedup ?? ''}×`}
             </span>
-            <span className="shrink-0 cap-sm text-white/25">{row.at?.slice(11, 16)}</span>
+            <span className="shrink-0 cap-sm text-white/50">{row.at?.slice(11, 16)}</span>
           </div>
         ))}
       </div>
 
-      <p className="mt-3 text-xs text-white/35">
+      <p className="mt-3 text-xs text-white/60">
         Every decision writes one row here, so a run can be reconstructed from
         the record alone rather than from a transcript.
       </p>
@@ -248,13 +248,13 @@ export function MoleculePanel({ molecule, onClose }) {
             <Microscope className="h-4 w-4 text-hive-400" />
             <h2 className="truncate text-sm font-medium text-white/90">{dataset.name}</h2>
           </div>
-          <p className="mt-1 break-all font-mono cap text-white/35">
+          <p className="mt-1 break-all font-mono cap text-white/60">
             {dataset.smiles}
           </p>
         </div>
         <button
           onClick={onClose}
-          className="shrink-0 text-xs text-white/35 transition hover:text-white/70"
+          className="shrink-0 text-xs text-white/60 transition hover:text-white/70"
         >
           close
         </button>
@@ -278,7 +278,7 @@ export function MoleculePanel({ molecule, onClose }) {
             <Field label="CID" value={pubchem.cid} />
           </div>
           {pubchem.iupac_name && (
-            <p className="mt-2 break-words font-mono cap-sm leading-relaxed text-white/30">
+            <p className="mt-2 break-words font-mono cap-sm leading-relaxed text-white/55">
               {pubchem.iupac_name}
             </p>
           )}
@@ -299,7 +299,7 @@ export function MoleculePanel({ molecule, onClose }) {
 function Field({ label, value }) {
   return (
     <div>
-      <div className="font-mono cap-sm text-white/35">{label}</div>
+      <div className="font-mono cap-sm text-white/60">{label}</div>
       <div className="tabular text-white/80">{value ?? '—'}</div>
     </div>
   );

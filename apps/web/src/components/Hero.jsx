@@ -17,6 +17,21 @@ const DEFAULT_BUDGET = 30; // the experiment's input, not a result
 
 const count = (n) => (typeof n === 'number' ? n.toLocaleString('en-US') : null);
 
+/** A number that has not arrived yet still owns its space. The slot is sized
+ *  in ch for the digits the endpoint returns, so the sentence around it has
+ *  its final line count from first paint and only the glyphs fill in. It
+ *  never prints a placeholder value. */
+function Slot({ value, ch }) {
+  return (
+    <span
+      className="inline-block"
+      style={{ minWidth: `${ch}ch`, fontVariantNumeric: 'lining-nums tabular-nums' }}
+    >
+      {count(value)}
+    </span>
+  );
+}
+
 function useHeadline() {
   const [state, setState] = useState({ facts: null, run: null, order: null, error: null });
   // How little of this chemistry has ever been measured on bees, and the
@@ -111,7 +126,10 @@ export default function Hero() {
 
       <div className="relative mx-auto -mt-24 max-w-6xl px-4 pb-14 sm:px-6 md:mt-0 md:px-8 md:pb-14 md:pt-[8vh]">
         <div className="max-w-[36rem] lg:max-w-[37rem]">
-          <p className="cap font-mono text-hive-400/90">
+          {/* Two lines on a phone once the cutoff year lands and JetBrains
+              Mono has swapped in, one line from md up. Reserve both so the
+              h1 below never moves. */}
+          <p className="cap block min-h-[39px] font-mono text-hive-400/90 md:min-h-[18px]">
             Retrospective test
             {cutoff ? <span className="text-wax/50"> · compound-year cutoff {cutoff}</span> : null}
           </p>
@@ -163,27 +181,21 @@ function Lede({ facts, scarcity }) {
   const labelled = facts ? facts.train_molecules + facts.pool_molecules : null;
   const chembl = scarcity?.chembl_bee_molecules;
   const unmeasured = scarcity?.unmeasured;
-  const ready = labelled != null && chembl != null && unmeasured != null;
-
-  if (!ready) {
-    // Reserve the space while the calls are in flight; give it back if they
-    // came back empty, rather than leaving a hole where a number should be.
-    return <div className={scarcity ? '' : 'mt-5 h-20 sm:h-16'} aria-hidden="true" />;
-  }
-
+  // The sentence is rendered from first paint; only the three numbers arrive
+  // late, each into a slot already wide enough for it. The min-height is the
+  // measured settled box (7 lines below sm, 5 from sm up, at the 1.625
+  // line-height of 17px text) so the paragraph cannot change the page's
+  // geometry whichever way the endpoints answer.
   return (
-    <motion.p
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="mt-5 max-w-[32rem] text-[17px] leading-relaxed text-wax/80"
-    >
+    <p className="mt-5 min-h-[calc(7*1.625*17px)] max-w-[32rem] text-[17px] leading-relaxed text-wax/80 sm:min-h-[calc(5*1.625*17px)]">
       Bee toxicity is measured on live bees, one compound at a time. ApisTox
-      carries labels for {count(labelled)} molecules, all of ChEMBL adds honey
-      bee records for {count(chembl)} more, and {count(unmeasured)} pest-active
-      molecules have no bee measurement in either source. Which one you assay
+      carries labels for <Slot value={labelled} ch={4.4} /> molecules, all of
+      ChEMBL holds honey bee records for only{' '}
+      <Slot value={chembl} ch={1.2} /> more, nearly all of them the same
+      compounds, and <Slot value={unmeasured} ch={4.4} /> molecules from
+      crop-pest assays have no bee measurement at all. Which one you assay
       next is the decision this lab makes.
-    </motion.p>
+    </p>
   );
 }
 
@@ -192,14 +204,18 @@ function Lede({ facts, scarcity }) {
  *  /api/candidates: predicted bee-safe and inside the model's domain. */
 function CandidateLink({ scarcity }) {
   const ranked = scarcity?.ranked;
-  if (ranked == null) return null;
+  // Rendered from first paint with the count in a reserved slot, so the order
+  // strip below it never gets pushed down when /api/candidates answers.
   return (
     <a
       href="#candidates"
       className="tap group mt-4 gap-1.5 text-[14px] text-wax/60 transition-colors hover:text-wax"
     >
       <span>
-        <span className="text-hive-400">{count(ranked)}</span> pest-active
+        <span className="text-hive-400">
+          <Slot value={ranked} ch={3.2} />
+        </span>{' '}
+        pest-active
         molecules come back ranked and inside the model’s domain, each one an
         assay you could order
       </span>
@@ -207,6 +223,15 @@ function CandidateLink({ scarcity }) {
     </a>
   );
 }
+
+/** Measured settled height of each readout row at 390px and from sm up, so
+ *  the three rows hold their geometry while /api/headline and /api/compare
+ *  are in flight. */
+const ROW_MIN = [
+  'min-h-[93px] sm:min-h-[77px]',
+  'min-h-[193px] sm:min-h-[118px]',
+  'min-h-[74px] sm:min-h-[65px]',
+];
 
 /** The default run, as three measured lines. */
 function Readout({ facts, run, error, control }) {
@@ -262,14 +287,14 @@ function Readout({ facts, run, error, control }) {
 
   return (
     <div className="mt-10">
-      <div className="cap flex items-baseline justify-between gap-3 border-b border-wax/12 pb-2 font-mono text-wax/45">
-        <span>retrospective preview, computed on load</span>
-        {run && (
-          <span>
-            <span className="hidden sm:inline">model ordering · </span>
-            {run.seconds} s
-          </span>
-        )}
+      <div className="cap flex items-baseline justify-between gap-3 border-b border-wax/12 pb-2 font-mono text-wax/55">
+        <span className="whitespace-nowrap">
+          retrospective preview<span className="hidden sm:inline">, computed on load</span>
+        </span>
+        <span className="whitespace-nowrap">
+          <span className="hidden sm:inline">model ordering · </span>
+          {run ? `${run.seconds} s` : ''}
+        </span>
       </div>
       <dl>
         {(rows ?? [0, 1, 2]).map((row, index) => (
@@ -278,7 +303,7 @@ function Readout({ facts, run, error, control }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
-            className="grid grid-cols-[6.2rem_1fr] items-baseline gap-4 border-b border-wax/8 py-3 sm:grid-cols-[7.4rem_1fr]"
+            className={`grid grid-cols-[6.2rem_1fr] items-baseline gap-4 border-b border-wax/8 py-3 sm:grid-cols-[7.4rem_1fr] ${ROW_MIN[index]}`}
           >
             <dt
               className={`font-serif-display text-[2.1rem] leading-none sm:text-[2.5rem] ${
@@ -302,7 +327,20 @@ function Readout({ facts, run, error, control }) {
  *  Tall marks are the hidden answers; a rose cap marks an answer whose
  *  scaffold was absent before the cutoff. */
 function OrderStrip({ facts, run, order, reduce }) {
-  if (!facts || !run || !order?.length) return null;
+  // The frame is fixed-height and independent of the data: a 20px label row,
+  // a 56px svg box, a 16px axis row and a four-line caption. It stays in the
+  // flow from first paint and only the marks arrive late.
+  const ready = facts && run && order?.length;
+  if (!ready) {
+    return (
+      <figure className="mt-8" aria-hidden="true">
+        <div className="h-5" />
+        <div className="h-14 w-full rounded-sm bg-wax/4" />
+        <div className="mt-1 h-4" />
+        <div className="cap mt-3 min-h-[calc(4*1.625*13px)] leading-relaxed sm:min-h-[calc(3*1.625*12px)]" />
+      </figure>
+    );
+  }
 
   const n = order.length;
   const budget = run.budget;

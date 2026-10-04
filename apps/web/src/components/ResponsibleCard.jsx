@@ -73,7 +73,7 @@ export default function ResponsibleCard() {
         </div>
       )}
       {!card && !error && (
-        <p className="px-5 py-6 font-mono cap text-white/35">reading the dataset and the trained model…</p>
+        <p className="px-5 py-6 font-mono cap text-white/60">reading the dataset and the trained model…</p>
       )}
 
       {card && (
@@ -170,7 +170,7 @@ function DataCard({ card }) {
       </dl>
 
       <div className="mt-4">
-        <div className="font-mono cap-sm uppercase tracking-wider text-white/35">
+        <div className="font-mono cap-sm uppercase tracking-wider text-white/60">
           Toxic share by source database · bars to {pct(scale)}
         </div>
         <div className="mt-2 space-y-2">
@@ -178,7 +178,7 @@ function DataCard({ card }) {
             <div key={source.value}>
               <div className="flex items-baseline justify-between text-xs">
                 <span className="font-mono text-white/70">
-                  {source.value} <span className="text-white/30">n={int(source.molecules)}</span>
+                  {source.value} <span className="text-white/55">n={int(source.molecules)}</span>
                 </span>
                 <span className="tabular font-mono text-white/85">{pct(source.toxic_share)}</span>
               </div>
@@ -193,7 +193,7 @@ function DataCard({ card }) {
             </div>
           ))}
         </div>
-        <div className="mt-4 font-mono cap-sm uppercase tracking-wider text-white/35">
+        <div className="mt-4 font-mono cap-sm uppercase tracking-wider text-white/60">
           Toxic share by exposure type · bars to {pct(scale)}
         </div>
         <div className="mt-2 space-y-2">
@@ -201,7 +201,7 @@ function DataCard({ card }) {
             <div key={route.value}>
               <div className="flex items-baseline justify-between text-xs">
                 <span className="font-mono text-white/70">
-                  {route.value.toLowerCase()} <span className="text-white/30">n={int(route.molecules)}</span>
+                  {route.value.toLowerCase()} <span className="text-white/55">n={int(route.molecules)}</span>
                 </span>
                 <span className="tabular font-mono text-white/85">{pct(route.toxic_share)}</span>
               </div>
@@ -251,7 +251,7 @@ function ModelCard({ card }) {
         </Def>
       </dl>
 
-      <div className="mt-4 font-mono cap-sm uppercase tracking-wider text-white/35">Known limitations</div>
+      <div className="mt-4 font-mono cap-sm uppercase tracking-wider text-white/60">Known limitations</div>
       <ul className="mt-2 space-y-2 text-sm leading-relaxed text-white/60">
         <Limit>
           <b className="font-semibold text-white/80">Small answer set.</b> {split.targets} hidden answers in a pool of{' '}
@@ -290,10 +290,10 @@ function DomainChart({ domain }) {
   return (
     <div className="mt-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-        <span className="font-mono cap-sm uppercase tracking-wider text-white/35">
+        <span className="font-mono cap-sm uppercase tracking-wider text-white/60">
           Nearest training neighbour, per pool molecule
         </span>
-        <span className="font-mono cap-sm text-white/30">
+        <span className="font-mono cap-sm text-white/55">
           median {domain.median_pool} pool · {domain.median_answers} answers
         </span>
       </div>
@@ -329,7 +329,7 @@ function DomainChart({ domain }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <p className="mt-1 cap leading-relaxed text-white/35">
+      <p className="mt-1 cap leading-relaxed text-white/60">
         Max Tanimoto similarity to any molecule reported by the cutoff, on the same fingerprints the model uses. Left of
         the dashed line, no training molecule reaches {domain.threshold}.
       </p>
@@ -411,12 +411,12 @@ function Reproduce({ sha }) {
           <li key={step.cmd} className="rounded-lg border border-white/[0.06] bg-night-900/70">
             <div className="flex items-start justify-between gap-3 px-3 pt-2">
               <span className="cap leading-snug text-white/45">
-                <span className="mr-1.5 font-mono text-white/25">{index + 1}.</span>
+                <span className="mr-1.5 font-mono text-white/50">{index + 1}.</span>
                 {step.note}
               </span>
               <button
                 onClick={() => copy(step.cmd, index)}
-                className="tap-y shrink-0 rounded p-1 max-md:min-w-10 text-white/35 transition hover:bg-white/5 hover:text-white/70"
+                className="tap-y shrink-0 rounded p-1 max-md:min-w-10 text-white/60 transition hover:bg-white/5 hover:text-white/70"
                 aria-label="Copy command"
               >
                 {copied === index ? <Check className="h-3.5 w-3.5 text-signal" /> : <Copy className="h-3.5 w-3.5" />}
@@ -427,7 +427,7 @@ function Reproduce({ sha }) {
         ))}
       </ol>
       {sha && (
-        <p className="mt-3 break-all font-mono cap-sm leading-relaxed text-white/30">
+        <p className="mt-3 break-all font-mono cap-sm leading-relaxed text-white/55">
           <ShieldCheck className="mr-1 inline h-3 w-3 text-signal/70" />
           dataset_final.csv sha256 {sha}
         </p>
@@ -448,7 +448,7 @@ function Heading({ icon: Icon, tone, children }) {
 }
 
 function Term({ children }) {
-  return <dt className="pt-1.5 font-mono sm:pt-0.5 cap-sm uppercase tracking-wider text-white/35">{children}</dt>;
+  return <dt className="pt-1.5 font-mono sm:pt-0.5 cap-sm uppercase tracking-wider text-white/60">{children}</dt>;
 }
 
 function Def({ children }) {
@@ -471,7 +471,7 @@ function Limit({ children }) {
 function Mitigation({ children }) {
   return (
     <li className="flex gap-2 rounded-lg border border-white/[0.05] bg-night-900/40 px-3 py-2 leading-relaxed">
-      <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
+      <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/60" />
       <span>{children}</span>
     </li>
   );

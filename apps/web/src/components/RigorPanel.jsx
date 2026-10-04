@@ -73,7 +73,7 @@ export default function RigorPanel() {
           </p>
         </div>
         {data && (
-          <div className="font-mono cap-sm leading-relaxed text-white/30 sm:text-right">
+          <div className="font-mono cap-sm leading-relaxed text-white/55 sm:text-right">
             built {data.generated_at}
             <br />
             dataset sha256 {data.dataset_sha256.slice(0, 12)}
@@ -187,7 +187,7 @@ function Baselines({ data }) {
             <div>
               <div className="h-44 w-full">
                 <ResponsiveContainer>
-                  <BarChart data={hist} margin={{ top: 14, right: 8, bottom: 0, left: -22 }} barCategoryGap={0}>
+                  <BarChart data={hist} margin={{ top: 24, right: 8, bottom: 0, left: -22 }} barCategoryGap={0}>
                     <CartesianGrid stroke="rgba(255,255,255,0.05)" vertical={false} />
                     <XAxis
                       dataKey="assays"
@@ -199,25 +199,31 @@ function Baselines({ data }) {
                       tickLine={false}
                       allowDecimals={false}
                     />
-                    <YAxis stroke={AXIS} tick={{ fontSize: 10 }} tickLine={false} />
+                    <YAxis stroke={AXIS} tick={{ fontSize: 10 }} tickLine={false} ticks={[0, 100, 200, 300, 400]} />
                     <Tooltip
                       contentStyle={tooltipStyle}
                       cursor={{ fill: 'rgba(255,255,255,0.04)' }}
                       labelFormatter={(v) => `all ${base.answers} found at assay ${v}`}
                       formatter={(v) => [`${v} of ${thousands(base.shuffles)} shuffles`, 'random']}
                     />
-                    <ReferenceLine x={base.random_all_p50} stroke="rgba(255,255,255,0.35)" strokeDasharray="3 3" />
+                    <ReferenceLine x={base.random_all_p50} stroke="rgba(255,255,255,0.6)" strokeDasharray="3 3" />
                     <ReferenceLine
                       x={ours}
                       stroke={AMBER}
-                      strokeWidth={2}
-                      label={{ value: `this lab, ${ours}`, position: 'top', fill: AMBER, fontSize: 10 }}
+                      strokeWidth={1}
+                      strokeDasharray="4 4"
+                      label={{
+                        value: `this lab, ${ours}`,
+                        position: 'insideTopLeft',
+                        fill: AMBER,
+                        fontSize: 10,
+                      }}
                     />
                     <Bar dataKey="count" fill="rgba(255,255,255,0.28)" isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              <p className="mt-1 cap text-white/35">
+              <p className="mt-1 cap text-white/60">
                 Assays random ordering needs to find all {base.answers}, over {thousands(base.shuffles)} shuffles (seed{' '}
                 {base.seed}). Dashed line: random median. The discovery curve and the answer gallery
                 draw the same baseline at 400 and 500 shuffles, enough for a median on screen; this
@@ -240,7 +246,7 @@ function Baselines({ data }) {
               value={`${thousands(base.shuffles_at_or_below_model)} / ${thousands(base.shuffles)}`}
             />
             <Readout label="exact probability" value={<Sci value={base.exact_p_all_within_model} />} />
-            <p className="col-span-2 pt-1 cap-sm leading-snug text-white/30">
+            <p className="col-span-2 pt-1 cap-sm leading-snug text-white/55">
               exact = C({ours}, {base.answers}) / C({base.candidates}, {base.answers}), the chance all {base.answers}{' '}
               land in the first {ours} picks.
             </p>
@@ -255,10 +261,10 @@ function Baselines({ data }) {
 function Readout({ label, value, note, accent }) {
   return (
     <div>
-      <div className="cap-sm text-white/35">{label}</div>
+      <div className="cap-sm text-white/60">{label}</div>
       <div className={`tabular font-mono text-lg leading-tight ${accent ? 'text-hive-400' : 'text-white/85'}`}>
         {value}
-        {note && <span className="ml-2 cap-sm text-white/30">{note}</span>}
+        {note && <span className="ml-2 cap-sm text-white/55">{note}</span>}
       </div>
     </div>
   );
@@ -290,7 +296,7 @@ function PerK({ base }) {
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <p className="mt-1 cap text-white/35">
+      <p className="mt-1 cap text-white/60">
         Assays spent before the k-th answer turns up. Shaded: random, 5th to 95th percentile.
       </p>
     </div>
@@ -349,7 +355,7 @@ function Ablation({ data }) {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[19rem] border-collapse cap">
           <thead>
-            <tr className="cap-sm text-white/35">
+            <tr className="cap-sm text-white/60">
               <th className="py-1.5 pr-2 text-left font-normal" />
               {fingerprints.map((fp) => (
                 <th key={fp.key} className="px-1.5 py-1.5 text-left font-normal" title={fp.label}>
@@ -363,7 +369,7 @@ function Ablation({ data }) {
               <tr key={model.key} className="border-t border-white/[0.06]">
                 <th
                   className={`py-2 pr-2 text-left align-top font-normal ${
-                    model.key === 'dummy' ? 'text-white/35' : 'text-white/65'
+                    model.key === 'dummy' ? 'text-white/60' : 'text-white/65'
                   }`}
                   title={model.label}
                 >
@@ -388,11 +394,11 @@ function Ablation({ data }) {
                           {metric === 'auroc' ? n3(value) : n0(value)}
                         </div>
                         {metric === 'auroc' && model.key !== 'dummy' && (
-                          <div className="tabular font-mono cap-sm text-white/30">
+                          <div className="tabular font-mono cap-sm text-white/55">
                             {n3(cell.ci_low)} to {n3(cell.ci_high)}
                           </div>
                         )}
-                        <div className="truncate font-mono cap-sm text-white/20" title={cell.mlflow_run_id ?? ''}>
+                        <div className="truncate font-mono cap-sm text-white/45" title={cell.mlflow_run_id ?? ''}>
                           {cell.mlflow_run_id ? cell.mlflow_run_id.slice(0, 8) : cell.note ? 'tie-breaks' : ''}
                         </div>
                       </div>
@@ -439,7 +445,7 @@ function Scaffold({ data }) {
           <div key={row.label}>
             <div className="flex items-baseline justify-between cap">
               <span className="text-white/60">
-                {row.label} <span className="text-white/30">n = {row.n}</span>
+                {row.label} <span className="text-white/55">n = {row.n}</span>
               </span>
               <span className={`tabular font-mono ${i === 0 ? 'text-white/85' : 'text-hive-400'}`}>
                 {Number(row.auroc).toFixed(4)}
@@ -460,7 +466,7 @@ function Scaffold({ data }) {
             </div>
           </div>
         ))}
-        <div className="flex justify-between font-mono cap-sm text-white/25">
+        <div className="flex justify-between font-mono cap-sm text-white/50">
           <span>0.5</span>
           <span>0.75</span>
           <span>1.0</span>
@@ -523,7 +529,7 @@ function Seeds({ data }) {
           />
         ))}
       </div>
-      <div className="flex justify-between font-mono cap-sm text-white/25">
+      <div className="flex justify-between font-mono cap-sm text-white/50">
         <span>{lo.toFixed(3)}</span>
         <span>AUROC</span>
         <span>{hi.toFixed(3)}</span>
@@ -531,7 +537,7 @@ function Seeds({ data }) {
 
       <table className="mt-3 w-full border-collapse font-mono cap-sm">
         <thead>
-          <tr className="text-white/30">
+          <tr className="text-white/55">
             <th className="py-1 text-left font-normal">seed</th>
             <th className="py-1 text-right font-normal">AUROC</th>
             <th className="py-1 text-right font-normal">to {data.setup.targets}</th>
@@ -544,7 +550,7 @@ function Seeds({ data }) {
               <td className="py-1">{row.seed}</td>
               <td className="tabular py-1 text-right">{n3(row.auroc)}</td>
               <td className="tabular py-1 text-right">{row.assays_to_all}</td>
-              <td className="py-1 text-right text-white/25">{row.mlflow_run_id?.slice(0, 8)}</td>
+              <td className="py-1 text-right text-white/50">{row.mlflow_run_id?.slice(0, 8)}</td>
             </tr>
           ))}
         </tbody>
@@ -567,7 +573,7 @@ function Seeds({ data }) {
 function MlflowFooter({ data }) {
   const m = data.mlflow;
   return (
-    <div className="mt-6 border-t border-white/6 pt-3 font-mono cap-sm leading-relaxed text-white/30">
+    <div className="mt-6 border-t border-white/6 pt-3 font-mono cap-sm leading-relaxed text-white/55">
       MLflow: {m.runs} runs in experiment &quot;{m.experiment_name}&quot; (id {m.experiment_id}), file store at{' '}
       {m.tracking_dir}. Open with <span className="text-white/45">MLFLOW_ALLOW_FILE_STORE=true mlflow ui --backend-store-uri {m.tracking_dir}</span>.
       Rebuild: <span className="text-white/45">{data.command}</span>

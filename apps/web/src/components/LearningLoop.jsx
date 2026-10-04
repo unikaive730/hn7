@@ -119,7 +119,7 @@ export default function LearningLoop() {
                       key={id}
                       onClick={() => setArm(id)}
                       className={`tap-y rounded px-1.5 py-0.5 transition ${
-                        arm === id ? 'bg-white/10 text-white/85' : 'text-white/35 hover:text-white/60'
+                        arm === id ? 'bg-white/10 text-white/85' : 'text-white/60 hover:text-white/60'
                       }`}
                     >
                       {id === 'retrain' ? 'retraining' : 'frozen'}
@@ -134,7 +134,7 @@ export default function LearningLoop() {
 
           <RoundTable data={data} />
 
-          <p className="mt-4 break-words font-mono cap-sm leading-relaxed text-white/25">
+          <p className="mt-4 break-words font-mono cap-sm leading-relaxed text-white/50">
             random forest, {data.trees} trees, seed {data.seed}, {data.features ?? 'Morgan fingerprints'} · each assay
             reads the measured label from ApisTox · MLflow run{' '}
             {data.mlflow_run_id ? data.mlflow_run_id.slice(0, 12) : 'not logged'} ·
@@ -149,7 +149,7 @@ export default function LearningLoop() {
 function Segment({ label, options, value, onChange }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-white/35">{label}</span>
+      <span className="text-white/60">{label}</span>
       <div className="flex rounded-md border border-white/8 p-0.5">
         {options.map((option) => (
           <button
@@ -228,7 +228,7 @@ function Figure({ n, caption, aside, children }) {
         {aside}
       </div>
       {children}
-      <figcaption className="mt-1.5 cap leading-snug text-white/35">{caption}</figcaption>
+      <figcaption className="mt-1.5 cap leading-snug text-white/60">{caption}</figcaption>
     </figure>
   );
 }
@@ -436,6 +436,9 @@ function RankTrace({ data, arm }) {
               tickLine={false}
               reversed
               domain={[0, maxRank]}
+              ticks={[0, ...[7, 14, 21, 28].filter((v) => v <= maxRank), maxRank].filter(
+                (v, i, a) => a.indexOf(v) === i,
+              )}
               allowDecimals={false}
               tickFormatter={(v) => (v === 0 ? 'tested' : v)}
               width={52}
@@ -507,7 +510,7 @@ function RoundTable({ data }) {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[34rem] border-collapse text-left cap">
           <thead>
-            <tr className="border-b border-white/8 cap-sm text-white/35">
+            <tr className="border-b border-white/8 cap-sm text-white/60">
               <th className="py-1.5 pr-3 font-normal">round</th>
               <th className="py-1.5 pr-3 font-normal">assays</th>
               <th className="py-1.5 pr-3 font-normal">found</th>
@@ -536,7 +539,7 @@ function RoundTable({ data }) {
                     {round.targets_left ? `${round.moved_up} / ${round.moved_down}` : ''}
                   </td>
                   <td className="max-w-[16rem] truncate py-1.5 font-sans text-white/55" title={hits.join(', ')}>
-                    {hits.length ? hits.join(', ') : <span className="text-white/20">none</span>}
+                    {hits.length ? hits.join(', ') : <span className="text-white/45">none</span>}
                   </td>
                 </tr>
               );

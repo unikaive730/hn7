@@ -142,7 +142,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
                   </button>
                 ))}
               </div>
-              <span className="font-mono cap-sm text-white/30">
+              <span className="font-mono cap-sm text-white/55">
                 {data.counts.train} dated ≤{data.cutoff_year} · {data.counts.pool} after ·{' '}
                 {data.counts.targets} answers
               </span>
@@ -155,7 +155,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
               onHover={setHovered}
               onPin={setPinned}
             />
-            <p className="mt-2 font-mono cap-sm leading-relaxed text-white/30">
+            <p className="mt-2 font-mono cap-sm leading-relaxed text-white/55">
               {data.method}. The axes have no units. Close points share substructure, but
               long distances on the map are not to scale.
             </p>
@@ -165,7 +165,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
             <Legend mode={mode} cutoff={data.cutoff_year} counts={data.counts} />
             <Detail point={focus} cutoff={data.cutoff_year} pinned={!hovered && !!pinned} />
             <div>
-              <div className="mb-2 font-mono cap-sm text-white/35">
+              <div className="mb-2 font-mono cap-sm text-white/60">
                 Hidden answers, by year
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -443,13 +443,13 @@ function Legend({ mode, cutoff, counts }) {
           <div key={row.label} className="flex items-center gap-2 text-[12px] text-white/60">
             <Swatch color={row.color} small={row.small} />
             <span className="flex-1">{row.label}</span>
-            <span className="tabular font-mono cap text-white/35">{row.n}</span>
+            <span className="tabular font-mono cap text-white/60">{row.n}</span>
           </div>
         ))}
         <div className="flex items-center gap-2 text-[12px] text-white/60">
           <Swatch color="transparent" ring />
           <span className="flex-1">hidden answer</span>
-          <span className="tabular font-mono cap text-white/35">{counts.targets}</span>
+          <span className="tabular font-mono cap text-white/60">{counts.targets}</span>
         </div>
         <div className="flex items-center gap-2 text-[12px] text-white/60">
           <Swatch color="transparent" ring double />
@@ -464,7 +464,7 @@ function Detail({ point, cutoff, pinned }) {
   if (!point) {
     return (
       <div className="flex items-center gap-2.5 rounded-lg border border-dashed border-white/10 px-3 py-4 text-[12px] text-white/40">
-        <Crosshair className="h-4 w-4 shrink-0 text-white/30" />
+        <Crosshair className="h-4 w-4 shrink-0 text-white/55" />
         Point at or tap a molecule to see its structure.
       </div>
     );
@@ -477,7 +477,7 @@ function Detail({ point, cutoff, pinned }) {
           <div className="truncate text-sm font-medium text-white/90" title={point.name}>
             {point.name}
           </div>
-          <div className="font-mono cap-sm text-white/35">CID {point.cid}</div>
+          <div className="font-mono cap-sm text-white/60">CID {point.cid}</div>
         </div>
         {pinned && (
           <span className="shrink-0 rounded border border-white/10 px-1.5 py-0.5 font-mono cap-sm uppercase text-white/40">
@@ -511,7 +511,7 @@ function Detail({ point, cutoff, pinned }) {
 function Field({ k, v, tone = 'text-white/80' }) {
   return (
     <div>
-      <dt className="cap-sm uppercase tracking-wide text-white/30">{k}</dt>
+      <dt className="cap-sm uppercase tracking-wide text-white/55">{k}</dt>
       <dd className={`tabular ${tone}`}>{v ?? 'n/a'}</dd>
     </div>
   );
@@ -541,7 +541,7 @@ function SimilarityHistogram({ points, sim, cutoff }) {
   return (
     <div className="mt-8 grid gap-6 border-t border-white/8 pt-6 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
       <div className="min-w-0">
-        <div className="font-mono cap-sm text-white/35">
+        <div className="font-mono cap-sm text-white/60">
           Nearest molecule dated {cutoff} or earlier, Tanimoto similarity
         </div>
         <div className="mt-3 h-52 w-full">
@@ -593,8 +593,8 @@ function SimilarityHistogram({ points, sim, cutoff }) {
         <Median label="known scaffold" q={sim.pool_seen_scaffold} swatch="rgba(232,232,239,0.5)" />
         <Median label="new scaffold" q={sim.pool_unseen_scaffold} swatch="rgba(251,191,36,0.18)" outline />
         <Median label="answers, known scaffold" q={sim.targets_seen_scaffold} swatch="#fbbf24" />
-        <Median label="answers, new scaffold" q={sim.targets_unseen_scaffold} swatch="#fbbf24" />
-        <p className="pt-1 cap text-white/35">
+        <Median label="answers, new scaffold" q={sim.targets_unseen_scaffold} swatch="#fbbf24" outline />
+        <p className="pt-1 cap text-white/60">
           Median, then the 25th to 75th percentile, for each group. The bars count all{' '}
           {sim.pool_all.n} molecules dated after {cutoff} once each. A value of 1.00 would mean
           the training set holds the same fingerprint.
@@ -612,10 +612,10 @@ function Median({ label, q, swatch, outline }) {
         style={{ background: swatch, border: outline ? '1px solid rgba(251,191,36,0.6)' : undefined }}
       />
       <span className="flex-1">
-        {label} <span className="font-mono cap-sm text-white/30">n={q.n}</span>
+        {label} <span className="font-mono cap-sm text-white/55">n={q.n}</span>
       </span>
       <span className="tabular font-mono text-white/80">{q.median.toFixed(2)}</span>
-      <span className="tabular font-mono cap-sm text-white/30">
+      <span className="tabular font-mono cap-sm text-white/55">
         {q.q25.toFixed(2)}-{q.q75.toFixed(2)}
       </span>
     </div>

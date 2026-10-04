@@ -200,7 +200,7 @@ export default function RediscoveredGallery({ cutoffYear = 2000 }) {
                 }}
               />
             </div>
-            <span className="font-mono cap-sm text-white/35">swipe or scroll</span>
+            <span className="font-mono cap-sm text-white/60">swipe or scroll</span>
           </div>
 
           {reading && (
@@ -403,7 +403,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
     >
       <div className="flex items-start justify-between px-4 pt-4">
         <div>
-          <div className="font-mono cap-sm text-white/35">
+          <div className="font-mono cap-sm text-white/60">
             {first ? 'first pick' : `find ${row.find_order} of ${targets}`}
           </div>
           <div className="mt-0.5 flex items-baseline gap-1.5">
@@ -414,7 +414,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
           </div>
         </div>
         <div className="text-right">
-          <div className="font-mono cap-sm text-white/30">random</div>
+          <div className="font-mono cap-sm text-white/55">random</div>
           <div className="tabular mt-1 text-lg text-white/55">{fmt(row.random_rank_median)}</div>
         </div>
       </div>
@@ -463,7 +463,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
         </div>
 
         <div className="mt-3 border-t border-white/[0.06] pt-2.5 cap leading-relaxed text-white/45">
-          <span className="text-white/30">Closest training molecule</span>
+          <span className="text-white/55">Closest training molecule</span>
           <div className="flex items-baseline justify-between gap-2">
             <span className="truncate text-white/70" title={row.nearest_known.name}>
               {row.nearest_known.name}
@@ -472,7 +472,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
               {row.nearest_known.tanimoto.toFixed(2)}
             </span>
           </div>
-          <div className="font-mono cap-sm text-white/30">
+          <div className="font-mono cap-sm text-white/55">
             {row.nearest_known.year} · {row.nearest_known.label === 'toxic' ? 'toxic to bees' : 'non-toxic'}
           </div>
         </div>

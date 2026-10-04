@@ -77,7 +77,7 @@ function Stat({ value, total, caption, tone = 'text-white/85' }) {
     <div className="min-w-0 flex-1 px-3 first:pl-0 last:pr-0">
       <div className={`font-mono text-lg tabular ${tone}`}>
         {value}
-        <span className="text-white/25">/{total}</span>
+        <span className="text-white/50">/{total}</span>
       </div>
       <div className="mt-0.5 cap-sm leading-tight text-white/40">{caption}</div>
     </div>
@@ -132,7 +132,7 @@ export default function ExternalValidation() {
           </p>
         </div>
         {data && (
-          <div className="font-mono cap-sm leading-relaxed text-white/30 sm:text-right">
+          <div className="font-mono cap-sm leading-relaxed text-white/55 sm:text-right">
             ChEMBL pulled {data.chembl_fetched_at?.slice(0, 16).replace('T', ' ')} UTC
             <br />
             CC BY-SA 3.0
@@ -154,15 +154,15 @@ export default function ExternalValidation() {
             <span>
               <span className="text-white/80">{data.chembl_records.apis_all}</span> honey bee records
             </span>
-            <span className="text-white/20">/</span>
+            <span className="text-white/45">/</span>
             <span>
               <span className="text-white/80">{data.chembl_records.apis_molecules}</span> molecules
             </span>
-            <span className="text-white/20">/</span>
+            <span className="text-white/45">/</span>
             <span>
               <span className="text-white/80">{data.honey_bee.n}</span> with a usable LD50
             </span>
-            <span className="text-white/20">/</span>
+            <span className="text-white/45">/</span>
             <span>
               <span className="text-white/80">{data.honey_bee_new.n}</span> not in ApisTox
             </span>
@@ -172,7 +172,7 @@ export default function ExternalValidation() {
             <div>
               <div className="h-56 w-full">
                 <ResponsiveContainer>
-                  <ScatterChart margin={{ top: 10, right: 12, bottom: 18, left: 4 }}>
+                  <ScatterChart margin={{ top: 22, right: 12, bottom: 18, left: 4 }}>
                     <CartesianGrid stroke="rgba(255,255,255,0.05)" horizontal={false} />
                     <XAxis
                       type="number"
@@ -224,7 +224,7 @@ export default function ExternalValidation() {
                   <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-white/50" /> outside
                   domain (max similarity &lt; {data.domain_min_similarity})
                 </span>
-                <span className="basis-full text-white/35">
+                <span className="basis-full text-white/60">
                   The axis is the forest's vote share over its 500 trees. It ranks molecules; it
                   is not a calibrated probability.
                 </span>
@@ -233,7 +233,7 @@ export default function ExternalValidation() {
 
             <div className="space-y-4">
               <div>
-                <div className="font-mono cap-sm uppercase tracking-wider text-white/35">
+                <div className="font-mono cap-sm uppercase tracking-wider text-white/60">
                   A labelling check, not a benchmark
                 </div>
                 {data.honey_bee.pairs_total ? (
@@ -294,7 +294,7 @@ export default function ExternalValidation() {
           {/* Per-molecule table: the whole test set fits on screen. */}
           <div className="mt-5 overflow-x-auto rounded-lg border border-white/6">
             <table className="w-full min-w-[640px] text-left text-xs">
-              <thead className="bg-white/[0.03] cap-sm uppercase tracking-wide text-white/35">
+              <thead className="bg-white/[0.03] cap-sm uppercase tracking-wide text-white/60">
                 <tr>
                   <th className="px-3 py-2 font-normal">Molecule</th>
                   <th className="px-3 py-2 font-normal">Bee</th>
@@ -321,10 +321,10 @@ export default function ExternalValidation() {
                         rel="noreferrer"
                         className="tap inline-flex items-center gap-1 text-white/85 hover:text-hive-400"
                       >
-                        {r.name} <ExternalLink className="h-3 w-3 text-white/25" />
+                        {r.name} <ExternalLink className="h-3 w-3 text-white/50" />
                       </a>
                       {r.name_in_apistox && (
-                        <div className="cap-sm text-white/35">
+                        <div className="cap-sm text-white/60">
                           same name in ApisTox, different structure record
                         </div>
                       )}
@@ -345,7 +345,7 @@ export default function ExternalValidation() {
                       {r.p_toxic.toFixed(2)}
                     </td>
                     <td className="px-3 py-2 text-right font-mono tabular">
-                      <span className={r.in_domain ? 'text-white/70' : 'text-white/35'}>
+                      <span className={r.in_domain ? 'text-white/70' : 'text-white/60'}>
                         {r.max_similarity.toFixed(2)}
                       </span>
                     </td>

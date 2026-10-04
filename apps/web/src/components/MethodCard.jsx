@@ -51,7 +51,7 @@ export default function MethodCard() {
         </div>
       )}
       {!method && !error && (
-        <p className="mt-6 font-mono cap text-white/35">
+        <p className="mt-6 font-mono cap text-white/60">
           reading settings from source and training the model once…
         </p>
       )}
@@ -248,7 +248,7 @@ function Step({ index, step }) {
       </div>
       <div className={`min-w-0 ${step.gate ? 'rounded-lg border border-hive-400/20 bg-hive-400/[0.04] p-3 -mt-1' : ''}`}>
         <div className="flex items-baseline gap-2">
-          <span className="font-mono cap-sm text-white/25">{String(index + 1).padStart(2, '0')}</span>
+          <span className="font-mono cap-sm text-white/50">{String(index + 1).padStart(2, '0')}</span>
           <h3 className="text-[15px] font-semibold text-white/90">{step.title}</h3>
         </div>
         <div className="mt-1 text-sm leading-relaxed text-white/60">{step.body}</div>
@@ -266,10 +266,10 @@ function Step({ index, step }) {
 function Tag({ k, v, where, ok }) {
   return (
     <span className="inline-flex max-w-full items-center gap-1 overflow-hidden rounded border border-white/[0.08] bg-white/[0.02] px-1.5 py-0.5 font-mono cap-sm">
-      <span className="text-white/35">{k}</span>
+      <span className="text-white/60">{k}</span>
       <span className="truncate text-white/80">{String(v)}</span>
       {ok === true && <Check className="h-3 w-3 shrink-0 text-signal" />}
-      {where && <span className="hidden truncate text-white/25 sm:inline">{where}</span>}
+      {where && <span className="hidden truncate text-white/50 sm:inline">{where}</span>}
     </span>
   );
 }
@@ -319,7 +319,7 @@ function DecadeChart({ decades, cutoff }) {
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-sm bg-hive-400" /> pool
         </span>
-        <span className="text-white/25">molecules per decade of first report</span>
+        <span className="text-white/50">molecules per decade of first report</span>
       </div>
     </div>
   );
@@ -341,7 +341,7 @@ function HitStrip({ budget, foundAt }) {
           />
         ))}
       </div>
-      <div className="mt-1 flex justify-between font-mono cap-sm text-white/30">
+      <div className="mt-1 flex justify-between font-mono cap-sm text-white/55">
         <span>assay 1</span>
         <span>amber = answer found at that position</span>
         <span>{budget}</span>
@@ -356,7 +356,7 @@ function Meter({ label, n, value, tone }) {
     <div>
       <div className="flex items-baseline justify-between text-xs">
         <span className="text-white/50">
-          {label} <span className="text-white/30">n={n}</span>
+          {label} <span className="text-white/55">n={n}</span>
         </span>
         <span className="tabular font-mono font-semibold text-white/85">AUROC {value}</span>
       </div>

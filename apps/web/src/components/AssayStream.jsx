@@ -26,7 +26,7 @@ export function AssayStream({ assays, revealed, onOpen }) {
       )}
 
       {revealed < assays.length && (
-        <div className="flex items-center gap-2 px-3 py-2 text-xs text-white/35">
+        <div className="flex items-center gap-2 px-3 py-2 text-xs text-white/60">
           <HelpCircle className="h-3.5 w-3.5" />
           {assays.length - revealed} more queued
         </div>
@@ -58,7 +58,7 @@ const Row = memo(function Row({ assay, onOpen }) {
           {assay.is_target ? (
             <Check className="h-4 w-4 text-signal" />
           ) : (
-            <Beaker className="h-4 w-4 text-white/25" />
+            <Beaker className="h-4 w-4 text-white/50" />
           )}
         </span>
 

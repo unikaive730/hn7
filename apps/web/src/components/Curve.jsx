@@ -3,6 +3,7 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -23,13 +24,23 @@ export function DiscoveryCurve({ data, targets }) {
     band: [p.random_low, p.random_high],
   }));
 
+  // The assay where the ordering has them all, read off the curve itself.
+  const allFoundAt = targets ? points.find((p) => p.agent >= targets)?.assay : null;
+  const lastAssay = points[points.length - 1]?.assay;
+  const xTicks = [1, 10, 20, allFoundAt, lastAssay].filter(
+    (v, i, a) => v != null && a.indexOf(v) === i,
+  );
+  const yTicks = targets
+    ? [...new Set([...Array(Math.floor(targets / 5) + 1).keys()].map((i) => i * 5).concat(targets))]
+    : undefined;
+
   return (
     <div className="h-64 w-full">
       <ResponsiveContainer>
-        <ComposedChart data={points} margin={{ top: 8, right: 8, bottom: 4, left: -22 }}>
+        <ComposedChart data={points} margin={{ top: 8, right: 8, bottom: 18, left: -22 }}>
           <defs>
             <linearGradient id="agentFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#fbbf24" stopOpacity={0.35} />
+              <stop offset="0%" stopColor="#fbbf24" stopOpacity={0.18} />
               <stop offset="100%" stopColor="#fbbf24" stopOpacity={0} />
             </linearGradient>
           </defs>
@@ -40,10 +51,11 @@ export function DiscoveryCurve({ data, targets }) {
             stroke="rgba(255,255,255,0.3)"
             tick={{ fontSize: 11 }}
             tickLine={false}
+            ticks={xTicks}
             label={{
               value: 'assays spent',
               position: 'insideBottom',
-              offset: -2,
+              offset: -8,
               fill: 'rgba(255,255,255,0.3)',
               fontSize: 11,
             }}
@@ -52,6 +64,7 @@ export function DiscoveryCurve({ data, targets }) {
             stroke="rgba(255,255,255,0.3)"
             tick={{ fontSize: 11 }}
             tickLine={false}
+            ticks={yTicks}
             domain={[0, targets ?? 'auto']}
           />
           <Tooltip
@@ -72,13 +85,16 @@ export function DiscoveryCurve({ data, targets }) {
 
           <Area
             dataKey="band"
-            stroke="none"
-            fill="rgba(255,255,255,0.07)"
+            type="stepAfter"
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth={1}
+            fill="rgba(255,255,255,0.14)"
             isAnimationActive={false}
           />
           <Line
             dataKey="random_median"
-            stroke="rgba(255,255,255,0.35)"
+            type="stepAfter"
+            stroke="rgba(255,255,255,0.55)"
             strokeWidth={1.5}
             strokeDasharray="4 4"
             dot={false}
@@ -86,12 +102,26 @@ export function DiscoveryCurve({ data, targets }) {
           />
           <Area
             dataKey="agent"
+            type="stepAfter"
             stroke="#fbbf24"
             strokeWidth={2.5}
             fill="url(#agentFill)"
             dot={false}
-            animationDuration={900}
+            animationDuration={450}
           />
+          {allFoundAt != null && (
+            <ReferenceLine
+              x={allFoundAt}
+              stroke="rgba(251,191,36,0.55)"
+              strokeDasharray="3 3"
+              label={{
+                value: `all ${targets} found`,
+                position: 'insideTopRight',
+                fill: 'rgba(251,191,36,0.9)',
+                fontSize: 10,
+              }}
+            />
+          )}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

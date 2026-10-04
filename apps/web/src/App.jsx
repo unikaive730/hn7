@@ -241,6 +241,7 @@ export default function App() {
 
           <Chapter
             id="agents"
+            minH="min-h-[70svh]"
             index="02"
             label="Agents"
             title="One recorded run of the agent team"
@@ -251,6 +252,7 @@ export default function App() {
 
           <Chapter
             id="discovery"
+            minH="min-h-[95svh]"
             index="03"
             label="Discovery"
             title="How quickly the answers turn up"
@@ -270,6 +272,7 @@ export default function App() {
 
           <Chapter
             id="chemistry"
+            minH="min-h-[95svh]"
             index="04"
             label="Chemistry"
             title="The answers, and how far each one sits from training"
@@ -283,6 +286,7 @@ export default function App() {
 
           <Chapter
             id="evidence"
+            minH="min-h-[95svh]"
             index="05"
             label="Evidence"
             title={`What had been published by ${cutoff}`}
@@ -293,6 +297,7 @@ export default function App() {
 
           <Chapter
             id="rigor"
+            minH="min-h-[110svh]"
             index="06"
             label="Rigor"
             title="Attempts to break the headline number"
@@ -306,6 +311,7 @@ export default function App() {
 
           <Chapter
             id="candidates"
+            minH="min-h-[95svh]"
             index="07"
             label="Candidates"
             title="What to send to a bee assay next"
@@ -316,6 +322,7 @@ export default function App() {
 
           <Chapter
             id="method"
+            minH="min-h-[150svh]"
             index="08"
             label="Method"
             title="How it is built, and what it should not be used for"
@@ -338,7 +345,7 @@ export default function App() {
 
 /** One section of the page: a numbered label, a plain title and one
  *  sentence, set like a paper's section head rather than a card. */
-function Chapter({ id, index, label, title, lede, children }) {
+function Chapter({ id, index, label, title, lede, minH = 'min-h-[80svh]', children }) {
   return (
     <section id={id} className="pt-20 sm:pt-28">
       <header className="mb-8 grid gap-x-10 gap-y-3 border-t border-wax/10 pt-5 md:grid-cols-[9rem_minmax(0,1fr)]">
@@ -352,7 +359,11 @@ function Chapter({ id, index, label, title, lede, children }) {
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-wax/60">{lede}</p>
         </div>
       </header>
-      <Suspense fallback={<div className="glass h-64 animate-pulse rounded-xl" />}>{children}</Suspense>
+      {/* The fallback reserves roughly the chapter's settled height, so a
+          judge scrolling during load is not thrown when the chunk lands. */}
+      <Suspense fallback={<div className={`glass rounded-xl border-t border-wax/10 ${minH}`} />}>
+        {children}
+      </Suspense>
     </section>
   );
 }
@@ -379,15 +390,15 @@ function Pipeline({ stage, stageIndex }) {
               />
             )}
             <div className="flex items-center gap-1.5">
-              <span className="cap-sm font-mono text-white/35">{index + 1}</span>
+              <span className="cap-sm font-mono text-white/60">{index + 1}</span>
               <Icon
                 className={`h-3.5 w-3.5 ${
-                  active ? 'text-hive-400' : done ? 'text-signal/70' : 'text-white/25'
+                  active ? 'text-hive-400' : done ? 'text-signal/70' : 'text-white/50'
                 }`}
               />
               <span
                 className={`text-xs font-medium ${
-                  active ? 'text-white' : done ? 'text-white/65' : 'text-white/35'
+                  active ? 'text-white' : done ? 'text-white/65' : 'text-white/60'
                 }`}
               >
                 {s.label}
@@ -501,7 +512,7 @@ function SpeedupPanel({ result, preview, budget, facts }) {
           )}
         </>
       ) : (
-        <p className="mt-3 text-center text-xs leading-relaxed text-white/35">
+        <p className="mt-3 text-center text-xs leading-relaxed text-white/60">
           Empty until you run the loop.
         </p>
       )}
@@ -667,7 +678,7 @@ function EvidencePanel({ evidence }) {
   return (
     <section className="glass lift rounded-xl p-5">
       <div className="flex items-center gap-2">
-        <BookOpen className="h-4 w-4 text-white/35" />
+        <BookOpen className="h-4 w-4 text-white/60" />
         <h3 className="cap font-mono text-white/45">
           Literature step, searched when you pressed run
         </h3>
@@ -687,7 +698,7 @@ function EvidencePanel({ evidence }) {
               rel="noreferrer"
               className="text-white/75 underline decoration-white/15 underline-offset-2 hover:text-hive-400"
               >{paper.title}</a>
-            <span className="ml-2 text-xs text-white/35">{paper.year}</span>
+            <span className="ml-2 text-xs text-white/60">{paper.year}</span>
           </motion.li>
         ))}
       </ul>

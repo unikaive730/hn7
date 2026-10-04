@@ -46,7 +46,7 @@ export function SpeedupDial({ speedup, found, total, budget, label = 'fewer assa
           cy="64"
           r="54"
           fill="none"
-          stroke="url(#dialGradient)"
+          stroke="var(--color-hive-400)"
           strokeWidth="10"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -54,16 +54,12 @@ export function SpeedupDial({ speedup, found, total, budget, label = 'fewer assa
           animate={{ strokeDashoffset: circumference * (1 - ratio) }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
         />
-        <defs>
-          <linearGradient id="dialGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#fbbf24" />
-            <stop offset="100%" stopColor="#34d399" />
-          </linearGradient>
-        </defs>
       </svg>
 
+      <p className="cap-sm absolute right-1 top-1 font-mono text-white/45">10× full</p>
+
       <div className="absolute grid place-items-center text-center">
-        <div className="text-[2.6rem] font-semibold leading-none text-hive-400">
+        <div className="font-serif-display text-[2.6rem] leading-none text-hive-400">
           <Counter value={speedup ?? 0} decimals={2} suffix="×" />
         </div>
         <div className="mt-1.5 cap max-w-[8rem] font-mono leading-tight text-white/50">{label}</div>

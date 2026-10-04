@@ -460,7 +460,7 @@ function RunChips({ runs, runId, onPick, total }) {
             </div>
             <div className="cap-sm text-white/45">
               {outcome(r, total)}
-              {r.model ? <span className="text-white/35"> · {r.model.replace(/^claude-/, '').replace(/-\d{8}$/, '')}</span> : null}
+              {r.model ? <span className="text-white/60"> · {r.model.replace(/^claude-/, '').replace(/-\d{8}$/, '')}</span> : null}
             </div>
           </button>
         );
@@ -511,7 +511,7 @@ function GateNote({ run, topology }) {
   }
   return (
     <div className="mt-2 flex flex-wrap items-start gap-x-2 gap-y-1 text-[13px] leading-relaxed text-white/55">
-      <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
+      <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/60" />
       <span className="min-w-0 flex-1">
         {text} A number in an agent's message is the agent's own text and may come from the
         model's memory. Only numbers inside a lab.* result came back from the lab tools.
@@ -749,7 +749,7 @@ function Controls({
               key={s}
               onClick={() => onSpeed(s)}
               className={`tap rounded px-2 py-1 transition ${
-                speed === s ? 'bg-white/10 text-white/85' : 'text-white/35 hover:text-white/60'
+                speed === s ? 'bg-white/10 text-white/85' : 'text-white/60 hover:text-white/60'
               }`}
             >
               {s}x
@@ -825,7 +825,7 @@ function Turn({ t, trim }) {
         <span className={t.failed ? 'text-warn/80' : ''}>
           {t.from_agent ?? 'sub-agent'} {t.failed ? 'failed' : 'replied'}: result in orchestrator inbox
         </span>
-        <span className="tabular text-white/25">+{t.t_rel.toFixed(0)}s</span>
+        <span className="tabular text-white/50">+{t.t_rel.toFixed(0)}s</span>
         <span className="h-px flex-1 bg-white/8" />
       </div>
     );
@@ -854,11 +854,11 @@ function Meta({ t, label, tone = 'text-white/40', korean = false }) {
       <span className="font-medium" style={{ color: HUE[t.agent] ?? '#aaa' }}>{t.agent}</span>
       <span className={tone}>{label}</span>
       {korean && (
-        <span className="rounded border border-white/10 px-1 text-white/35" title="Kept in the language the agent wrote it in">
+        <span className="rounded border border-white/10 px-1 text-white/60" title="Kept in the language the agent wrote it in">
           written in Korean
         </span>
       )}
-      <span className="tabular ml-auto text-white/25">+{t.t_rel.toFixed(0)}s</span>
+      <span className="tabular ml-auto text-white/50">+{t.t_rel.toFixed(0)}s</span>
     </div>
   );
 }
@@ -1076,7 +1076,7 @@ function Markdown({ text }) {
             <div key={i} className="space-y-0.5">
               {b.items.map((it, k) => (
                 <div key={k} className={`flex gap-1.5 ${it.depth ? 'pl-4' : ''}`}>
-                  <span className="shrink-0 font-mono text-white/30">{it.marker}</span>
+                  <span className="shrink-0 font-mono text-white/55">{it.marker}</span>
                   <span className="min-w-0">{inline(it.text)}</span>
                 </div>
               ))}
