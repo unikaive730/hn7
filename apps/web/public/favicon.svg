@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <clipPath id="abdomen"><ellipse cx="32" cy="39.5" rx="8" ry="12"/></clipPath>
+  </defs>
+  <path d="M32 4 56.2 18v28L32 60 7.8 46V18Z" fill="#fbbf24" stroke="#fbbf24" stroke-width="5" stroke-linejoin="round"/>
+  <ellipse cx="22" cy="25.5" rx="9.5" ry="5.4" transform="rotate(-30 22 25.5)" fill="#fff4cf" stroke="#0a0a0f" stroke-width="2.4"/>
+  <ellipse cx="42" cy="25.5" rx="9.5" ry="5.4" transform="rotate(30 42 25.5)" fill="#fff4cf" stroke="#0a0a0f" stroke-width="2.4"/>
+  <circle cx="32" cy="17.5" r="4.6" fill="#0a0a0f"/>
+  <ellipse cx="32" cy="27.5" rx="5.6" ry="5" fill="#0a0a0f"/>
+  <ellipse cx="32" cy="39.5" rx="8" ry="12" fill="#0a0a0f"/>
+  <g clip-path="url(#abdomen)" fill="#fbbf24">
+    <rect x="20" y="35" width="24" height="3.2"/>
+    <rect x="20" y="42" width="24" height="3.2"/>
+  </g>
+</svg>

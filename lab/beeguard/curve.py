@@ -30,6 +30,8 @@ def _cumulative_hits(order: np.ndarray, is_target: np.ndarray) -> list[int]:
 def curve(strategy: str, budget: int, cutoff_year: int = 2000) -> dict:
     """The agent's curve, with a random band to compare it against."""
     lab = get_lab(cutoff_year)
+    requested_budget = budget
+    budget = min(budget, len(lab.pool))
     order = lab.order(strategy, budget)
     agent = _cumulative_hits(order, lab.is_target)
 
@@ -56,6 +58,7 @@ def curve(strategy: str, budget: int, cutoff_year: int = 2000) -> dict:
     return {
         "strategy": strategy,
         "budget": budget,
+        "requested_budget": requested_budget,
         "targets": int(lab.is_target.sum()),
         "shuffles": SHUFFLES,
         "points": points,
@@ -70,6 +73,8 @@ def compare(budget: int = 40, cutoff_year: int = 2000) -> dict:
     found inside the same budget, against what random finds in that budget.
     """
     lab = get_lab(cutoff_year)
+    requested_budget = budget
+    budget = min(budget, len(lab.pool))
 
     rng = np.random.default_rng(0)
     random_found = []
@@ -96,6 +101,7 @@ def compare(budget: int = 40, cutoff_year: int = 2000) -> dict:
         )
     return {
         "budget": budget,
+        "requested_budget": requested_budget,
         "targets": int(lab.is_target.sum()),
         "random_median_found": random_median,
         "rows": rows,
@@ -123,6 +129,7 @@ def across_eras(budget: int = 30) -> dict:
                 "pool_molecules": facts["pool_molecules"],
                 "targets": facts["targets"],
                 "found": result["found"],
+                "budget": result["budget"],
                 "speedup": result["speedup"],
                 "holdout_gap": round(
                     lab.holdout()["seen_auroc"] - lab.holdout()["unseen_auroc"], 4

@@ -1,0 +1,2 @@
+# Preserve upstream snapshot bytes so manifest SHA256 checks work on Windows.
+lab/data/** -text

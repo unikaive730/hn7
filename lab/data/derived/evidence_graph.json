@@ -1,0 +1,3608 @@
+{
+ "cutoff_year": 2000,
+ "fetched_at": "2026-10-04T05:24:42+00:00",
+ "build_seconds": 70.0,
+ "literature": {
+  "name": "Europe PMC",
+  "url": "https://europepmc.org",
+  "fallback_from": "OpenAlex",
+  "fallback_reason": "{\"error\":\"Rate limit exceeded\",\"message\":\"Insufficient budget. This request has no API key, so it counts against the free daily budget shared by everyone on your network's IP address, and that budget "
+ },
+ "sources": [
+  {
+   "name": "OpenAlex",
+   "url": "https://openalex.org",
+   "requests": 1,
+   "used_for": "availability check"
+  },
+  {
+   "name": "Europe PMC",
+   "url": "https://europepmc.org",
+   "requests": 39,
+   "used_for": "records per year, most cited and earliest records, abstracts"
+  },
+  {
+   "name": "PubChem",
+   "url": "https://pubchem.ncbi.nlm.nih.gov",
+   "requests": 4,
+   "used_for": "common names for molecules listed under IUPAC-style names"
+  }
+ ],
+ "method": "Europe PMC REST search on TITLE and ABSTRACT fields; every matching record was paged in and counted by publication year, then sorted for the most cited and earliest.",
+ "match_field": "TITLE or ABSTRACT",
+ "bee_terms": "(bee OR bees OR honeybee OR honeybees OR apis OR pollinator OR pollinators)",
+ "errors": [
+  "OpenAlex: 429 {\"error\":\"Rate limit exceeded\",\"message\":\"Insufficient budget. This request has no API key, so it counts against the free daily budget shared by everyone on your network's IP address, and that budget is used up ($0 remai"
+ ],
+ "lab": {
+  "pool_size": 201,
+  "train_size": 834
+ },
+ "summary": {
+  "molecules": 13,
+  "molecules_with_data": 13,
+  "papers_before": 23,
+  "papers_after": 1342,
+  "share_after": 0.983,
+  "bee_papers_before": 4,
+  "bee_papers_after": 137,
+  "no_bee_paper_by_cutoff": 12,
+  "no_paper_by_cutoff": 10,
+  "median_first_bee_year": 2018,
+  "worst_rank": 28,
+  "median_rank": 12
+ },
+ "molecules": [
+  {
+   "id": "m:11458968",
+   "cid": 11458968,
+   "dataset_name": "Verbutin (Ref: MB-599)",
+   "label": "Verbutin",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(verbutin) OR ABSTRACT:(verbutin))",
+   "apistox_year": 2001,
+   "rank": 11,
+   "safe_score": 0.7,
+   "scaffold_seen": true,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-11455649",
+    "p:MED-20857748",
+    "p:MED-12701698",
+    "p:PAT-WO9851652",
+    "p:MED-10943470"
+   ],
+   "early_paper_ids": [
+    "p:PAT-WO9851652",
+    "p:MED-10943470"
+   ],
+   "all": {
+    "total": 9,
+    "retrieved": 9,
+    "by_year": {
+     "1998": 1,
+     "2000": 1,
+     "2001": 1,
+     "2003": 1,
+     "2006": 2,
+     "2009": 1,
+     "2010": 1,
+     "2011": 1
+    },
+    "before": 2,
+    "after": 7,
+    "first_year": 1998
+   },
+   "bee": {
+    "total": 0,
+    "retrieved": 0,
+    "by_year": {},
+    "before": 0,
+    "after": 0,
+    "first_year": null
+   }
+  },
+  {
+   "id": "m:91768",
+   "cid": 91768,
+   "dataset_name": "Tau-fluvalinate (Ref: SAN 527l)",
+   "label": "Tau-fluvalinate",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(\"tau-fluvalinate\" OR \"tau fluvalinate\") OR ABSTRACT:(\"tau-fluvalinate\" OR \"tau fluvalinate\"))",
+   "apistox_year": 2001,
+   "rank": 28,
+   "safe_score": 0.182,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-21775671",
+    "p:MED-23382869",
+    "p:MED-16686121",
+    "p:MED-22212860",
+    "p:MED-15750780"
+   ],
+   "early_paper_ids": [
+    "p:MED-9129300",
+    "p:PAT-WO9740691",
+    "p:PAT-FR2779032",
+    "p:PAT-WO9925188",
+    "p:PAT-WO9925187"
+   ],
+   "all": {
+    "total": 195,
+    "retrieved": 195,
+    "by_year": {
+     "1997": 2,
+     "1999": 4,
+     "2000": 6,
+     "2001": 3,
+     "2002": 2,
+     "2003": 7,
+     "2004": 1,
+     "2005": 4,
+     "2006": 6,
+     "2007": 2,
+     "2008": 7,
+     "2009": 4,
+     "2010": 3,
+     "2011": 4,
+     "2012": 11,
+     "2013": 10,
+     "2014": 8,
+     "2015": 7,
+     "2016": 10,
+     "2017": 7,
+     "2018": 12,
+     "2019": 7,
+     "2020": 14,
+     "2021": 18,
+     "2022": 8,
+     "2023": 8,
+     "2024": 4,
+     "2025": 10,
+     "2026": 6
+    },
+    "before": 12,
+    "after": 183,
+    "first_year": 1997
+   },
+   "bee": {
+    "total": 106,
+    "retrieved": 106,
+    "by_year": {
+     "2000": 4,
+     "2003": 1,
+     "2005": 2,
+     "2006": 3,
+     "2007": 1,
+     "2008": 1,
+     "2009": 2,
+     "2010": 1,
+     "2011": 1,
+     "2012": 6,
+     "2013": 6,
+     "2014": 1,
+     "2015": 5,
+     "2016": 7,
+     "2017": 4,
+     "2018": 6,
+     "2019": 4,
+     "2020": 13,
+     "2021": 15,
+     "2022": 7,
+     "2023": 6,
+     "2024": 2,
+     "2025": 6,
+     "2026": 2
+    },
+    "before": 4,
+    "after": 102,
+    "first_year": 2000
+   }
+  },
+  {
+   "id": "m:10157484",
+   "cid": 10157484,
+   "dataset_name": "Chromafenozide (Ref: ANS 118)",
+   "label": "Chromafenozide",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(chromafenozide) OR ABSTRACT:(chromafenozide))",
+   "apistox_year": 2001,
+   "rank": 1,
+   "safe_score": 0.93,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-29735281",
+    "p:MED-16399410",
+    "p:MED-24444901",
+    "p:MED-21660414",
+    "p:MED-19545627"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 33,
+    "retrieved": 33,
+    "by_year": {
+     "2002": 1,
+     "2003": 2,
+     "2005": 2,
+     "2009": 6,
+     "2010": 2,
+     "2011": 3,
+     "2012": 5,
+     "2014": 1,
+     "2017": 1,
+     "2018": 2,
+     "2019": 1,
+     "2021": 1,
+     "2022": 2,
+     "2024": 1,
+     "2025": 1,
+     "2026": 2
+    },
+    "before": 0,
+    "after": 33,
+    "first_year": 2002
+   },
+   "bee": {
+    "total": 0,
+    "retrieved": 0,
+    "by_year": {},
+    "before": 0,
+    "after": 0,
+    "first_year": null
+   }
+  },
+  {
+   "id": "m:177863",
+   "cid": 177863,
+   "dataset_name": "2,2-Dimethylbutanoic acid, 3-(2,4-Dichlorophenyl)-2-oxo-1-oxaspiro[4.5]dec-3-en-4-yl ester",
+   "label": "Spirodiclofen",
+   "term_from": "PubChem synonym",
+   "query": "(TITLE:(spirodiclofen) OR ABSTRACT:(spirodiclofen))",
+   "apistox_year": 2003,
+   "rank": 12,
+   "safe_score": 0.684,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-15625668",
+    "p:MED-15176730",
+    "p:MED-15657956",
+    "p:MED-23523619",
+    "p:MED-19170251"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 188,
+    "retrieved": 188,
+    "by_year": {
+     "2003": 1,
+     "2004": 1,
+     "2005": 3,
+     "2007": 2,
+     "2008": 6,
+     "2009": 27,
+     "2010": 12,
+     "2011": 5,
+     "2012": 9,
+     "2013": 8,
+     "2014": 3,
+     "2015": 8,
+     "2016": 5,
+     "2017": 4,
+     "2018": 7,
+     "2019": 7,
+     "2020": 9,
+     "2021": 12,
+     "2022": 12,
+     "2023": 13,
+     "2024": 12,
+     "2025": 11,
+     "2026": 11
+    },
+    "before": 0,
+    "after": 188,
+    "first_year": 2003
+   },
+   "bee": {
+    "total": 6,
+    "retrieved": 6,
+    "by_year": {
+     "2012": 1,
+     "2018": 1,
+     "2020": 1,
+     "2022": 1,
+     "2023": 2
+    },
+    "before": 0,
+    "after": 6,
+    "first_year": 2012
+   }
+  },
+  {
+   "id": "m:9828359",
+   "cid": 9828359,
+   "dataset_name": "Noviflumuron",
+   "label": "Noviflumuron",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(noviflumuron) OR ABSTRACT:(noviflumuron))",
+   "apistox_year": 2004,
+   "rank": 2,
+   "safe_score": 0.916,
+   "scaffold_seen": true,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-16539144",
+    "p:MED-17849891",
+    "p:MED-22606824",
+    "p:MED-30010998",
+    "p:MED-24772556"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 47,
+    "retrieved": 47,
+    "by_year": {
+     "2004": 1,
+     "2005": 7,
+     "2006": 6,
+     "2007": 3,
+     "2008": 3,
+     "2009": 1,
+     "2010": 3,
+     "2011": 2,
+     "2012": 1,
+     "2013": 1,
+     "2014": 2,
+     "2016": 1,
+     "2017": 2,
+     "2018": 5,
+     "2021": 3,
+     "2022": 1,
+     "2023": 1,
+     "2024": 1,
+     "2025": 2,
+     "2026": 1
+    },
+    "before": 0,
+    "after": 47,
+    "first_year": 2004
+   },
+   "bee": {
+    "total": 0,
+    "retrieved": 0,
+    "by_year": {},
+    "before": 0,
+    "after": 0,
+    "first_year": null
+   }
+  },
+  {
+   "id": "m:10275455",
+   "cid": 10275455,
+   "dataset_name": "Bistrifluron (Ref: DBI-3204)",
+   "label": "Bistrifluron",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(bistrifluron) OR ABSTRACT:(bistrifluron))",
+   "apistox_year": 2005,
+   "rank": 10,
+   "safe_score": 0.728,
+   "scaffold_seen": true,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-20429458",
+    "p:MED-30758728",
+    "p:MED-16937693",
+    "p:MED-21510212",
+    "p:MED-33838703"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 20,
+    "retrieved": 20,
+    "by_year": {
+     "2002": 1,
+     "2005": 1,
+     "2006": 1,
+     "2008": 1,
+     "2009": 4,
+     "2010": 1,
+     "2011": 2,
+     "2015": 1,
+     "2016": 1,
+     "2017": 2,
+     "2019": 1,
+     "2021": 2,
+     "2022": 1,
+     "2025": 1
+    },
+    "before": 0,
+    "after": 20,
+    "first_year": 2002
+   },
+   "bee": {
+    "total": 0,
+    "retrieved": 0,
+    "by_year": {},
+    "before": 0,
+    "after": 0,
+    "first_year": null
+   }
+  },
+  {
+   "id": "m:9834513",
+   "cid": 9834513,
+   "dataset_name": "N-(Cyanomethyl)-4-(trifluoromethyl)-3-pyridinecarboxamide",
+   "label": "Flonicamid",
+   "term_from": "PubChem synonym",
+   "query": "(TITLE:(flonicamid) OR ABSTRACT:(flonicamid))",
+   "apistox_year": 2006,
+   "rank": 5,
+   "safe_score": 0.782,
+   "scaffold_seen": true,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-17659536",
+    "p:MED-28347703",
+    "p:MED-30125850",
+    "p:MED-34062434",
+    "p:MED-25828251"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 286,
+    "retrieved": 286,
+    "by_year": {
+     "2005": 2,
+     "2006": 5,
+     "2007": 9,
+     "2008": 1,
+     "2009": 10,
+     "2010": 6,
+     "2011": 10,
+     "2012": 8,
+     "2013": 4,
+     "2014": 7,
+     "2015": 7,
+     "2016": 11,
+     "2017": 11,
+     "2018": 17,
+     "2019": 8,
+     "2020": 15,
+     "2021": 24,
+     "2022": 19,
+     "2023": 22,
+     "2024": 26,
+     "2025": 39,
+     "2026": 25
+    },
+    "before": 0,
+    "after": 286,
+    "first_year": 2005
+   },
+   "bee": {
+    "total": 13,
+    "retrieved": 13,
+    "by_year": {
+     "2009": 1,
+     "2013": 2,
+     "2015": 1,
+     "2016": 1,
+     "2020": 2,
+     "2022": 3,
+     "2024": 1,
+     "2025": 1,
+     "2026": 1
+    },
+    "before": 0,
+    "after": 13,
+    "first_year": 2009
+   }
+  },
+  {
+   "id": "m:18772482",
+   "cid": 18772482,
+   "dataset_name": "Cyenopyrafen (Ref: NC-512 )",
+   "label": "Cyenopyrafen",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(cyenopyrafen) OR ABSTRACT:(cyenopyrafen))",
+   "apistox_year": 2007,
+   "rank": 18,
+   "safe_score": 0.604,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-26363294",
+    "p:MED-26118668",
+    "p:MED-23997025",
+    "p:MED-30195393",
+    "p:MED-32442626"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 42,
+    "retrieved": 42,
+    "by_year": {
+     "2007": 1,
+     "2009": 2,
+     "2010": 2,
+     "2011": 2,
+     "2014": 2,
+     "2015": 2,
+     "2016": 2,
+     "2017": 1,
+     "2018": 1,
+     "2019": 1,
+     "2020": 1,
+     "2021": 3,
+     "2022": 4,
+     "2023": 6,
+     "2024": 3,
+     "2026": 9
+    },
+    "before": 0,
+    "after": 42,
+    "first_year": 2007
+   },
+   "bee": {
+    "total": 1,
+    "retrieved": 1,
+    "by_year": {
+     "2024": 1
+    },
+    "before": 0,
+    "after": 1,
+    "first_year": 2024
+   }
+  },
+  {
+   "id": "m:9969573",
+   "cid": 9969573,
+   "dataset_name": "Carbonic acid, cis-3-(2,5-Dimethylphenyl)-8-methoxy-2-oxo-1-azaspiro[4.5]dec-3-en-4-yl ethyl ester",
+   "label": "Spirotetramat",
+   "term_from": "PubChem synonym",
+   "query": "(TITLE:(spirotetramat) OR ABSTRACT:(spirotetramat))",
+   "apistox_year": 2009,
+   "rank": 7,
+   "safe_score": 0.754,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:AGR-IND44270538",
+    "p:MED-23523619",
+    "p:MED-25281882",
+    "p:MED-20540074",
+    "p:MED-26778436"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 340,
+    "retrieved": 340,
+    "by_year": {
+     "2009": 6,
+     "2010": 8,
+     "2011": 8,
+     "2012": 16,
+     "2013": 9,
+     "2014": 12,
+     "2015": 18,
+     "2016": 17,
+     "2017": 24,
+     "2018": 18,
+     "2019": 17,
+     "2020": 18,
+     "2021": 22,
+     "2022": 33,
+     "2023": 26,
+     "2024": 26,
+     "2025": 44,
+     "2026": 18
+    },
+    "before": 0,
+    "after": 340,
+    "first_year": 2009
+   },
+   "bee": {
+    "total": 6,
+    "retrieved": 6,
+    "by_year": {
+     "2013": 1,
+     "2020": 2,
+     "2022": 2,
+     "2025": 1
+    },
+    "before": 0,
+    "after": 6,
+    "first_year": 2013
+   }
+  },
+  {
+   "id": "m:44631173",
+   "cid": 44631173,
+   "dataset_name": "Dihydroazadirachtin",
+   "label": "Dihydroazadirachtin",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(dihydroazadirachtin) OR ABSTRACT:(dihydroazadirachtin))",
+   "apistox_year": 2010,
+   "rank": 27,
+   "safe_score": 0.25,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-18621343",
+    "p:MED-16847818",
+    "p:MED-11276064",
+    "p:AGR-IND90005679",
+    "p:AGR-IND44562343"
+   ],
+   "early_paper_ids": [
+    "p:AGR-IND44562343",
+    "p:AGR-IND90005679",
+    "p:AGR-IND44562577",
+    "p:AGR-IND44562575",
+    "p:ETH-295287"
+   ],
+   "all": {
+    "total": 12,
+    "retrieved": 12,
+    "by_year": {
+     "1989": 2,
+     "1990": 2,
+     "1993": 1,
+     "1994": 2,
+     "1995": 1,
+     "1996": 1,
+     "2001": 1,
+     "2005": 1,
+     "2006": 1
+    },
+    "before": 9,
+    "after": 3,
+    "first_year": 1989
+   },
+   "bee": {
+    "total": 0,
+    "retrieved": 0,
+    "by_year": {},
+    "before": 0,
+    "after": 0,
+    "first_year": null
+   }
+  },
+  {
+   "id": "m:76325977",
+   "cid": 76325977,
+   "dataset_name": "Guadipyr",
+   "label": "Guadipyr",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(guadipyr) OR ABSTRACT:(guadipyr))",
+   "apistox_year": 2012,
+   "rank": 19,
+   "safe_score": 0.604,
+   "scaffold_seen": true,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-29096261",
+    "p:MED-25594687",
+    "p:MED-24075643",
+    "p:MED-34126519",
+    "p:MED-32200280"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 10,
+    "retrieved": 10,
+    "by_year": {
+     "2013": 1,
+     "2015": 1,
+     "2018": 2,
+     "2019": 1,
+     "2020": 1,
+     "2021": 1,
+     "2024": 2,
+     "2026": 1
+    },
+    "before": 0,
+    "after": 10,
+    "first_year": 2013
+   },
+   "bee": {
+    "total": 3,
+    "retrieved": 3,
+    "by_year": {
+     "2018": 1,
+     "2020": 1,
+     "2024": 1
+    },
+    "before": 0,
+    "after": 3,
+    "first_year": 2018
+   }
+  },
+  {
+   "id": "m:11496052",
+   "cid": 11496052,
+   "dataset_name": "Cyflumetofen (Ref: OK-5101)",
+   "label": "Cyflumetofen",
+   "term_from": "ApisTox name",
+   "query": "(TITLE:(cyflumetofen) OR ABSTRACT:(cyflumetofen))",
+   "apistox_year": 2012,
+   "rank": 14,
+   "safe_score": 0.662,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-27932274",
+    "p:MED-23382003",
+    "p:MED-23768653",
+    "p:MED-26118668",
+    "p:MED-23997025"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 108,
+    "retrieved": 108,
+    "by_year": {
+     "2007": 1,
+     "2009": 2,
+     "2010": 1,
+     "2011": 4,
+     "2012": 3,
+     "2013": 3,
+     "2014": 4,
+     "2015": 1,
+     "2016": 8,
+     "2017": 2,
+     "2018": 4,
+     "2019": 4,
+     "2020": 11,
+     "2021": 11,
+     "2022": 9,
+     "2023": 10,
+     "2024": 11,
+     "2025": 5,
+     "2026": 14
+    },
+    "before": 0,
+    "after": 108,
+    "first_year": 2007
+   },
+   "bee": {
+    "total": 3,
+    "retrieved": 3,
+    "by_year": {
+     "2023": 1,
+     "2024": 2
+    },
+    "before": 0,
+    "after": 3,
+    "first_year": 2023
+   }
+  },
+  {
+   "id": "m:54589430",
+   "cid": 54589430,
+   "dataset_name": "Cyclopropanecarboxylic acid, [(3S,4R,4aR,6S,6aS,12R,12aS,12bS)-3-[(Cyclopropylcarbonyl)oxy]-1,3,4,4a,5,6,6a,12,12a,12b-decahydro-6,12-dihydroxy-4,6a,12b-trimethyl-11-oxo-9-(3-pyridinyl)-2H,11H-naphtho[2,1-b]pyrano[3,4-e]pyran-4-yl]methyl ester",
+   "label": "Afidopyropen",
+   "term_from": "PubChem synonym",
+   "query": "(TITLE:(afidopyropen) OR ABSTRACT:(afidopyropen))",
+   "apistox_year": 2017,
+   "rank": 24,
+   "safe_score": 0.5,
+   "scaffold_seen": false,
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-28347703",
+    "p:MED-34955174",
+    "p:MED-37717404",
+    "p:MED-35181691",
+    "p:MED-34202923"
+   ],
+   "early_paper_ids": [],
+   "all": {
+    "total": 75,
+    "retrieved": 75,
+    "by_year": {
+     "2017": 2,
+     "2018": 3,
+     "2019": 3,
+     "2020": 4,
+     "2021": 7,
+     "2022": 9,
+     "2023": 18,
+     "2024": 13,
+     "2025": 9,
+     "2026": 7
+    },
+    "before": 0,
+    "after": 75,
+    "first_year": 2017
+   },
+   "bee": {
+    "total": 3,
+    "retrieved": 3,
+    "by_year": {
+     "2020": 1,
+     "2022": 1,
+     "2023": 1
+    },
+    "before": 0,
+    "after": 3,
+    "first_year": 2020
+   }
+  }
+ ],
+ "concepts": [
+  {
+   "id": "c:neonicotinoid",
+   "label": "Neonicotinoids",
+   "pattern": "neonicotinoid",
+   "query": "(TITLE:(neonicotinoid OR neonicotinoids) OR ABSTRACT:(neonicotinoid OR neonicotinoids))",
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-20565065",
+    "p:MED-25233913",
+    "p:MED-15822177",
+    "p:MED-25454246"
+   ],
+   "total": 5490,
+   "retrieved": 5490,
+   "by_year": {
+    "1996": 1,
+    "1997": 2,
+    "1998": 1,
+    "1999": 1,
+    "2000": 8,
+    "2001": 21,
+    "2002": 15,
+    "2003": 28,
+    "2004": 25,
+    "2005": 51,
+    "2006": 80,
+    "2007": 75,
+    "2008": 109,
+    "2009": 114,
+    "2010": 113,
+    "2011": 109,
+    "2012": 107,
+    "2013": 147,
+    "2014": 132,
+    "2015": 176,
+    "2016": 197,
+    "2017": 252,
+    "2018": 310,
+    "2019": 311,
+    "2020": 357,
+    "2021": 399,
+    "2022": 417,
+    "2023": 436,
+    "2024": 473,
+    "2025": 543,
+    "2026": 479
+   },
+   "before": 13,
+   "after": 5476
+  },
+  {
+   "id": "c:pollinator",
+   "label": "Pollinator safety",
+   "pattern": "pollinat",
+   "query": "(TITLE:(pollinator OR pollinators) OR ABSTRACT:(pollinator OR pollinators)) AND (TITLE:(safety OR \"risk assessment\") OR ABSTRACT:(safety OR \"risk assessment\"))",
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-22350105",
+    "p:MED-24718419",
+    "p:MED-25223353",
+    "p:MED-22253863"
+   ],
+   "total": 351,
+   "retrieved": 351,
+   "by_year": {
+    "2002": 1,
+    "2003": 1,
+    "2005": 1,
+    "2006": 1,
+    "2008": 3,
+    "2009": 1,
+    "2010": 4,
+    "2011": 3,
+    "2012": 7,
+    "2013": 1,
+    "2014": 8,
+    "2015": 14,
+    "2016": 14,
+    "2017": 14,
+    "2018": 8,
+    "2019": 7,
+    "2020": 13,
+    "2021": 28,
+    "2022": 29,
+    "2023": 33,
+    "2024": 38,
+    "2025": 53,
+    "2026": 69
+   },
+   "before": 0,
+   "after": 351
+  },
+  {
+   "id": "c:bee_acute",
+   "label": "Honey bee acute toxicity",
+   "pattern": "honey ?bees?|apis mellifera",
+   "query": "(TITLE:(\"honey bee\" OR honeybee OR \"Apis mellifera\") OR ABSTRACT:(\"honey bee\" OR honeybee OR \"Apis mellifera\")) AND (TITLE:(\"acute toxicity\" OR LD50) OR ABSTRACT:(\"acute toxicity\" OR LD50))",
+   "ok": true,
+   "top_paper_ids": [
+    "p:AGR-IND43621255",
+    "p:MED-28663503",
+    "p:MED-11699773",
+    "p:MED-24435220"
+   ],
+   "total": 202,
+   "retrieved": 202,
+   "by_year": {
+    "1975": 1,
+    "1979": 1,
+    "1989": 1,
+    "1993": 1,
+    "1994": 1,
+    "1998": 1,
+    "2000": 1,
+    "2001": 3,
+    "2002": 2,
+    "2003": 1,
+    "2004": 1,
+    "2005": 4,
+    "2006": 2,
+    "2008": 2,
+    "2009": 3,
+    "2010": 2,
+    "2011": 2,
+    "2012": 5,
+    "2013": 5,
+    "2014": 8,
+    "2015": 7,
+    "2016": 10,
+    "2017": 8,
+    "2018": 9,
+    "2019": 7,
+    "2020": 8,
+    "2021": 9,
+    "2022": 18,
+    "2023": 16,
+    "2024": 17,
+    "2025": 16,
+    "2026": 30
+   },
+   "before": 7,
+   "after": 195
+  },
+  {
+   "id": "c:selectivity",
+   "label": "Insecticide selectivity",
+   "pattern": "selectiv",
+   "query": "(TITLE:(insecticide OR insecticides) OR ABSTRACT:(insecticide OR insecticides)) AND (TITLE:(selectivity) OR ABSTRACT:(selectivity))",
+   "ok": true,
+   "top_paper_ids": [
+    "p:MED-12208819",
+    "p:MED-16516322",
+    "p:MED-23317040",
+    "p:MED-24855024"
+   ],
+   "total": 763,
+   "retrieved": 763,
+   "by_year": {
+    "1963": 1,
+    "1970": 1,
+    "1971": 2,
+    "1976": 2,
+    "1980": 1,
+    "1982": 3,
+    "1983": 2,
+    "1984": 1,
+    "1986": 3,
+    "1987": 1,
+    "1988": 2,
+    "1989": 1,
+    "1990": 4,
+    "1991": 5,
+    "1992": 2,
+    "1993": 4,
+    "1994": 3,
+    "1995": 2,
+    "1996": 6,
+    "1997": 4,
+    "1998": 2,
+    "1999": 5,
+    "2000": 7,
+    "2001": 11,
+    "2002": 12,
+    "2003": 7,
+    "2004": 10,
+    "2005": 14,
+    "2006": 16,
+    "2007": 13,
+    "2008": 19,
+    "2009": 15,
+    "2010": 23,
+    "2011": 12,
+    "2012": 16,
+    "2013": 25,
+    "2014": 14,
+    "2015": 25,
+    "2016": 28,
+    "2017": 29,
+    "2018": 42,
+    "2019": 27,
+    "2020": 40,
+    "2021": 50,
+    "2022": 48,
+    "2023": 36,
+    "2024": 47,
+    "2025": 57,
+    "2026": 63
+   },
+   "before": 64,
+   "after": 699
+  }
+ ],
+ "papers": [
+  {
+   "pid": "MED-11455649",
+   "title": "Comparative evaluation of new synergists containing a butynyl-type synergophore group and piperonyl butoxide derivatives",
+   "year": 2001,
+   "cited_by": 10,
+   "doi": "10.1002/1526-4998(200102)57:2<186::aid-ps290>3.0.co;2-z",
+   "venue": "Pest Manag Sci",
+   "first_author": "Pap L",
+   "id": "p:MED-11455649",
+   "found_by": [
+    "m:11458968"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:11458968"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-20857748",
+   "title": "Laboratory evaluation of verbutin as a synergist of acaricides against larvae of Rhipicephalus (Boophilus) microplus (Acari: Ixodidae)",
+   "year": 2010,
+   "cited_by": 10,
+   "doi": "10.1603/ec09329",
+   "venue": "J Econ Entomol",
+   "first_author": "Li AY",
+   "id": "p:MED-20857748",
+   "found_by": [
+    "m:11458968"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:11458968"
+   ],
+   "mentions": [
+    "m:11458968"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-12701698",
+   "title": "Structure-activity relationship study of alkynyl ether insecticide synergists and the development of MB-599 (verbutin)",
+   "year": 2003,
+   "cited_by": 6,
+   "doi": "10.1002/ps.644",
+   "venue": "Pest Manag Sci",
+   "first_author": "Bertók B",
+   "id": "p:MED-12701698",
+   "found_by": [
+    "m:11458968"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:11458968"
+   ],
+   "mentions": [
+    "m:11458968",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "PAT-WO9851652",
+   "title": "PESTICIDE COMPOUNDS, COMPOSITIONS AND PROCESS FOR THE PREPARATION THEREOF",
+   "year": 1998,
+   "cited_by": 0,
+   "doi": null,
+   "venue": null,
+   "first_author": "ARVAI GEZA",
+   "id": "p:PAT-WO9851652",
+   "found_by": [
+    "m:11458968"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:11458968"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "MED-10943470",
+   "title": "Analytical and biological data to the environmental-toxicological behaviour of Verbutin pesticide",
+   "year": 2000,
+   "cited_by": 0,
+   "doi": null,
+   "venue": "Cent Eur J Public Health",
+   "first_author": "Halász-Laky V",
+   "id": "p:MED-10943470",
+   "found_by": [
+    "m:11458968"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:11458968"
+   ],
+   "mentions": [
+    "m:11458968"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "MED-21775671",
+   "title": "CYP9Q-mediated detoxification of acaricides in the honey bee (Apis mellifera)",
+   "year": 2011,
+   "cited_by": 221,
+   "doi": "10.1073/pnas.1109535108",
+   "venue": "Proc Natl Acad Sci U S A",
+   "first_author": "Mao W",
+   "id": "p:MED-21775671",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "m:91768",
+    "c:pollinator",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-23382869",
+   "title": "Acaricide, fungicide and drug interactions in honey bees (Apis mellifera)",
+   "year": 2013,
+   "cited_by": 207,
+   "doi": "10.1371/journal.pone.0054092",
+   "venue": "PLoS One",
+   "first_author": "Johnson RM",
+   "id": "p:MED-23382869",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "m:91768",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-16686121",
+   "title": "A survey of pesticide residues in pollen loads collected by honey bees in France",
+   "year": 2006,
+   "cited_by": 200,
+   "doi": "10.1603/0022-0493-99.2.253",
+   "venue": "J Econ Entomol",
+   "first_author": "Chauzat MP",
+   "id": "p:MED-16686121",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "m:91768",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-22212860",
+   "title": "Direct effect of acaricides on pathogen loads and gene expression levels in honey bees Apis mellifera",
+   "year": 2012,
+   "cited_by": 175,
+   "doi": "10.1016/j.jinsphys.2011.12.011",
+   "venue": "J Insect Physiol",
+   "first_author": "Boncristiani H",
+   "id": "p:MED-22212860",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "m:91768",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-15750780",
+   "title": "Comparative sublethal toxicity of nine pesticides on olfactory learning performances of the honeybee Apis mellifera",
+   "year": 2005,
+   "cited_by": 171,
+   "doi": "10.1007/s00244-003-0262-7",
+   "venue": "Arch Environ Contam Toxicol",
+   "first_author": "Decourtye A",
+   "id": "p:MED-15750780",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "m:91768",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-9129300",
+   "title": "Clean-up of aqueous acetone vegetable extracts by solid-matrix partition for pyrethroid residue determination by gas chromatography-electron-capture detection",
+   "year": 1997,
+   "cited_by": 7,
+   "doi": "10.1016/s0021-9673(96)01007-2",
+   "venue": "J Chromatogr A",
+   "first_author": "Di Muccio A",
+   "id": "p:MED-9129300",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:91768"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "PAT-WO9740691",
+   "title": "PESTICIDAL COMPOSITION",
+   "year": 1997,
+   "cited_by": 0,
+   "doi": null,
+   "venue": null,
+   "first_author": "SENN Robert",
+   "id": "p:PAT-WO9740691",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:91768"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "PAT-FR2779032",
+   "title": "Pesticide composition with synergistic activity",
+   "year": 1999,
+   "cited_by": 0,
+   "doi": null,
+   "venue": null,
+   "first_author": "SAITO SHIGERU.",
+   "id": "p:PAT-FR2779032",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:91768"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "PAT-WO9925188",
+   "title": "PESTICIDAL COMPOSITIONS COMPRISING ABAMECTIN",
+   "year": 1999,
+   "cited_by": 0,
+   "doi": null,
+   "venue": null,
+   "first_author": "BALL Christopher Thomas.",
+   "id": "p:PAT-WO9925188",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:91768"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "PAT-WO9925187",
+   "title": "PESTICIDAL COMPOSITIONS OF EMAMECTIN",
+   "year": 1999,
+   "cited_by": 0,
+   "doi": null,
+   "venue": null,
+   "first_author": "ARSLAN-BIR Martine.",
+   "id": "p:PAT-WO9925187",
+   "found_by": [
+    "m:91768"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:91768"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "MED-29735281",
+   "title": "Simultaneous determination of neonicotinoid insecticides and insect growth regulators residues in honey using LC-MS/MS with anion exchanger-disposable pipette extraction",
+   "year": 2018,
+   "cited_by": 61,
+   "doi": "10.1016/j.chroma.2018.05.003",
+   "venue": "J Chromatogr A",
+   "first_author": "Song S",
+   "id": "p:MED-29735281",
+   "found_by": [
+    "m:10157484"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "m:10157484",
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-16399410",
+   "title": "Nonsteroidal ecdysone agonists",
+   "year": 2005,
+   "cited_by": 58,
+   "doi": "10.1016/s0083-6729(05)73005-3",
+   "venue": "Vitam Horm",
+   "first_author": "Nakagawa Y.",
+   "id": "p:MED-16399410",
+   "found_by": [
+    "m:10157484"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:10157484",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-24444901",
+   "title": "Residues, dissipation and safety evaluation of chromafenozide in strawberry under open field conditions",
+   "year": 2014,
+   "cited_by": 43,
+   "doi": "10.1016/j.foodchem.2013.11.110",
+   "venue": "Food Chem",
+   "first_author": "Malhat F",
+   "id": "p:MED-24444901",
+   "found_by": [
+    "m:10157484"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:10157484"
+   ],
+   "mentions": [
+    "m:10157484"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-21660414",
+   "title": "Residue analysis of four diacylhydrazine insecticides in fruits and vegetables by Quick, Easy, Cheap, Effective, Rugged, and Safe (QuEChERS) method using ultra-performance liquid chromatography coupled to tandem mass spectrometry",
+   "year": 2011,
+   "cited_by": 32,
+   "doi": "10.1007/s00216-011-5148-3",
+   "venue": "Anal Bioanal Chem",
+   "first_author": "Liu X",
+   "id": "p:MED-21660414",
+   "found_by": [
+    "m:10157484"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:10157484"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-19545627",
+   "title": "Towards Coleoptera-specific high-throughput screening systems for compounds with ecdysone activity: development of EcR reporter assays using weevil (Anthonomus grandis)-derived cell lines and in silico analysis of ligand binding to A. grandis EcR ligand-binding pocket",
+   "year": 2009,
+   "cited_by": 26,
+   "doi": "10.1016/j.ibmb.2009.06.003",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Soin T",
+   "id": "p:MED-19545627",
+   "found_by": [
+    "m:10157484"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:10157484"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-15625668",
+   "title": "Acaricide mode of action",
+   "year": 2005,
+   "cited_by": 166,
+   "doi": "10.1002/ps.994",
+   "venue": "Pest Manag Sci",
+   "first_author": "Dekeyser MA.",
+   "id": "p:MED-15625668",
+   "found_by": [
+    "m:177863"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:177863"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-15176730",
+   "title": "Genetic analysis and cross-resistance spectrum of a laboratory-selected chlorfenapyr resistant strain of two-spotted spider mite (Acari: Tetranychidae)",
+   "year": 2004,
+   "cited_by": 111,
+   "doi": "10.1023/b:appa.0000023240.01937.6d",
+   "venue": "Exp Appl Acarol",
+   "first_author": "Van Leeuwen T",
+   "id": "p:MED-15176730",
+   "found_by": [
+    "m:177863"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:177863"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-15657956",
+   "title": "Comparative acaricide susceptibility and detoxifying enzyme activities in field-collected resistant and susceptible strains of Tetranychus urticae",
+   "year": 2005,
+   "cited_by": 110,
+   "doi": "10.1002/ps.1001",
+   "venue": "Pest Manag Sci",
+   "first_author": "Van Leeuwen T",
+   "id": "p:MED-15657956",
+   "found_by": [
+    "m:177863"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:177863"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-23523619",
+   "title": "Molecular analysis of resistance to acaricidal spirocyclic tetronic acids in Tetranychus urticae: CYP392E10 metabolizes spirodiclofen, but not its corresponding enol",
+   "year": 2013,
+   "cited_by": 108,
+   "doi": "10.1016/j.ibmb.2013.03.007",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Demaeght P",
+   "id": "p:MED-23523619",
+   "found_by": [
+    "m:177863",
+    "m:9969573"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:177863"
+   ],
+   "mentions": [
+    "m:177863",
+    "m:9969573"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-19170251",
+   "title": "Genetic and biochemical analysis of a laboratory-selected spirodiclofen-resistant strain of Tetranychus urticae Koch (Acari: Tetranychidae)",
+   "year": 2009,
+   "cited_by": 82,
+   "doi": "10.1002/ps.1698",
+   "venue": "Pest Manag Sci",
+   "first_author": "Van Pottelberge S",
+   "id": "p:MED-19170251",
+   "found_by": [
+    "m:177863"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:177863"
+   ],
+   "mentions": [
+    "m:177863",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-16539144",
+   "title": "Response of the Formosan subterranean termites (Isoptera: Rhinotermitidae) to baits or nonrepellent termiticides in extended foraging arenas",
+   "year": 2005,
+   "cited_by": 57,
+   "doi": "10.1603/0022-0493-98.6.2143",
+   "venue": "J Econ Entomol",
+   "first_author": "Su NY.",
+   "id": "p:MED-16539144",
+   "found_by": [
+    "m:9828359"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:9828359"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-17849891",
+   "title": "Evaluation of treatment success and patterns of reinfestation of the Formosan subterranean termite (Isoptera: Rhinotermitidae)",
+   "year": 2007,
+   "cited_by": 27,
+   "doi": "10.1603/0022-0493(2007)100[1370:eotsap]2.0.co;2",
+   "venue": "J Econ Entomol",
+   "first_author": "Husseneder C",
+   "id": "p:MED-17849891",
+   "found_by": [
+    "m:9828359"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:9828359"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-22606824",
+   "title": "Elimination of subterranean termite (Isoptera: Rhinotermitidae) colonies using a refined cellulose bait matrix containing noviflumuron when monitored and replenished quarterly",
+   "year": 2012,
+   "cited_by": 23,
+   "doi": "10.1603/ec11027",
+   "venue": "J Econ Entomol",
+   "first_author": "Eger JE",
+   "id": "p:MED-22606824",
+   "found_by": [
+    "m:9828359"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:9828359"
+   ],
+   "mentions": [
+    "m:9828359"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-30010998",
+   "title": "Comparative Impact of Chitin Synthesis Inhibitor Baits and Non-repellent Liquid Termiticides on Subterranean Termite Colonies Over Foraging Distances: Colony Elimination Versus Localized Termite Exclusion",
+   "year": 2018,
+   "cited_by": 20,
+   "doi": "10.1093/jee/toy210",
+   "venue": "J Econ Entomol",
+   "first_author": "Chouvenc T.",
+   "id": "p:MED-30010998",
+   "found_by": [
+    "m:9828359"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:9828359"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-24772556",
+   "title": "Behavioral and histological changes in the Formosan subterranean termite (Isoptera: Rhinotermitidae) induced by the chitin synthesis inhibitor noviflumuron",
+   "year": 2014,
+   "cited_by": 19,
+   "doi": "10.1603/ec13254",
+   "venue": "J Econ Entomol",
+   "first_author": "Xing L",
+   "id": "p:MED-24772556",
+   "found_by": [
+    "m:9828359"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:9828359"
+   ],
+   "mentions": [
+    "m:9828359"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-20429458",
+   "title": "Rapid elimination of field colonies of subterranean termites (Isoptera: Rhinotermitidae) using bistrifluron solid bait pellets",
+   "year": 2010,
+   "cited_by": 20,
+   "doi": "10.1603/ec09067",
+   "venue": "J Econ Entomol",
+   "first_author": "Evans TA.",
+   "id": "p:MED-20429458",
+   "found_by": [
+    "m:10275455"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:10275455"
+   ],
+   "mentions": [
+    "m:10275455"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-30758728",
+   "title": "Effects of bistrifluron resistance on the biological traits of Spodoptera litura (Fab.) (Noctuidae: Lepidoptera)",
+   "year": 2019,
+   "cited_by": 19,
+   "doi": "10.1007/s10646-019-02024-2",
+   "venue": "Ecotoxicology",
+   "first_author": "Huang Q",
+   "id": "p:MED-30758728",
+   "found_by": [
+    "m:10275455"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:10275455"
+   ],
+   "mentions": [
+    "m:10275455"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-16937693",
+   "title": "Laboratory evaluation of bistrifluron, a benzoylphenylurea compound, as a bait toxicant against Coptotermes formosanus (Isoptera: Rhinotermitidae)",
+   "year": 2006,
+   "cited_by": 18,
+   "doi": "10.1603/0022-0493-99.4.1363",
+   "venue": "J Econ Entomol",
+   "first_author": "Kubota S",
+   "id": "p:MED-16937693",
+   "found_by": [
+    "m:10275455"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:10275455"
+   ],
+   "mentions": [
+    "m:10275455"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-21510212",
+   "title": "Elimination of field colonies of a mound-building termite Globitermes sulphureus (Isoptera: Termitidae) by bistrifluron bait",
+   "year": 2011,
+   "cited_by": 17,
+   "doi": "10.1603/ec10161",
+   "venue": "J Econ Entomol",
+   "first_author": "Neoh KB",
+   "id": "p:MED-21510212",
+   "found_by": [
+    "m:10275455"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:10275455"
+   ],
+   "mentions": [
+    "m:10275455"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-33838703",
+   "title": "Sublethal effects of bistrifluron on key biological traits, macronutrients contents and vitellogenin (SeVg) expression in Spodoptera exigua (Hübner)",
+   "year": 2021,
+   "cited_by": 11,
+   "doi": "10.1016/j.pestbp.2021.104802",
+   "venue": "Pestic Biochem Physiol",
+   "first_author": "Hafeez M",
+   "id": "p:MED-33838703",
+   "found_by": [
+    "m:10275455"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:10275455"
+   ],
+   "mentions": [
+    "m:10275455"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-17659536",
+   "title": "Flonicamid, a novel insecticide with a rapid inhibitory effect on aphid feeding",
+   "year": 2007,
+   "cited_by": 89,
+   "doi": "10.1002/ps.1423",
+   "venue": "Pest Manag Sci",
+   "first_author": "Morita M",
+   "id": "p:MED-17659536",
+   "found_by": [
+    "m:9834513"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:9834513"
+   ],
+   "mentions": [
+    "m:9834513",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-28347703",
+   "title": "Afidopyropen: New and potent modulator of insect transient receptor potential channels",
+   "year": 2017,
+   "cited_by": 88,
+   "doi": "10.1016/j.ibmb.2017.03.005",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Kandasamy R",
+   "id": "p:MED-28347703",
+   "found_by": [
+    "m:9834513",
+    "m:54589430"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:54589430"
+   ],
+   "mentions": [
+    "m:9834513",
+    "m:54589430"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-30125850",
+   "title": "Pesticides related to land use in watersheds of the Great Lakes basin",
+   "year": 2019,
+   "cited_by": 83,
+   "doi": "10.1016/j.scitotenv.2018.08.169",
+   "venue": "Sci Total Environ",
+   "first_author": "Metcalfe CD",
+   "id": "p:MED-30125850",
+   "found_by": [
+    "m:9834513"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:9834513",
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-34062434",
+   "title": "The human and ecological risks of neonicotinoid insecticides in soils of an agricultural zone within the Pearl River Delta, South China",
+   "year": 2021,
+   "cited_by": 69,
+   "doi": "10.1016/j.envpol.2021.117358",
+   "venue": "Environ Pollut",
+   "first_author": "Yu Z",
+   "id": "p:MED-34062434",
+   "found_by": [
+    "m:9834513"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "m:9834513",
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-25828251",
+   "title": "Toxicity and sublethal effects of six insecticides to last instar larvae and adults of the biocontrol agents Chrysoperla carnea (Stephens) (Neuroptera: Chrysopidae) and Adalia bipunctata (L.) (Coleoptera: Coccinellidae)",
+   "year": 2015,
+   "cited_by": 68,
+   "doi": "10.1016/j.chemosphere.2015.03.016",
+   "venue": "Chemosphere",
+   "first_author": "Garzón A",
+   "id": "p:MED-25828251",
+   "found_by": [
+    "m:9834513"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:9834513",
+    "m:9969573"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-26363294",
+   "title": "Functional characterization of the Tetranychus urticae CYP392A11, a cytochrome P450 that hydroxylates the METI acaricides cyenopyrafen and fenpyroximate",
+   "year": 2015,
+   "cited_by": 78,
+   "doi": "10.1016/j.ibmb.2015.09.004",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Riga M",
+   "id": "p:MED-26363294",
+   "found_by": [
+    "m:18772482"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:18772482"
+   ],
+   "mentions": [
+    "m:18772482"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-26118668",
+   "title": "Molecular analysis of cyenopyrafen resistance in the two-spotted spider mite Tetranychus urticae",
+   "year": 2016,
+   "cited_by": 57,
+   "doi": "10.1002/ps.4071",
+   "venue": "Pest Manag Sci",
+   "first_author": "Khalighi M",
+   "id": "p:MED-26118668",
+   "found_by": [
+    "m:18772482",
+    "m:11496052"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:18772482"
+   ],
+   "mentions": [
+    "m:18772482",
+    "m:11496052"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-23997025",
+   "title": "Cross-resistance risk of the novel complex II inhibitors cyenopyrafen and cyflumetofen in resistant strains of the two-spotted spider mite Tetranychus urticae",
+   "year": 2014,
+   "cited_by": 53,
+   "doi": "10.1002/ps.3641",
+   "venue": "Pest Manag Sci",
+   "first_author": "Khalighi M",
+   "id": "p:MED-23997025",
+   "found_by": [
+    "m:18772482",
+    "m:11496052"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:18772482",
+    "m:11496052"
+   ],
+   "mentions": [
+    "m:18772482",
+    "m:11496052"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-30195393",
+   "title": "Status of pesticide resistance and associated mutations in the two-spotted spider mite, Tetranychus urticae, in China",
+   "year": 2018,
+   "cited_by": 52,
+   "doi": "10.1016/j.pestbp.2018.07.008",
+   "venue": "Pestic Biochem Physiol",
+   "first_author": "Xu D",
+   "id": "p:MED-30195393",
+   "found_by": [
+    "m:18772482"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:18772482"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-32442626",
+   "title": "QTL mapping using microsatellite linkage reveals target-site mutations associated with high levels of resistance against three mitochondrial complex II inhibitors in Tetranychus urticae",
+   "year": 2020,
+   "cited_by": 47,
+   "doi": "10.1016/j.ibmb.2020.103410",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Sugimoto N",
+   "id": "p:MED-32442626",
+   "found_by": [
+    "m:18772482"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:18772482",
+    "m:11496052"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "AGR-IND44270538",
+   "title": "Movento®, an innovative ambimobile insecticide for sucking insect pest control in agriculture: Biological profile and field performance",
+   "year": 2009,
+   "cited_by": 114,
+   "doi": "10.1016/j.cropro.2009.06.015",
+   "venue": "Crop Prot",
+   "first_author": "Brück E",
+   "id": "p:AGR-IND44270538",
+   "found_by": [
+    "m:9969573"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:9969573"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-25281882",
+   "title": "The cyclic keto-enol insecticide spirotetramat inhibits insect and spider mite acetyl-CoA carboxylases by interfering with the carboxyltransferase partial reaction",
+   "year": 2014,
+   "cited_by": 81,
+   "doi": "10.1016/j.ibmb.2014.09.010",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Lümmen P",
+   "id": "p:MED-25281882",
+   "found_by": [
+    "m:9969573"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:9969573"
+   ],
+   "mentions": [
+    "m:9969573"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-20540074",
+   "title": "Monitoring of resistance to spirodiclofen and five other acaricides in Panonychus citri collected from Chinese citrus orchards",
+   "year": 2010,
+   "cited_by": 78,
+   "doi": "10.1002/ps.1978",
+   "venue": "Pest Manag Sci",
+   "first_author": "Hu J",
+   "id": "p:MED-20540074",
+   "found_by": [
+    "m:9969573"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:177863"
+   ],
+   "mentions": [
+    "m:177863",
+    "m:9969573"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-26778436",
+   "title": "Over-expression of CYP6A2 is associated with spirotetramat resistance and cross-resistance in the resistant strain of Aphis gossypii Glover",
+   "year": 2016,
+   "cited_by": 71,
+   "doi": "10.1016/j.pestbp.2015.07.008",
+   "venue": "Pestic Biochem Physiol",
+   "first_author": "Peng T",
+   "id": "p:MED-26778436",
+   "found_by": [
+    "m:9969573"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:9969573"
+   ],
+   "mentions": [
+    "m:9969573"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-18621343",
+   "title": "Autoradiographic localization of [22,23-(3)H(2)] dihydroazadirachtin binding sites in desert locust testes and effects of Azadirachtin on sperm motility",
+   "year": 1996,
+   "cited_by": 16,
+   "doi": "10.1016/s0040-8166(96)80075-9",
+   "venue": "Tissue Cell",
+   "first_author": "Nisbet AJ",
+   "id": "p:MED-18621343",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:44631173"
+   ],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "MED-16847818",
+   "title": "Azadirachtin-A and tetrahydroazadirachtin-A concentrates: preparation, LC-MS characterization and insect antifeedant/IGR activity against Helicoverpa armigera (Hübner)",
+   "year": 2006,
+   "cited_by": 9,
+   "doi": "10.1002/ps.1265",
+   "venue": "Pest Manag Sci",
+   "first_author": "Sharma V",
+   "id": "p:MED-16847818",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-11276064",
+   "title": "Characterization of azadirachtin binding to Sf9 nuclei in vitro",
+   "year": 2001,
+   "cited_by": 4,
+   "doi": "10.1002/arch.11",
+   "venue": "Arch Insect Biochem Physiol",
+   "first_author": "Nisbet AJ",
+   "id": "p:MED-11276064",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "AGR-IND90005679",
+   "title": "Uptake, metabolism, and excretion of injected tritiated 22,33-dihydroazadirachtin in last instar larvae of Heliothis virescens",
+   "year": 1989,
+   "cited_by": 2,
+   "doi": "10.1111/j.1570-7458.1989.tb01242.x",
+   "venue": "Entomol Exp Appl",
+   "first_author": "Barnaby MA",
+   "id": "p:AGR-IND90005679",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:44631173"
+   ],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "AGR-IND44562343",
+   "title": "Uptake, metabolism, and excretion of injected tritiated 22,33-dihydroazadirachtin in last instar larvae of Heliothis virescens",
+   "year": 1989,
+   "cited_by": 0,
+   "doi": null,
+   "venue": "Entomol Exp Appl",
+   "first_author": "Barnby MA",
+   "id": "p:AGR-IND44562343",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:44631173"
+   ],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "AGR-IND44562577",
+   "title": "Azadirachtin: structural requirements for reducing growth and increasing mortality in lepidopterous larvae",
+   "year": 1990,
+   "cited_by": 0,
+   "doi": null,
+   "venue": "Entomol Exp Appl",
+   "first_author": "Simmonds MSJ",
+   "id": "p:AGR-IND44562577",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "AGR-IND44562575",
+   "title": "Antifeedant effects of azadirachtin and structurally related compounds on lepidopterous larvae",
+   "year": 1990,
+   "cited_by": 0,
+   "doi": null,
+   "venue": "Entomol Exp Appl",
+   "first_author": "Blaney WM",
+   "id": "p:AGR-IND44562575",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "ETH-295287",
+   "title": "The effects of azadirachtin and analogues upon feeding and development in locusts",
+   "year": 1993,
+   "cited_by": 0,
+   "doi": null,
+   "venue": null,
+   "first_author": "Nasiruddin M.",
+   "id": "p:ETH-295287",
+   "found_by": [
+    "m:44631173"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:44631173"
+   ],
+   "after_cutoff": false
+  },
+  {
+   "pid": "MED-29096261",
+   "title": "Neonicotinoid insecticides imidacloprid, guadipyr, and cycloxaprid induce acute oxidative stress in Daphnia magna",
+   "year": 2018,
+   "cited_by": 56,
+   "doi": "10.1016/j.ecoenv.2017.10.042",
+   "venue": "Ecotoxicol Environ Saf",
+   "first_author": "Qi S",
+   "id": "p:MED-29096261",
+   "found_by": [
+    "m:76325977"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:76325977",
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "m:76325977",
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-25594687",
+   "title": "Toxicity of a neonicotinoid insecticide, guadipyr, in earthworm (Eisenia fetida)",
+   "year": 2015,
+   "cited_by": 43,
+   "doi": "10.1016/j.ecoenv.2014.12.037",
+   "venue": "Ecotoxicol Environ Saf",
+   "first_author": "Wang K",
+   "id": "p:MED-25594687",
+   "found_by": [
+    "m:76325977"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:76325977",
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "m:76325977",
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-24075643",
+   "title": "Toxicity assessments with Daphnia magna of Guadipyr, a new neonicotinoid insecticide and studies of its effect on acetylcholinesterase (AChE), glutathione S-transferase (GST), catalase (CAT) and chitobiase activities",
+   "year": 2013,
+   "cited_by": 38,
+   "doi": "10.1016/j.ecoenv.2013.09.013",
+   "venue": "Ecotoxicol Environ Saf",
+   "first_author": "Qi S",
+   "id": "p:MED-24075643",
+   "found_by": [
+    "m:76325977"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:76325977",
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "m:76325977",
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-34126519",
+   "title": "Guadipyr, a new insecticide, induces microbiota dysbiosis and immune disorders in the midgut of silkworms (Bombyx mori)",
+   "year": 2021,
+   "cited_by": 20,
+   "doi": "10.1016/j.envpol.2021.117531",
+   "venue": "Environ Pollut",
+   "first_author": "Hou J",
+   "id": "p:MED-34126519",
+   "found_by": [
+    "m:76325977"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:76325977"
+   ],
+   "mentions": [
+    "m:76325977",
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-32200280",
+   "title": "Computational insight on the binding and selectivity of target-subunit-dependent for neonicotinoid insecticides",
+   "year": 2020,
+   "cited_by": 15,
+   "doi": "10.1016/j.jmgm.2020.107586",
+   "venue": "J Mol Graph Model",
+   "first_author": "Xu X",
+   "id": "p:MED-32200280",
+   "found_by": [
+    "m:76325977"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:neonicotinoid",
+    "c:selectivity"
+   ],
+   "mentions": [
+    "m:76325977",
+    "c:neonicotinoid",
+    "c:bee_acute",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-27932274",
+   "title": "A glutathione-S-transferase (TuGSTd05) associated with acaricide resistance in Tetranychus urticae directly metabolizes the complex II inhibitor cyflumetofen",
+   "year": 2017,
+   "cited_by": 79,
+   "doi": "10.1016/j.ibmb.2016.12.003",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Pavlidi N",
+   "id": "p:MED-27932274",
+   "found_by": [
+    "m:11496052"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:11496052"
+   ],
+   "mentions": [
+    "m:11496052"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-23382003",
+   "title": "Cyflumetofen, a novel acaricide - its mode of action and selectivity",
+   "year": 2013,
+   "cited_by": 78,
+   "doi": "10.1002/ps.3470",
+   "venue": "Pest Manag Sci",
+   "first_author": "Hayashi N",
+   "id": "p:MED-23382003",
+   "found_by": [
+    "m:11496052"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:11496052",
+    "c:selectivity"
+   ],
+   "mentions": [
+    "m:11496052",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-23768653",
+   "title": "Simultaneous determination of cyflumetofen and its main metabolite residues in samples of plant and animal origin using multi-walled carbon nanotubes in dispersive solid-phase extraction and ultrahigh performance liquid chromatography-tandem mass spectrometry",
+   "year": 2013,
+   "cited_by": 60,
+   "doi": "10.1016/j.chroma.2013.05.052",
+   "venue": "J Chromatogr A",
+   "first_author": "Li M",
+   "id": "p:MED-23768653",
+   "found_by": [
+    "m:11496052"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:11496052"
+   ],
+   "mentions": [
+    "m:11496052"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-34955174",
+   "title": "Sublethal and transgenerational effects of afidopyropen on biological traits of the green peach aphid Myzus persicae (Sluzer)",
+   "year": 2022,
+   "cited_by": 30,
+   "doi": "10.1016/j.pestbp.2021.104981",
+   "venue": "Pestic Biochem Physiol",
+   "first_author": "Liu X",
+   "id": "p:MED-34955174",
+   "found_by": [
+    "m:54589430"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "m:54589430"
+   ],
+   "mentions": [
+    "m:54589430"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-37717404",
+   "title": "Optimization of a QuEChERS-LC-MS/MS method for 51 pesticide residues followed by determination of the residue levels and dietary intake risk assessment in foodstuffs",
+   "year": 2024,
+   "cited_by": 30,
+   "doi": "10.1016/j.foodchem.2023.137467",
+   "venue": "Food Chem",
+   "first_author": "Su Y",
+   "id": "p:MED-37717404",
+   "found_by": [
+    "m:54589430"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:54589430"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-35181691",
+   "title": "Afidopyropen, a novel insecticide originating from microbial secondary extracts",
+   "year": 2022,
+   "cited_by": 28,
+   "doi": "10.1038/s41598-022-06729-z",
+   "venue": "Sci Rep",
+   "first_author": "Horikoshi R",
+   "id": "p:MED-35181691",
+   "found_by": [
+    "m:54589430"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "m:54589430"
+   ],
+   "mentions": [
+    "m:54589430",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-34202923",
+   "title": "The Chemical Ecology Approach to Reveal Fungal Metabolites for Arthropod Pest Management",
+   "year": 2021,
+   "cited_by": 26,
+   "doi": "10.3390/microorganisms9071379",
+   "venue": "Microorganisms",
+   "first_author": "Berestetskiy A",
+   "id": "p:MED-34202923",
+   "found_by": [
+    "m:54589430"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "m:54589430"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-20565065",
+   "title": "Overview of the status and global strategy for neonicotinoids",
+   "year": 2011,
+   "cited_by": 1120,
+   "doi": "10.1021/jf101303g",
+   "venue": "J Agric Food Chem",
+   "first_author": "Jeschke P",
+   "id": "p:MED-20565065",
+   "found_by": [
+    "c:neonicotinoid"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-25233913",
+   "title": "Systemic insecticides (neonicotinoids and fipronil): trends, uses, mode of action and metabolites",
+   "year": 2015,
+   "cited_by": 1091,
+   "doi": "10.1007/s11356-014-3470-y",
+   "venue": "Environ Sci Pollut Res Int",
+   "first_author": "Simon-Delso N",
+   "id": "p:MED-25233913",
+   "found_by": [
+    "c:neonicotinoid"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-15822177",
+   "title": "Neonicotinoid insecticide toxicology: mechanisms of selective action",
+   "year": 2005,
+   "cited_by": 1036,
+   "doi": "10.1146/annurev.pharmtox.45.120403.095930",
+   "venue": "Annu Rev Pharmacol Toxicol",
+   "first_author": "Tomizawa M",
+   "id": "p:MED-15822177",
+   "found_by": [
+    "c:neonicotinoid"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:neonicotinoid",
+    "c:selectivity"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-25454246",
+   "title": "Neonicotinoid contamination of global surface waters and associated risk to aquatic invertebrates: a review",
+   "year": 2015,
+   "cited_by": 858,
+   "doi": "10.1016/j.envint.2014.10.024",
+   "venue": "Environ Int",
+   "first_author": "Morrissey CA",
+   "id": "p:MED-25454246",
+   "found_by": [
+    "c:neonicotinoid"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "c:neonicotinoid"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-22350105",
+   "title": "Neonicotinoids in bees: a review on concentrations, side-effects and risk assessment",
+   "year": 2012,
+   "cited_by": 599,
+   "doi": "10.1007/s10646-012-0863-x",
+   "venue": "Ecotoxicology",
+   "first_author": "Blacquière T",
+   "id": "p:MED-22350105",
+   "found_by": [
+    "c:pollinator"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:pollinator",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-24718419",
+   "title": "Pesticide residues and bees--a risk assessment",
+   "year": 2014,
+   "cited_by": 538,
+   "doi": "10.1371/journal.pone.0094482",
+   "venue": "PLoS One",
+   "first_author": "Sanchez-Bayo F",
+   "id": "p:MED-24718419",
+   "found_by": [
+    "c:pollinator"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:pollinator",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-25223353",
+   "title": "Effects of neonicotinoids and fipronil on non-target invertebrates",
+   "year": 2015,
+   "cited_by": 533,
+   "doi": "10.1007/s11356-014-3471-x",
+   "venue": "Environ Sci Pollut Res Int",
+   "first_author": "Pisa LW",
+   "id": "p:MED-25223353",
+   "found_by": [
+    "c:pollinator"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:neonicotinoid"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:pollinator",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-22253863",
+   "title": "RFID tracking of sublethal effects of two neonicotinoid insecticides on the foraging behavior of Apis mellifera",
+   "year": 2012,
+   "cited_by": 252,
+   "doi": "10.1371/journal.pone.0030023",
+   "venue": "PLoS One",
+   "first_author": "Schneider CW",
+   "id": "p:MED-22253863",
+   "found_by": [
+    "c:pollinator"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:neonicotinoid",
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:pollinator",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "AGR-IND43621255",
+   "title": "Mechanism for the differential toxicity of neonicotinoid insecticides in the honey bee, Apis mellifera",
+   "year": 2004,
+   "cited_by": 336,
+   "doi": "10.1016/j.cropro.2003.08.018",
+   "venue": "Crop Prot",
+   "first_author": "Iwasa T",
+   "id": "p:AGR-IND43621255",
+   "found_by": [
+    "c:bee_acute"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:neonicotinoid",
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-28663503",
+   "title": "Chronic exposure to neonicotinoids reduces honey bee health near corn crops",
+   "year": 2017,
+   "cited_by": 327,
+   "doi": "10.1126/science.aam7470",
+   "venue": "Science",
+   "first_author": "Tsvetkov N",
+   "id": "p:MED-28663503",
+   "found_by": [
+    "c:bee_acute"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:neonicotinoid",
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-11699773",
+   "title": "Discrepancy between acute and chronic toxicity induced by imidacloprid and its metabolites in Apis mellifera",
+   "year": 2001,
+   "cited_by": 284,
+   "doi": "10.1897/1551-5028(2001)020<2482:dbaact>2.0.co;2",
+   "venue": "Environ Toxicol Chem",
+   "first_author": "Suchail S",
+   "id": "p:MED-11699773",
+   "found_by": [
+    "c:bee_acute"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [
+    "c:bee_acute"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-24435220",
+   "title": "A meta-analysis comparing the sensitivity of bees to pesticides",
+   "year": 2014,
+   "cited_by": 242,
+   "doi": "10.1007/s10646-014-1190-1",
+   "venue": "Ecotoxicology",
+   "first_author": "Arena M",
+   "id": "p:MED-24435220",
+   "found_by": [
+    "c:bee_acute"
+   ],
+   "mentions_bees": true,
+   "title_mentions": [],
+   "mentions": [
+    "c:bee_acute"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-12208819",
+   "title": "Selective toxicity of neonicotinoids attributable to specificity of insect and mammalian nicotinic receptors",
+   "year": 2003,
+   "cited_by": 581,
+   "doi": "10.1146/annurev.ento.48.091801.112731",
+   "venue": "Annu Rev Entomol",
+   "first_author": "Tomizawa M",
+   "id": "p:MED-12208819",
+   "found_by": [
+    "c:selectivity"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:neonicotinoid",
+    "c:selectivity"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-16516322",
+   "title": "Cytochromes P450 as versatile biocatalysts",
+   "year": 2006,
+   "cited_by": 555,
+   "doi": "10.1016/j.jbiotec.2006.01.026",
+   "venue": "J Biotechnol",
+   "first_author": "Bernhardt R.",
+   "id": "p:MED-16516322",
+   "found_by": [
+    "c:selectivity"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-23317040",
+   "title": "Neuroactive insecticides: targets, selectivity, resistance, and secondary effects",
+   "year": 2013,
+   "cited_by": 494,
+   "doi": "10.1146/annurev-ento-120811-153645",
+   "venue": "Annu Rev Entomol",
+   "first_author": "Casida JE",
+   "id": "p:MED-23317040",
+   "found_by": [
+    "c:selectivity"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [
+    "c:selectivity"
+   ],
+   "mentions": [
+    "c:neonicotinoid",
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  },
+  {
+   "pid": "MED-24855024",
+   "title": "The evolution of insecticide resistance in the peach potato aphid, Myzus persicae",
+   "year": 2014,
+   "cited_by": 401,
+   "doi": "10.1016/j.ibmb.2014.05.003",
+   "venue": "Insect Biochem Mol Biol",
+   "first_author": "Bass C",
+   "id": "p:MED-24855024",
+   "found_by": [
+    "c:selectivity"
+   ],
+   "mentions_bees": false,
+   "title_mentions": [],
+   "mentions": [
+    "c:selectivity"
+   ],
+   "after_cutoff": true
+  }
+ ],
+ "edges": [
+  {
+   "source": "p:MED-11455649",
+   "target": "m:11458968",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-20857748",
+   "target": "m:11458968",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-12701698",
+   "target": "m:11458968",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-12701698",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:PAT-WO9851652",
+   "target": "m:11458968",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-10943470",
+   "target": "m:11458968",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-21775671",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-21775671",
+   "target": "c:pollinator",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-21775671",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23382869",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23382869",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16686121",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16686121",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22212860",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22212860",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-15750780",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-15750780",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-9129300",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:PAT-WO9740691",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:PAT-FR2779032",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:PAT-WO9925188",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:PAT-WO9925187",
+   "target": "m:91768",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-29735281",
+   "target": "m:10157484",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-29735281",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16399410",
+   "target": "m:10157484",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16399410",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24444901",
+   "target": "m:10157484",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-21660414",
+   "target": "m:10157484",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-19545627",
+   "target": "m:10157484",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-15625668",
+   "target": "m:177863",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-15176730",
+   "target": "m:177863",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-15657956",
+   "target": "m:177863",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23523619",
+   "target": "m:177863",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23523619",
+   "target": "m:9969573",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-19170251",
+   "target": "m:177863",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-19170251",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16539144",
+   "target": "m:9828359",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-17849891",
+   "target": "m:9828359",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22606824",
+   "target": "m:9828359",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-30010998",
+   "target": "m:9828359",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24772556",
+   "target": "m:9828359",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-20429458",
+   "target": "m:10275455",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-30758728",
+   "target": "m:10275455",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16937693",
+   "target": "m:10275455",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-21510212",
+   "target": "m:10275455",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-33838703",
+   "target": "m:10275455",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-17659536",
+   "target": "m:9834513",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-17659536",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-28347703",
+   "target": "m:9834513",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-28347703",
+   "target": "m:54589430",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-30125850",
+   "target": "m:9834513",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-30125850",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-34062434",
+   "target": "m:9834513",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-34062434",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25828251",
+   "target": "m:9834513",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25828251",
+   "target": "m:9969573",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-26363294",
+   "target": "m:18772482",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-26118668",
+   "target": "m:18772482",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-26118668",
+   "target": "m:11496052",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23997025",
+   "target": "m:18772482",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23997025",
+   "target": "m:11496052",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-30195393",
+   "target": "m:18772482",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-32442626",
+   "target": "m:18772482",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-32442626",
+   "target": "m:11496052",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:AGR-IND44270538",
+   "target": "m:9969573",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25281882",
+   "target": "m:9969573",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-20540074",
+   "target": "m:177863",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-20540074",
+   "target": "m:9969573",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-26778436",
+   "target": "m:9969573",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-18621343",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16847818",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-11276064",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:AGR-IND90005679",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:AGR-IND44562343",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:AGR-IND44562577",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:AGR-IND44562575",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:ETH-295287",
+   "target": "m:44631173",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-29096261",
+   "target": "m:76325977",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-29096261",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25594687",
+   "target": "m:76325977",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25594687",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24075643",
+   "target": "m:76325977",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24075643",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-34126519",
+   "target": "m:76325977",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-34126519",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-32200280",
+   "target": "m:76325977",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-32200280",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-32200280",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-32200280",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-27932274",
+   "target": "m:11496052",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23382003",
+   "target": "m:11496052",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23382003",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23768653",
+   "target": "m:11496052",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-34955174",
+   "target": "m:54589430",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-37717404",
+   "target": "m:54589430",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-35181691",
+   "target": "m:54589430",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-35181691",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-34202923",
+   "target": "m:54589430",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-20565065",
+   "target": "c:neonicotinoid",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-20565065",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25233913",
+   "target": "c:neonicotinoid",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-15822177",
+   "target": "c:neonicotinoid",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-15822177",
+   "target": "c:selectivity",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25454246",
+   "target": "c:neonicotinoid",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22350105",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22350105",
+   "target": "c:pollinator",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22350105",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24718419",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24718419",
+   "target": "c:pollinator",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24718419",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25223353",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25223353",
+   "target": "c:pollinator",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-25223353",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22253863",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22253863",
+   "target": "c:pollinator",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-22253863",
+   "target": "c:bee_acute",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:AGR-IND43621255",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:AGR-IND43621255",
+   "target": "c:bee_acute",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-28663503",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-28663503",
+   "target": "c:bee_acute",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-11699773",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-11699773",
+   "target": "c:bee_acute",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24435220",
+   "target": "c:bee_acute",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-12208819",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-12208819",
+   "target": "c:selectivity",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-16516322",
+   "target": "c:selectivity",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23317040",
+   "target": "c:neonicotinoid",
+   "kind": "text",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-23317040",
+   "target": "c:selectivity",
+   "kind": "query",
+   "text_match": true
+  },
+  {
+   "source": "p:MED-24855024",
+   "target": "c:selectivity",
+   "kind": "query",
+   "text_match": true
+  }
+ ]
+}

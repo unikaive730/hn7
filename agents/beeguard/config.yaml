@@ -6,6 +6,11 @@ description: >-
   confirm for another two decades. Specialist agents hand work to each other,
   a human approves every experiment, and the result rewrites what runs next.
 
+llm:
+  # Opus 5.5 and Sonnet 5.5 safeguards flagged this bee-toxicology run as [bio]
+  # (recorded runs cf3f009d, 1537e051); Haiku 4.5 runs it.
+  model: claude-haiku-4-5-20251001
+
 executor:
   type: omnigent
   config:
@@ -45,11 +50,22 @@ prompt: |
      finding, not a failure: say so plainly, then file the next experiment the
      result justifies.
 
+  How to reach a specialist: each one is a sub-agent. Call sys_session_send
+  with agent set to its name, a short title, and args.input holding the task
+  plus the material it needs from the step before. Wait for its reply before
+  you move on. The approval gate on run_experiment is already enforced by
+  this bundle's policy; do not add policies yourself.
+
+  Write every message in English, including your status notes, what you send
+  to specialists and the final report: the jury reads this transcript.
+
   Report the acceleration you measured, including where it is weakest. Never
   state a multiplier you did not measure. Label anything proposed but untested
   as a hypothesis.
 
 tools:
+  # Sub-agents the orchestrator may dispatch with sys_session_send.
+  agents: [literature, insight, planner, runner, analysis]
   lab:
     type: mcp
     command: C:/Users/windr/github/hn7/lab/.venv/Scripts/python.exe

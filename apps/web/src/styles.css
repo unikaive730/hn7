@@ -7,15 +7,23 @@
   --color-hive-500: #f59e0b;
   --color-hive-600: #d97706;
 
+  --color-night-950: #07070b;
   --color-night-900: #0a0a0f;
   --color-night-800: #12121a;
   --color-night-700: #1c1c27;
   --color-night-600: #2a2a38;
 
+  /* Beeswax: the warm off-white used for display type on dark ground, so
+     headlines read as paper under lamplight rather than screen white. */
+  --color-wax: #efe6cf;
+  /* Propolis: a dark resin brown for rules and quiet fills next to amber. */
+  --color-propolis: #5b3a1e;
+
   --color-signal: #34d399;
   --color-warn: #fb7185;
 
   --font-display: 'Instrument Sans', system-ui, sans-serif;
+  --font-serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
@@ -35,6 +43,17 @@
   ::selection {
     background: var(--color-hive-400);
     color: var(--color-night-900);
+  }
+
+  /* Anchored sections land below the sticky nav instead of under it. */
+  :where(section, article, div, header)[id] {
+    scroll-margin-top: 4rem;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-hive-400);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
@@ -67,6 +86,53 @@
   .tabular {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Display serif with optical sizing on, for the few large headlines. */
+  .font-serif-display {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-variation-settings: 'opsz' 72;
+    letter-spacing: -0.022em;
+  }
+
+  /* Film grain over generated imagery. It breaks up the too-clean surfaces
+     image models produce, and it costs no image bytes: an SVG noise tile.
+     The element must already be positioned (relative or absolute). */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Old beeswax comb, very dark, for sections that want a ground with texture. */
+  .bg-comb {
+    background-color: var(--color-night-950);
+    background-image:
+      linear-gradient(rgba(7, 7, 11, 0.78), rgba(7, 7, 11, 0.9)),
+      url('/img/comb-texture.webp');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Horizontal scroller that fades at both edges, for the nav on phones. */
+  .fade-x {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 18px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 18px), transparent 100%);
+    scrollbar-width: none;
+  }
+  .fade-x::-webkit-scrollbar {
+    display: none;
+  }
+
+  .kenburns {
+    animation: kenburns 48s ease-in-out infinite alternate;
+    transform-origin: 82% 48%;
+    will-change: transform;
+  }
 }
 
 @keyframes drift {
@@ -76,4 +142,19 @@
 
 .drift {
   animation: drift 7s ease-in-out infinite;
+}
+
+@keyframes kenburns {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  to { transform: scale(1.09) translate3d(-0.8%, -0.6%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .drift,
+  .kenburns {
+    animation: none;
+  }
 }

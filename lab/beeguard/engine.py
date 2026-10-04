@@ -147,9 +147,12 @@ class Lab:
         if strategy == "diversity":
             return self._diversity_order(budget, diversity_weight)
         if strategy == "insecticide_only":
-            idx = np.flatnonzero((self.pool["insecticide"] == 1).to_numpy())
+            insecticides = (self.pool["insecticide"] == 1).to_numpy()
+            idx = np.flatnonzero(insecticides)
             rng = np.random.default_rng(SEED)
-            return rng.permutation(idx)[:budget]
+            # All strategies order the same pool. Keep the original shuffled
+            # insecticide prefix, then fill a larger budget with the remainder.
+            return np.concatenate((rng.permutation(idx), rng.permutation(np.flatnonzero(~insecticides))))[:budget]
         raise ValueError(f"unknown strategy: {strategy}")
 
     # ------------------------------------------------------------- experiment
@@ -164,6 +167,8 @@ class Lab:
         """Order `budget` assays with `strategy` and report what was found."""
         started = time.time()
         order = self.order(strategy, budget, diversity_weight)
+        requested_budget = budget
+        budget = len(order)
 
         found_at: list[int] = []
         rows = []
@@ -191,6 +196,7 @@ class Lab:
         return {
             "strategy": strategy,
             "budget": int(budget),
+            "requested_budget": int(requested_budget),
             "diversity_weight": diversity_weight,
             "found": hits,
             "targets_total": int(self.is_target.sum()),

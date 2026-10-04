@@ -45,7 +45,7 @@ export function AssayStream({ assays, revealed, onOpen }) {
 
             {!assay.scaffold_seen && (
               <span
-                className="shrink-0 rounded border border-hive-400/30 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-hive-400"
+                className="shrink-0 rounded border border-hive-400/30 px-1.5 py-0.5 font-mono text-[10px] text-hive-400"
                 title="This molecule sits on a scaffold the model never saw in training"
               >
                 new scaffold

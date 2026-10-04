@@ -2,10 +2,94 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>hn7</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>BeeGuard Lab - agents that rediscover bee-safe insecticides</title>
+    <meta
+      name="description"
+      content="A lab of agents that knows only the chemistry published up to 2000 decides which newer insecticides to test on honey bees first, then is scored against what was confirmed later. Every number on the page comes from code running on the data."
+    />
+    <!-- Canonical: set to the deployed URL, e.g. <link rel="canonical" href="https://YOUR-DEPLOY-URL/" /> -->
+    <meta name="theme-color" content="#07070b" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph. og:image and og:url should be absolute once the deploy URL is known. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BeeGuard Lab" />
+    <meta property="og:title" content="BeeGuard Lab - agents that rediscover bee-safe insecticides" />
+    <meta
+      property="og:description"
+      content="Agents with a knowledge cutoff of 2000 choose which newer insecticides to test on honey bees first. Scored against what was confirmed later."
+    />
+    <meta property="og:image" content="/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="BeeGuard Lab share card: a honey bee illustration with the lab's measured results"
+    />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BeeGuard Lab - agents that rediscover bee-safe insecticides" />
+    <meta
+      name="twitter:description"
+      content="Agents with a knowledge cutoff of 2000 choose which newer insecticides to test on honey bees first. Scored against what was confirmed later."
+    />
+    <meta name="twitter:image" content="/og.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap"
+    />
+    <link rel="preload" as="image" href="/img/hero-bee-wide.webp" media="(min-width: 768px)" type="image/webp" />
+    <link rel="preload" as="image" href="/img/hero-bee-tall.webp" media="(max-width: 767px)" type="image/webp" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "name": "BeeGuard Lab",
+            "applicationCategory": "ScientificApplication",
+            "operatingSystem": "Web",
+            "description": "An agentic discovery loop over honey bee toxicity data. Agents limited to the chemistry known by a cutoff year order assays for newer insecticides and are scored against later confirmations.",
+            "license": "https://opensource.org/licenses/MIT",
+            "codeRepository": "https://github.com/unikaive730/hn7",
+            "author": { "@type": "Organization", "name": "MarketPilot" },
+            "isBasedOn": { "@id": "#apistox" }
+          },
+          {
+            "@type": "Dataset",
+            "@id": "#apistox",
+            "name": "ApisTox",
+            "description": "Bee toxicity labels and first-report years for pesticide molecules, used here under its non-commercial license.",
+            "url": "https://github.com/j-adamczyk/ApisTox_dataset",
+            "license": "https://creativecommons.org/licenses/by-nc/4.0/",
+            "citation": "Adamczyk J., Poziemski J., Siedlecki P. ApisTox: a new benchmark dataset for the classification of small molecules toxicity on honey bees. Scientific Data 12, 5 (2025). https://doi.org/10.1038/s41597-024-04232-w",
+            "creator": [
+              { "@type": "Person", "name": "Jakub Adamczyk" },
+              { "@type": "Person", "name": "Jakub Poziemski" },
+              { "@type": "Person", "name": "Paweł Siedlecki" }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
+    <noscript>
+      <p style="padding: 24px; font-family: system-ui, sans-serif; color: #efe6cf; background: #07070b">
+        BeeGuard Lab runs its experiments in the browser against a live API. Enable JavaScript to see the results.
+      </p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

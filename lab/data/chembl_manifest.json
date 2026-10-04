@@ -1,0 +1,121 @@
+{
+  "source": "ChEMBL web services",
+  "endpoint": "https://www.ebi.ac.uk/chembl/api/data/activity.json",
+  "licence": "CC BY-SA 3.0",
+  "fetched_at": "2026-10-04T05:10:51+00:00",
+  "page_size": 1000,
+  "max_per_target": 4000,
+  "pause_seconds": 0.6,
+  "files": {
+    "chembl_apis.csv": {
+      "query": "activity?target_chembl_id=<organism target>, bees",
+      "targets": [
+        {
+          "target_chembl_id": "CHEMBL612665",
+          "records_available": 12,
+          "records_fetched": 12,
+          "capped": false,
+          "organism": "Apis mellifera"
+        },
+        {
+          "target_chembl_id": "CHEMBL2367044",
+          "records_available": 160,
+          "records_fetched": 160,
+          "capped": false,
+          "organism": "Bombus terrestris"
+        }
+      ],
+      "records": 172,
+      "molecules": 23,
+      "bytes": 66789,
+      "sha256": "86e426ce528a5f951ca0eca3b2156190c2e7197b3cb4bbbd64c7241e12365330"
+    },
+    "chembl_pests.csv": {
+      "query": "activity?target_chembl_id=<organism target>, pests",
+      "targets": [
+        {
+          "target_chembl_id": "CHEMBL612683",
+          "records_available": 1112,
+          "records_fetched": 1112,
+          "capped": false,
+          "organism": "Myzus persicae"
+        },
+        {
+          "target_chembl_id": "CHEMBL613807",
+          "records_available": 526,
+          "records_fetched": 526,
+          "capped": false,
+          "organism": "Aphis gossypii"
+        },
+        {
+          "target_chembl_id": "CHEMBL613806",
+          "records_available": 937,
+          "records_fetched": 937,
+          "capped": false,
+          "organism": "Aphis craccivora"
+        },
+        {
+          "target_chembl_id": "CHEMBL614677",
+          "records_available": 1840,
+          "records_fetched": 1840,
+          "capped": false,
+          "organism": "Plutella xylostella"
+        },
+        {
+          "target_chembl_id": "CHEMBL613465",
+          "records_available": 784,
+          "records_fetched": 784,
+          "capped": false,
+          "organism": "Spodoptera frugiperda"
+        },
+        {
+          "target_chembl_id": "CHEMBL613146",
+          "records_available": 1708,
+          "records_fetched": 1708,
+          "capped": false,
+          "organism": "Spodoptera litura"
+        },
+        {
+          "target_chembl_id": "CHEMBL613321",
+          "records_available": 540,
+          "records_fetched": 540,
+          "capped": false,
+          "organism": "Spodoptera exigua"
+        },
+        {
+          "target_chembl_id": "CHEMBL1075348",
+          "records_available": 710,
+          "records_fetched": 710,
+          "capped": false,
+          "organism": "Helicoverpa armigera"
+        },
+        {
+          "target_chembl_id": "CHEMBL2366822",
+          "records_available": 3309,
+          "records_fetched": 3309,
+          "capped": false,
+          "organism": "Mythimna separata"
+        },
+        {
+          "target_chembl_id": "CHEMBL612974",
+          "records_available": 786,
+          "records_fetched": 786,
+          "capped": false,
+          "organism": "Nilaparvata lugens"
+        },
+        {
+          "target_chembl_id": "CHEMBL613910",
+          "records_available": 599,
+          "records_fetched": 599,
+          "capped": false,
+          "organism": "Bemisia tabaci"
+        }
+      ],
+      "records": 12851,
+      "molecules": 3584,
+      "bytes": 4472481,
+      "sha256": "ea3271b590e305bd1a20fcc9327e6ffa1cf1dde47c8c5ca242550f7a2789aff9"
+    }
+  },
+  "seconds": 371.6
+}

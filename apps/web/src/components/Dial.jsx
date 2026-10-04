@@ -25,12 +25,13 @@ export function Counter({ value, decimals = 0, suffix = '', className = '' }) {
 }
 
 /** The speedup dial: the one number a judge should remember. */
-export function SpeedupDial({ speedup, found, total, budget }) {
+export function SpeedupDial({ speedup, found, total, budget, label = 'fewer assays than random' }) {
   const ratio = Math.min((speedup ?? 0) / 10, 1);
   const circumference = 2 * Math.PI * 54;
 
   return (
-    <div className="relative grid place-items-center">
+    <div className="grid place-items-center">
+      <div className="relative grid place-items-center">
       <svg viewBox="0 0 128 128" className="h-44 w-44 -rotate-90">
         <circle
           cx="64"
@@ -62,15 +63,14 @@ export function SpeedupDial({ speedup, found, total, budget }) {
       </svg>
 
       <div className="absolute grid place-items-center text-center">
-        <div className="text-5xl font-semibold text-hive-400">
+        <div className="text-[2.6rem] font-semibold leading-none text-hive-400">
           <Counter value={speedup ?? 0} decimals={2} suffix="×" />
         </div>
-        <div className="mt-1 text-[11px] uppercase tracking-[0.2em] text-white/40">
-          faster than random
-        </div>
-        <div className="mt-2 text-xs text-white/55">
-          <Counter value={found ?? 0} /> of {total ?? 0} found in {budget ?? 0} assays
-        </div>
+        <div className="mt-1.5 max-w-[6.5rem] font-mono text-[10.5px] leading-tight text-white/45">{label}</div>
+      </div>
+      </div>
+      <div className="mt-2 text-xs text-white/55">
+        <Counter value={found ?? 0} /> of {total ?? 0} found in {budget ?? 0} assays
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Activity,
@@ -20,36 +20,52 @@ import {
   runExperiment,
   searchEvidence,
 } from './api.js';
-import { Counter, SpeedupDial } from './components/Dial.jsx';
+import { SpeedupDial } from './components/Dial.jsx';
 import { AssayStream } from './components/AssayStream.jsx';
 import { DiscoveryCurve } from './components/Curve.jsx';
-import {
-  EraPanel,
-  HeadlineStats,
-  MoleculePanel,
-  RecordPanel,
-  StrategyCompare,
-} from './components/Panels.jsx';
+import { EraPanel, MoleculePanel, RecordPanel, StrategyCompare } from './components/Panels.jsx';
+import SiteNav from './components/SiteNav.jsx';
+import Hero from './components/Hero.jsx';
+import SiteFooter from './components/SiteFooter.jsx';
+
+// Sections below the lab load as separate chunks, so the first screen does
+// not wait for the agent replay, the evidence graph or the ledger.
+const AgentRoom = lazy(() => import('./components/AgentRoom.jsx'));
+const LearningLoop = lazy(() => import('./components/LearningLoop.jsx'));
+const RediscoveredGallery = lazy(() => import('./components/RediscoveredGallery.jsx'));
+const ChemicalSpace = lazy(() => import('./components/ChemicalSpace.jsx'));
+const EvidenceGraph = lazy(() => import('./components/EvidenceGraph.jsx'));
+const RigorPanel = lazy(() => import('./components/RigorPanel.jsx'));
+const ExternalValidation = lazy(() => import('./components/ExternalValidation.jsx'));
+const Candidates = lazy(() => import('./components/Candidates.jsx'));
+const MethodCard = lazy(() => import('./components/MethodCard.jsx'));
+const ResponsibleCard = lazy(() => import('./components/ResponsibleCard.jsx'));
+const Ledger = lazy(() => import('./components/Ledger.jsx'));
+
+const CUTOFF = 2000; // the experiment's design input, not a result
+const DEFAULT_BUDGET = 30; // the slider's starting value, also an input
 
 const STRATEGIES = [
-  { id: 'model', label: 'Learned ordering', hint: 'Rank by predicted bee safety' },
-  { id: 'diversity', label: 'Scaffold diversity', hint: 'Penalise repeating a scaffold' },
-  { id: 'insecticide_only', label: 'No model', hint: 'Insecticides in arbitrary order' },
+  { id: 'model', label: 'Learned ordering', hint: 'Insecticides first, lowest predicted bee risk first' },
+  { id: 'diversity', label: 'Scaffold diversity', hint: 'Same, with a penalty for repeating a scaffold' },
+  { id: 'insecticide_only', label: 'No model', hint: 'Insecticides first, in arbitrary order' },
 ];
 
+// What each step does in this browser run. The recorded agent run, where
+// every step is a real agent turn, is replayed in the Agents section.
 const STAGES = [
-  { id: 'literature', label: 'Literature', icon: BookOpen, note: 'finds evidence' },
-  { id: 'insight', label: 'Insight', icon: Sparkles, note: 'proposes a hypothesis' },
-  { id: 'planner', label: 'Planner', icon: Cpu, note: 'compares two tests' },
-  { id: 'approval', label: 'Approval', icon: ShieldCheck, note: 'a human decides' },
-  { id: 'runner', label: 'Runner', icon: FlaskConical, note: 'spends the budget' },
-  { id: 'analysis', label: 'Analysis', icon: Activity, note: 'keeps or breaks it' },
+  { id: 'literature', label: 'Literature', icon: BookOpen, note: 'live search' },
+  { id: 'insight', label: 'Insight', icon: Sparkles, note: 'states the rule to test' },
+  { id: 'planner', label: 'Planner', icon: Cpu, note: 'takes your ordering and budget' },
+  { id: 'approval', label: 'Approval', icon: ShieldCheck, note: 'you accept or deny' },
+  { id: 'runner', label: 'Runner', icon: FlaskConical, note: 'server ranks the pool' },
+  { id: 'analysis', label: 'Analysis', icon: Activity, note: 'queue and speedup' },
 ];
 
 export default function App() {
   const [facts, setFacts] = useState(null);
   const [strategy, setStrategy] = useState('model');
-  const [budget, setBudget] = useState(30);
+  const [budget, setBudget] = useState(DEFAULT_BUDGET);
   const [result, setResult] = useState(null);
   const [stage, setStage] = useState(null);
   const [awaitingApproval, setAwaitingApproval] = useState(false);
@@ -62,37 +78,50 @@ export default function App() {
   const [record, setRecord] = useState([]);
   const [molecule, setMolecule] = useState(null);
   const revealTimer = useRef(null);
+  const phase = useRef('idle');
 
   useEffect(() => {
-    getFacts().then(setFacts).catch((e) => setError(e.message));
-    getEras(30).then(setEras).catch(() => {});
+    getFacts(CUTOFF).then(setFacts).catch((e) => setError(e.message));
+    // The discovery charts show the default run until a judge runs their own.
+    getCurve('model', DEFAULT_BUDGET).then(setCurve).catch(() => {});
+    compareStrategies(DEFAULT_BUDGET).then(setComparison).catch(() => {});
+    getEras(DEFAULT_BUDGET).then(setEras).catch(() => {});
     getRecord(40).then((r) => setRecord(r.rows ?? [])).catch(() => {});
     return () => clearInterval(revealTimer.current);
   }, []);
 
-  /** Walk the loop: the first stages are narration over work already done,
-   *  the approval is a real stop, and the run after it is a real computation. */
+  /** Walk the loop. The literature step is a live search, the approval is a
+   *  real stop, and the run after it is computed on the server. */
   const startLoop = useCallback(async () => {
+    if (phase.current !== 'idle' || !facts) return;
+    phase.current = 'starting';
     setError(null);
     setResult(null);
+    setMolecule(null);
+    setEvidence(null);
     setRevealed(0);
     clearInterval(revealTimer.current);
 
     for (const id of ['literature', 'insight', 'planner']) {
       setStage(id);
-      if (id === 'literature' && !evidence) {
+      if (id === 'literature') {
         searchEvidence('honey bee acute toxicity insecticide', 3)
           .then(setEvidence)
-          .catch(() => {});
+          .catch((e) => setError(`Literature lookup failed: ${e.message}`));
       }
       await new Promise((resolve) => setTimeout(resolve, 620));
     }
 
     setStage('approval');
+    phase.current = 'approval';
     setAwaitingApproval(true);
-  }, [evidence]);
+  }, [facts]);
 
   const approve = useCallback(async () => {
+    // The exiting approval card remains mounted during its animation.
+    // A synchronous guard makes a second click harmless before React rerenders.
+    if (phase.current !== 'approval') return;
+    phase.current = 'running';
     setAwaitingApproval(false);
     setStage('runner');
     try {
@@ -100,23 +129,31 @@ export default function App() {
       setResult(run);
       setStage('analysis');
 
-      getCurve(strategy, budget).then(setCurve).catch(() => {});
-      compareStrategies(budget).then(setComparison).catch(() => {});
+      setCurve(null);
+      setComparison(null);
+      getCurve(strategy, budget).then(setCurve).catch((e) => setError(`Discovery curve failed: ${e.message}`));
+      compareStrategies(budget).then(setComparison).catch((e) => setError(`Strategy comparison failed: ${e.message}`));
       getRecord(40).then((r) => setRecord(r.rows ?? [])).catch(() => {});
 
       let shown = 0;
       revealTimer.current = setInterval(() => {
         shown += 1;
         setRevealed(shown);
-        if (shown >= run.assays.length) clearInterval(revealTimer.current);
+        if (shown >= run.assays.length) {
+          clearInterval(revealTimer.current);
+          phase.current = 'idle';
+        }
       }, 55);
     } catch (e) {
       setError(e.message);
       setStage(null);
+      phase.current = 'idle';
     }
   }, [strategy, budget]);
 
   const deny = useCallback(() => {
+    if (phase.current !== 'approval') return;
+    phase.current = 'idle';
     setAwaitingApproval(false);
     setStage(null);
   }, []);
@@ -126,121 +163,184 @@ export default function App() {
   }, []);
 
   const stageIndex = STAGES.findIndex((s) => s.id === stage);
+  const cutoff = facts?.cutoff_year ?? CUTOFF;
 
   return (
-    <div className="hex-field min-h-screen">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <Header facts={facts} />
+    <div className="min-h-screen bg-night-900">
+      <SiteNav />
+      <Hero />
 
-        {error && (
-          <div className="mb-6 flex items-center gap-2 rounded-lg border border-warn/30 bg-warn/10 px-4 py-3 text-sm text-warn">
-            <AlertTriangle className="h-4 w-4" /> {error}
-          </div>
-        )}
+      <main className="hex-field">
+        <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6 md:px-8">
+          <Chapter
+            id="lab"
+            index="01"
+            label="Lab"
+            title="Choose what to test first"
+            lede={
+              facts
+                ? `Pick an ordering and a budget. The run stops for your approval, then the server ranks the ${facts.pool_molecules} molecules first reported after ${cutoff} and the queue fills in below.`
+                : 'Pick an ordering and a budget. The run stops for your approval, then the server ranks the pool and the queue fills in below.'
+            }
+          >
+            {error && (
+              <div className="mb-6 flex items-center gap-2 rounded-lg border border-warn/30 bg-warn/10 px-4 py-3 text-sm text-warn">
+                <AlertTriangle className="h-4 w-4 shrink-0" /> {error}
+              </div>
+            )}
 
-        <div className="mb-5">
-          <HeadlineStats facts={facts} result={result} />
-        </div>
+            <Pipeline stage={stage} stageIndex={stageIndex} />
 
-        <Pipeline stage={stage} stageIndex={stageIndex} />
-
-        <div className="mt-6 grid gap-5 lg:grid-cols-[22rem_1fr]">
-          <div className="space-y-5">
-            <Controls
-              strategy={strategy}
-              setStrategy={setStrategy}
-              budget={budget}
-              setBudget={setBudget}
-              onRun={startLoop}
-              busy={stage !== null && !awaitingApproval && !result}
-              facts={facts}
-            />
-            <SpeedupPanel result={result} budget={budget} facts={facts} />
-          </div>
-
-          <div className="space-y-5">
-            <AnimatePresence>
-              {awaitingApproval && (
-                <ApprovalCard
+            <div className="mt-5 grid gap-5 lg:grid-cols-[22rem_minmax(0,1fr)]">
+              <div className="space-y-5">
+                <Controls
                   strategy={strategy}
+                  setStrategy={setStrategy}
                   budget={budget}
-                  onApprove={approve}
-                  onDeny={deny}
+                  setBudget={setBudget}
+                  onRun={startLoop}
+                  busy={!facts || (stage !== null && (!result || revealed < result.assays.length))}
+                  facts={facts}
                 />
-              )}
-            </AnimatePresence>
+                <SpeedupPanel result={result} budget={budget} facts={facts} />
+              </div>
 
-            <AssayPanel result={result} revealed={revealed} onOpen={openMolecule} />
-            {molecule && (
-              <MoleculePanel molecule={molecule} onClose={() => setMolecule(null)} />
-            )}
-            {curve && (
-              <section className="glass lift rounded-xl p-5">
-                <div className="mb-3 flex items-baseline justify-between">
-                  <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
-                    Discovery curve
-                  </h2>
-                  <span className="text-xs text-white/35">
-                    shaded band is random, 10th to 90th percentile over{' '}
-                    {curve.shuffles} shuffles
-                  </span>
-                </div>
-                <DiscoveryCurve data={curve} targets={facts?.targets} />
-              </section>
-            )}
-            <BreakPanel facts={facts} result={result} />
-            <StrategyCompare data={comparison} />
-            <EvidencePanel evidence={evidence} />
-          </div>
+              <div className="min-w-0 space-y-5">
+                <AnimatePresence>
+                  {awaitingApproval && (
+                    <ApprovalCard
+                      strategy={strategy}
+                      budget={budget}
+                      onApprove={approve}
+                      onDeny={deny}
+                    />
+                  )}
+                </AnimatePresence>
+
+                <AssayPanel result={result} revealed={revealed} onOpen={openMolecule} />
+                {molecule && (
+                  <MoleculePanel molecule={molecule} onClose={() => setMolecule(null)} />
+                )}
+                <EvidencePanel evidence={evidence} />
+              </div>
+            </div>
+          </Chapter>
+
+          <Chapter
+            id="agents"
+            index="02"
+            label="Agents"
+            title="One recorded run of the agent team"
+            lede="A replay of what the Omnigent agents wrote and which tools they called, read back from the session store. Nothing in this section is generated in your browser."
+          >
+            <AgentRoom />
+          </Chapter>
+
+          <Chapter
+            id="discovery"
+            index="03"
+            label="Discovery"
+            title="How quickly the answers turn up"
+            lede="The curve and the strategy table follow the budget you ran above. The clock panel retrains the lab at other cutoff years, and the learning loop asks whether refitting after each batch helps."
+          >
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+              <CurvePanel curve={curve} facts={facts} />
+              <StrategyCompare data={comparison} />
+            </div>
+            <div className="mt-5">
+              <EraPanel data={eras} />
+            </div>
+            <div className="mt-5">
+              <LearningLoop />
+            </div>
+          </Chapter>
+
+          <Chapter
+            id="chemistry"
+            index="04"
+            label="Chemistry"
+            title="The answers, and how far each one sits from training"
+            lede={`Every structure is drawn by RDKit from the dataset SMILES. Each card also names the closest molecule the model saw by ${cutoff} and how similar the two are.`}
+          >
+            <div className="space-y-20">
+              <RediscoveredGallery cutoffYear={cutoff} />
+              <ChemicalSpace cutoffYear={cutoff} />
+            </div>
+          </Chapter>
+
+          <Chapter
+            id="evidence"
+            index="05"
+            label="Evidence"
+            title={`What had been published by ${cutoff}`}
+            lede="Literature records are counted by publication year, so the panel shows how much had been written around the compound-year cutoff."
+          >
+            <EvidenceGraph cutoffYear={cutoff} />
+          </Chapter>
+
+          <Chapter
+            id="rigor"
+            index="06"
+            label="Rigor"
+            title="Attempts to break the headline number"
+            lede="A harder random baseline, other models and fingerprints, unfamiliar scaffolds, other seeds, and an outside test on ChEMBL bee records. Where the result gets weaker, the panel says so."
+          >
+            <div className="space-y-5">
+              <RigorPanel />
+              <ExternalValidation />
+            </div>
+          </Chapter>
+
+          <Chapter
+            id="candidates"
+            index="07"
+            label="Candidates"
+            title="What to send to a bee assay next"
+            lede="Pest-active compounds from ChEMBL that are not in ApisTox, ranked by predicted bee safety. None of them has a bee measurement yet, so each row is a hypothesis."
+          >
+            <Candidates />
+          </Chapter>
+
+          <Chapter
+            id="method"
+            index="08"
+            label="Method"
+            title="How it is built, and what it should not be used for"
+            lede="Settings read out of the source, a data and model card, a count of the files and packages the lab runs on, and the record the agents write to."
+          >
+            <div className="space-y-5">
+              <MethodCard />
+              <ResponsibleCard />
+              <Ledger />
+              <RecordPanel rows={record} />
+            </div>
+          </Chapter>
         </div>
+      </main>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-2">
-          <EraPanel data={eras} />
-          <RecordPanel rows={record} />
-        </div>
-
-        <Footer facts={facts} />
-      </div>
+      <SiteFooter />
     </div>
   );
 }
 
-function Header({ facts }) {
+/** One section of the page: a numbered label, a plain title and one
+ *  sentence, set like a paper's section head rather than a card. */
+function Chapter({ id, index, label, title, lede, children }) {
   return (
-    <header className="mb-8">
-      <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-hive-400/80">
-        <span className="drift inline-block">⬡</span> BeeGuard Lab
-      </div>
-      <h1 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight text-white/95 sm:text-5xl">
-        We sent a lab back to the year 2000
-        <span className="text-hive-400">.</span>
-      </h1>
-      <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/60">
-        It reads only the chemistry known by then, and has to find the
-        insecticides that turned out to be safe for honey bees, confirmed only
-        in the two decades after. A bee toxicity assay costs real colonies and
-        real weeks, so the question is not accuracy. It is what to test first.
-      </p>
-      {facts && (
-        <div className="mt-5 flex flex-wrap gap-x-7 gap-y-2 text-sm text-white/45">
-          <Stat value={facts.train_molecules} label="molecules known by 2000" />
-          <Stat value={facts.pool_molecules} label="to be ordered" />
-          <Stat value={facts.targets} label="answers hidden among them" />
-          <Stat value={facts.trained_seconds} label="seconds to train" decimals={1} />
+    <section id={id} className="pt-20 sm:pt-28">
+      <header className="mb-8 grid gap-x-10 gap-y-3 border-t border-wax/10 pt-5 md:grid-cols-[9rem_minmax(0,1fr)]">
+        <div className="font-mono text-[12px] text-hive-400/85">
+          <span className="text-wax/35">{index}</span> {label}
         </div>
-      )}
-    </header>
-  );
-}
-
-function Stat({ value, label, decimals = 0 }) {
-  return (
-    <span>
-      <span className="font-semibold text-white/80">
-        <Counter value={value} decimals={decimals} />
-      </span>{' '}
-      {label}
-    </span>
+        <div>
+          <h2 className="font-serif-display text-[1.9rem] leading-[1.08] text-wax sm:text-[2.4rem]">
+            {title}
+          </h2>
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-wax/60">{lede}</p>
+        </div>
+      </header>
+      <Suspense fallback={<div className="glass h-64 animate-pulse rounded-xl" />}>{children}</Suspense>
+    </section>
   );
 }
 
@@ -266,6 +366,7 @@ function Pipeline({ stage, stageIndex }) {
               />
             )}
             <div className="flex items-center gap-1.5">
+              <span className="font-mono text-[10px] text-white/25">{index + 1}</span>
               <Icon
                 className={`h-3.5 w-3.5 ${
                   active ? 'text-hive-400' : done ? 'text-signal/70' : 'text-white/25'
@@ -279,7 +380,7 @@ function Pipeline({ stage, stageIndex }) {
                 {s.label}
               </span>
             </div>
-            <span className="text-[10px] text-white/30">{s.note}</span>
+            <span className="text-[10.5px] text-white/35">{s.note}</span>
           </div>
         );
       })}
@@ -290,15 +391,15 @@ function Pipeline({ stage, stageIndex }) {
 function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts }) {
   return (
     <section className="glass lift rounded-xl p-5">
-      <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
-        Set the experiment
-      </h2>
+      <h3 className="font-mono text-[11px] text-white/45">Ordering</h3>
 
-      <div className="mt-4 space-y-1.5">
+      <div className="mt-3 space-y-1.5">
         {STRATEGIES.map((option) => (
           <button
             key={option.id}
+            disabled={busy}
             onClick={() => setStrategy(option.id)}
+            aria-pressed={strategy === option.id}
             className={`w-full rounded-lg border px-3 py-2.5 text-left transition-all ${
               strategy === option.id
                 ? 'border-hive-400/50 bg-hive-400/10'
@@ -313,10 +414,15 @@ function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts
 
       <div className="mt-5">
         <div className="flex items-baseline justify-between">
-          <span className="text-sm text-white/60">Assay budget</span>
+          <label htmlFor="budget" className="font-mono text-[11px] text-white/45">
+            Assay budget
+          </label>
           <span className="tabular text-lg font-semibold text-hive-400">{budget}</span>
         </div>
         <input
+          id="budget"
+          disabled={busy}
+          aria-label="Assay budget"
           type="range"
           min="5"
           max={facts?.pool_molecules ?? 201}
@@ -325,7 +431,7 @@ function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts
           className="mt-2 w-full accent-hive-500"
         />
         <p className="mt-1.5 text-[11px] text-white/35">
-          Each assay is one molecule tested on live colonies.
+          One simulated assay reveals an existing dataset label.
         </p>
       </div>
 
@@ -335,7 +441,7 @@ function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts
         className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-hive-500 px-4 py-3 text-sm font-semibold text-night-900 transition hover:bg-hive-400 disabled:opacity-40"
       >
         <Play className="h-4 w-4" />
-        {busy ? 'Running the loop…' : 'Run the discovery loop'}
+        {busy ? 'Running' : 'Run the loop'}
       </button>
     </section>
   );
@@ -349,15 +455,18 @@ function SpeedupPanel({ result, budget, facts }) {
         found={result?.found}
         total={facts?.targets}
         budget={result?.budget ?? budget}
+        label="fewer assays than random"
       />
-      {result && (
+      {result ? (
         <p className="mt-3 text-center text-xs leading-relaxed text-white/45">
-          Random ordering needs{' '}
-          <span className="font-semibold text-white/70">
-            {result.random_assays_for_same_hits}
-          </span>{' '}
-          assays for the same {result.found}. Measured over 500 shuffles,{' '}
-          not estimated.
+          Random order over all {facts?.pool_molecules ?? 'the'} pool molecules needs{' '}
+          <span className="font-semibold text-white/70">{result.random_assays_for_same_hits}</span>{' '}
+          assays (median of shuffled orders) to find the same {result.found}. The Rigor
+          section repeats the test against random order inside the insecticides only.
+        </p>
+      ) : (
+        <p className="mt-3 text-center text-xs leading-relaxed text-white/35">
+          Empty until you run the loop.
         </p>
       )}
     </section>
@@ -375,18 +484,16 @@ function ApprovalCard({ strategy, budget, onApprove, onDeny }) {
     >
       <div className="flex items-center gap-2 text-hive-400">
         <ShieldCheck className="h-4 w-4" />
-        <span className="text-[11px] uppercase tracking-[0.2em]">
-          Waiting for a scientist
-        </span>
+        <span className="font-mono text-[11px]">Approval needed</span>
       </div>
       <p className="mt-3 text-[15px] text-white/85">
         The planner wants to spend{' '}
-        <span className="font-semibold text-hive-400">{budget} assays</span> using
-        the {STRATEGIES.find((s) => s.id === strategy)?.label.toLowerCase()}.
+        <span className="font-semibold text-hive-400">{budget} assays</span> on the{' '}
+        {STRATEGIES.find((s) => s.id === strategy)?.label.toLowerCase()}.
       </p>
-      <p className="mt-1.5 text-xs text-white/45">
-        Nothing runs until you approve. The gate is an Omnigent policy in code
-        the agents cannot edit, not a line in a prompt asking them to behave.
+      <p className="mt-1.5 text-xs leading-relaxed text-white/45">
+        This interactive ranking waits for you to accept; the headline is a retrospective preview.
+        Recorded Omnigent runs use a separate ASK policy before experiment tool calls.
       </p>
       <div className="mt-4 flex gap-2">
         <button
@@ -410,11 +517,11 @@ function AssayPanel({ result, revealed, onOpen }) {
   if (!result) {
     return (
       <section className="glass lift grid min-h-[13rem] place-items-center rounded-xl p-5 text-center">
-        <div>
+        <div className="max-w-sm">
           <FlaskConical className="mx-auto h-7 w-7 text-white/15" />
-          <p className="mt-3 text-sm text-white/35">
-            Set a budget, then run the loop. The queue appears here as the lab
-            orders it.
+          <p className="mt-3 text-sm leading-relaxed text-white/40">
+            The assay queue appears here once the run is approved. Click any row to open the
+            molecule with a live PubChem lookup.
           </p>
         </div>
       </section>
@@ -423,12 +530,10 @@ function AssayPanel({ result, revealed, onOpen }) {
 
   return (
     <section className="glass lift rounded-xl p-5">
-      <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
-          Assay queue
-        </h2>
+      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 className="font-mono text-[11px] text-white/45">Assay queue</h3>
         <span className="text-xs text-white/40">
-          hits at positions {result.found_at.join(', ') || 'none yet'}
+          hits at {result.found_at.join(', ') || 'none'}
         </span>
       </div>
       <div className="max-h-[22rem] overflow-y-auto pr-1">
@@ -438,83 +543,47 @@ function AssayPanel({ result, revealed, onOpen }) {
   );
 }
 
-function BreakPanel({ facts, result }) {
-  if (!facts?.holdout) return null;
-  const { seen_auroc: seen, unseen_auroc: unseen } = facts.holdout;
-  const gap = (seen - unseen).toFixed(3);
+const STRATEGY_NAME = Object.fromEntries(STRATEGIES.map((s) => [s.id, s.label]));
 
+function CurvePanel({ curve, facts }) {
+  if (!curve) {
+    return <section className="glass lift h-[20rem] animate-pulse rounded-xl" />;
+  }
   return (
-    <section className="glass lift rounded-xl border-warn/20 p-5">
-      <div className="flex items-center gap-2 text-warn">
-        <AlertTriangle className="h-4 w-4" />
-        <span className="text-[11px] uppercase tracking-[0.2em]">
-          Where the hypothesis breaks
-        </span>
+    <section className="glass lift min-w-0 rounded-xl p-5">
+      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 className="font-mono text-[11px] text-white/45">
+          Discovery curve · {STRATEGY_NAME[curve.strategy] ?? curve.strategy}, {curve.budget} assays
+        </h3>
       </div>
-      <p className="mt-3 text-sm leading-relaxed text-white/70">
-        The rule holds on chemistry the model already knew, and weakens on
-        scaffolds it never saw. That gap is {gap} AUROC. And{' '}
-        <span className="font-semibold text-warn">
-          {facts.targets_on_unseen_scaffolds} of the {facts.targets} answers
-        </span>{' '}
-        live on exactly those unfamiliar scaffolds.
+      <DiscoveryCurve data={curve} targets={facts?.targets ?? curve.targets} />
+      <p className="mt-2 text-xs leading-relaxed text-white/40">
+        Answers found against assays spent. The amber line is this lab; the dashed line is the
+        random median and the grey band is random order from the 10th to the 90th percentile
+        over {curve.shuffles} shuffles.
       </p>
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <Meter label="Scaffolds seen" value={seen} count={facts.holdout.seen_n} tone="signal" />
-        <Meter
-          label="Scaffolds never seen"
-          value={unseen}
-          count={facts.holdout.unseen_n}
-          tone="warn"
-        />
-      </div>
-      {result && (
-        <p className="mt-4 border-t border-white/5 pt-3 text-xs text-white/45">
-          Next experiment this result justifies: push scaffold diversity into
-          the ordering, so the budget stops buying near-duplicates of chemistry
-          the model already understands.
-        </p>
-      )}
     </section>
-  );
-}
-
-function Meter({ label, value, count, tone }) {
-  const color = tone === 'warn' ? 'bg-warn' : 'bg-signal';
-  return (
-    <div>
-      <div className="flex items-baseline justify-between text-xs">
-        <span className="text-white/50">{label}</span>
-        <span className="tabular font-semibold text-white/80">{value.toFixed(3)}</span>
-      </div>
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/8">
-        <motion.div
-          className={`h-full ${color}`}
-          initial={{ width: 0 }}
-          animate={{ width: `${value * 100}%` }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        />
-      </div>
-      <div className="mt-1 text-[10px] text-white/30">{count} molecules</div>
-    </div>
   );
 }
 
 function EvidencePanel({ evidence }) {
   if (!evidence) return null;
-  const papers = [
-    ...(evidence.openalex?.items ?? []).slice(0, 2),
-    ...(evidence.europepmc?.items ?? []).slice(0, 2),
+  const answered = [
+    ['OpenAlex', evidence.openalex],
+    ['Europe PMC', evidence.europepmc],
   ];
+  const papers = answered.flatMap(([, block]) => (block?.items ?? []).slice(0, 2));
+  const ok = answered.filter(([, block]) => block?.items?.length).map(([name]) => name);
+  const failed = answered.filter(([, block]) => !block?.items?.length).map(([name]) => name);
   if (!papers.length) return null;
 
   return (
     <section className="glass lift rounded-xl p-5">
       <div className="flex items-center gap-2">
         <BookOpen className="h-4 w-4 text-white/35" />
-        <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
-          Evidence the literature agent pulled, just now
-        </h2>
+        <h3 className="font-mono text-[11px] text-white/45">
+          Literature step, searched when you pressed run
+        </h3>
       </div>
       <ul className="mt-3 space-y-2">
         {papers.map((paper, index) => (
@@ -530,30 +599,15 @@ function EvidencePanel({ evidence }) {
               target="_blank"
               rel="noreferrer"
               className="text-white/75 underline decoration-white/15 underline-offset-2 hover:text-hive-400"
-              dangerouslySetInnerHTML={{ __html: paper.title }}
-            />
+              >{paper.title}</a>
             <span className="ml-2 text-xs text-white/35">{paper.year}</span>
           </motion.li>
         ))}
       </ul>
-      <p className="mt-3 text-[11px] text-white/30">
-        Live from OpenAlex and Europe PMC. A failed lookup shows nothing rather
-        than something invented.
+      <p className="mt-3 text-[11px] leading-relaxed text-white/30">
+        Returned by {ok.join(' and ')}.
+        {failed.length > 0 && ` ${failed.join(' and ')} returned nothing this time, so nothing is shown for it.`}
       </p>
     </section>
-  );
-}
-
-function Footer({ facts }) {
-  return (
-    <footer className="mt-10 border-t border-white/5 pt-5 text-xs leading-relaxed text-white/30">
-      <p>
-        Data: ApisTox ({facts?.train_molecules ?? '—'} +{' '}
-        {facts?.pool_molecules ?? '—'} molecules), CC BY-NC 4.0, used under its
-        non-commercial terms. Our code is MIT. Nothing here is advice about
-        pesticide use; the lab proposes what to test next, and every number on
-        this page was measured by the code in the repository.
-      </p>
-    </footer>
   );
 }

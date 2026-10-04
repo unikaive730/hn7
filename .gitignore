@@ -11,6 +11,9 @@ dist/
 # local notes and recordings
 .notes/
 *.mp4
+HANDOFF.md
+endpoint_results.json
+apps/web/public/submission/
 
 # Python lab environment
 lab/.venv/
@@ -19,6 +22,7 @@ __pycache__/
 mlruns/
 lab/data/raw/
 .api.log
-lab/results/
+lab/results/*
+!lab/results/research_record.jsonl
 .web.log
 .omnigent-server.log

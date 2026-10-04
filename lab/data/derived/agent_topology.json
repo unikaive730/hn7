@@ -1,0 +1,115 @@
+{
+ "bundle": "agents/beeguard",
+ "orchestrator": {
+  "name": "beeguard-lab",
+  "description": "An agentic lab that travels back to the year 2000, reads only the chemistry known by then, and re-discovers the bee-safe insecticides science would not confirm for another two decades. Specialist agents hand work to each other, a human approves every experiment, and the result rewrites what runs next.",
+  "harness": "claude-sdk",
+  "model": "claude-haiku-4-5-20251001",
+  "dispatches": [
+   "literature",
+   "insight",
+   "planner",
+   "runner",
+   "analysis"
+  ],
+  "dispatch_tool": "sys_session_send",
+  "lab_access": true
+ },
+ "specialists": [
+  {
+   "name": "literature",
+   "description": "Searches live scientific sources and files citable evidence cards.",
+   "harness": "claude-sdk",
+   "model": "claude-haiku-4-5-20251001",
+   "lab_access": true,
+   "tools_named_in_prompt": [
+    "find_evidence"
+   ],
+   "gated_tools": [],
+   "config_path": "agents/beeguard/agents/literature/config.yaml"
+  },
+  {
+   "name": "insight",
+   "description": "Turns evidence cards into one falsifiable hypothesis.",
+   "harness": "claude-sdk",
+   "model": "claude-haiku-4-5-20251001",
+   "lab_access": false,
+   "tools_named_in_prompt": [],
+   "gated_tools": [],
+   "config_path": "agents/beeguard/agents/insight/config.yaml"
+  },
+  {
+   "name": "planner",
+   "description": "Compares candidate experiments and chooses which one runs.",
+   "harness": "claude-sdk",
+   "model": "claude-haiku-4-5-20251001",
+   "lab_access": true,
+   "tools_named_in_prompt": [
+    "describe_pool",
+    "estimate_experiment",
+    "choose_experiment"
+   ],
+   "gated_tools": [],
+   "config_path": "agents/beeguard/agents/planner/config.yaml"
+  },
+  {
+   "name": "runner",
+   "description": "Executes the chosen experiment, behind a human approval gate.",
+   "harness": "claude-sdk",
+   "model": "claude-haiku-4-5-20251001",
+   "lab_access": true,
+   "tools_named_in_prompt": [],
+   "gated_tools": [],
+   "config_path": "agents/beeguard/agents/runner/config.yaml"
+  },
+  {
+   "name": "analysis",
+   "description": "Decides whether the result supports or breaks the hypothesis.",
+   "harness": "claude-sdk",
+   "model": "claude-haiku-4-5-20251001",
+   "lab_access": true,
+   "tools_named_in_prompt": [
+    "test_hypothesis_on_unseen_chemistry",
+    "note_next_experiment"
+   ],
+   "gated_tools": [
+    "test_hypothesis_on_unseen_chemistry"
+   ],
+   "config_path": "agents/beeguard/agents/analysis/config.yaml"
+  }
+ ],
+ "mcp_server": {
+  "module": "lab.beeguard.mcp_server",
+  "tools": [
+   "find_evidence",
+   "lookup_compound",
+   "describe_pool",
+   "estimate_experiment",
+   "choose_experiment",
+   "run_experiment",
+   "test_hypothesis_on_unseen_chemistry",
+   "read_record",
+   "note_next_experiment"
+  ]
+ },
+ "policies": [
+  {
+   "name": "approve_experiments",
+   "type": "function",
+   "handler": "lab.beeguard.policies.ask_before_experiment"
+  },
+  {
+   "name": "cap_tool_calls",
+   "type": "function",
+   "handler": "omnigent.policies.builtins.safety.max_tool_calls_per_session",
+   "params": {
+    "limit": 60
+   }
+  }
+ ],
+ "gated_tools": [
+  "run_experiment",
+  "test_hypothesis_on_unseen_chemistry"
+ ],
+ "gate_effect": "ASK: the call pauses until a person accepts or declines it"
+}

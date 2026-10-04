@@ -1,0 +1,1053 @@
+{
+ "command": "PYTHONUTF8=1 PYTHONPATH=. lab/.venv/Scripts/python.exe -m lab.beeguard.brand",
+ "computed_at": "2026-10-04T14:17:15+0900",
+ "facts": {
+  "cutoff_year": 2000,
+  "train_molecules": 834,
+  "pool_molecules": 201,
+  "targets": 13,
+  "targets_on_unseen_scaffolds": 8,
+  "unseen_scaffold_molecules": 119,
+  "trained_seconds": 0.98
+ },
+ "run": {
+  "strategy": "model",
+  "budget": 30,
+  "diversity_weight": 1.0,
+  "found": 13,
+  "targets_total": 13,
+  "found_at": [
+   1,
+   2,
+   5,
+   7,
+   10,
+   11,
+   12,
+   14,
+   18,
+   19,
+   24,
+   27,
+   28
+  ],
+  "random_assays_for_same_hits": 191.0,
+  "speedup": 6.37,
+  "on_unseen_scaffolds": 8,
+  "seconds": 0.007
+ },
+ "order": [
+  {
+   "position": 1,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 2,
+   "is_target": true,
+   "scaffold_seen": true
+  },
+  {
+   "position": 3,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 4,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 5,
+   "is_target": true,
+   "scaffold_seen": true
+  },
+  {
+   "position": 6,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 7,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 8,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 9,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 10,
+   "is_target": true,
+   "scaffold_seen": true
+  },
+  {
+   "position": 11,
+   "is_target": true,
+   "scaffold_seen": true
+  },
+  {
+   "position": 12,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 13,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 14,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 15,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 16,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 17,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 18,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 19,
+   "is_target": true,
+   "scaffold_seen": true
+  },
+  {
+   "position": 20,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 21,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 22,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 23,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 24,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 25,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 26,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 27,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 28,
+   "is_target": true,
+   "scaffold_seen": false
+  },
+  {
+   "position": 29,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 30,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 31,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 32,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 33,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 34,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 35,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 36,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 37,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 38,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 39,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 40,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 41,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 42,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 43,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 44,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 45,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 46,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 47,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 48,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 49,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 50,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 51,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 52,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 53,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 54,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 55,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 56,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 57,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 58,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 59,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 60,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 61,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 62,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 63,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 64,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 65,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 66,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 67,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 68,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 69,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 70,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 71,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 72,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 73,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 74,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 75,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 76,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 77,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 78,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 79,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 80,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 81,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 82,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 83,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 84,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 85,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 86,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 87,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 88,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 89,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 90,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 91,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 92,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 93,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 94,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 95,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 96,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 97,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 98,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 99,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 100,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 101,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 102,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 103,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 104,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 105,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 106,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 107,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 108,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 109,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 110,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 111,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 112,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 113,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 114,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 115,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 116,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 117,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 118,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 119,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 120,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 121,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 122,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 123,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 124,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 125,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 126,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 127,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 128,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 129,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 130,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 131,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 132,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 133,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 134,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 135,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 136,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 137,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 138,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 139,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 140,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 141,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 142,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 143,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 144,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 145,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 146,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 147,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 148,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 149,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 150,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 151,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 152,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 153,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 154,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 155,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 156,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 157,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 158,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 159,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 160,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 161,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 162,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 163,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 164,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 165,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 166,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 167,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 168,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 169,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 170,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 171,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 172,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 173,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 174,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 175,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 176,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 177,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 178,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 179,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 180,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 181,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 182,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 183,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 184,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 185,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 186,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 187,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 188,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 189,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 190,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 191,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 192,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 193,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 194,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 195,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 196,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 197,
+   "is_target": false,
+   "scaffold_seen": false
+  },
+  {
+   "position": 198,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 199,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 200,
+   "is_target": false,
+   "scaffold_seen": true
+  },
+  {
+   "position": 201,
+   "is_target": false,
+   "scaffold_seen": true
+  }
+ ],
+ "sources_called": [
+  "apistox",
+  "pubchem",
+  "chembl",
+  "openalex",
+  "europepmc"
+ ]
+}

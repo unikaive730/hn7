@@ -1,0 +1,27 @@
+{
+  "dataset_final.csv": {
+    "url": "https://raw.githubusercontent.com/j-adamczyk/ApisTox_dataset/master/outputs/dataset_final.csv",
+    "bytes": 135018,
+    "sha256": "de4b160a23601a44ac5ec5b23aae95973acba060135630a6df8f73d128baea9e"
+  },
+  "time_train.csv": {
+    "url": "https://raw.githubusercontent.com/j-adamczyk/ApisTox_dataset/master/outputs/splits/time_train.csv",
+    "bytes": 103603,
+    "sha256": "41599bbf5b8e099b2f3b0a5c88bb91aa3fcfafb3bb70e5836d15c4f49178846b"
+  },
+  "time_test.csv": {
+    "url": "https://raw.githubusercontent.com/j-adamczyk/ApisTox_dataset/master/outputs/splits/time_test.csv",
+    "bytes": 31529,
+    "sha256": "a046df92c83fdcffd9e28190025b9e89c5e0c14f6e454ac7f8b1c462962f502d"
+  },
+  "maxmin_train.csv": {
+    "url": "https://raw.githubusercontent.com/j-adamczyk/ApisTox_dataset/master/outputs/splits/maxmin_train.csv",
+    "bytes": 108997,
+    "sha256": "fc2711a77967ce66a39cb378e7b52858581d1333b5704b1cf026b6c5556edfd1"
+  },
+  "maxmin_test.csv": {
+    "url": "https://raw.githubusercontent.com/j-adamczyk/ApisTox_dataset/master/outputs/splits/maxmin_test.csv",
+    "bytes": 26135,
+    "sha256": "017f8242dc1d7d70a89a118d6c0c9cafd70304de2f88d8a80fd115ef5d767a70"
+  }
+}

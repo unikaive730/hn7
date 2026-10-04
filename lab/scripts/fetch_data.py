@@ -1,7 +1,8 @@
 """Download the ApisTox dataset and record a checksum.
 
-The data is CC-BY-NC-4.0, so it is never committed to this MIT-licensed
-repository. Run this script once before anything else.
+ApisTox data retains its CC-BY-NC-4.0 license and attribution, including
+when supplied for reproducibility. MIT applies to BeeGuard code, not to
+these dataset files. See lab/data/README.md and the checksum manifest.
 """
 from __future__ import annotations
 

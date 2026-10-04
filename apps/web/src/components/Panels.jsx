@@ -20,13 +20,12 @@ export function StrategyCompare({ data }) {
 
   return (
     <section className="glass lift rounded-xl p-5">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <GitCompare className="h-4 w-4 text-white/35" />
-        <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
-          Same budget, three orderings
-        </h2>
-        <span className="ml-auto text-xs text-white/35">
-          {data.budget} assays · random finds {data.random_median_found}
+        <h3 className="font-mono text-[11px] text-white/45">Same budget, three orderings</h3>
+        <span className="basis-full text-xs text-white/35">
+          {data.budget} assays each. Random order over the whole pool finds a median of{' '}
+          {data.random_median_found}.
         </span>
       </div>
 
@@ -42,8 +41,7 @@ export function StrategyCompare({ data }) {
               <span className="text-white/75">{STRATEGY_LABEL[row.strategy]}</span>
               <span className="tabular text-white/50">
                 <span className="font-semibold text-white/85">{row.found}</span> found ·{' '}
-                {row.scaffolds_covered} scaffolds ·{' '}
-                <span className="text-hive-400">{row.vs_random}×</span>
+                {row.scaffolds_covered} scaffolds
               </span>
             </div>
             <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/8">
@@ -60,61 +58,107 @@ export function StrategyCompare({ data }) {
         ))}
       </div>
 
-      <p className="mt-4 text-xs leading-relaxed text-white/40">
-        Diversity trades a find for two more scaffolds. That is the trade worth
-        making here: {}
-        most of the answers sit on scaffolds the model has never seen, and the
-        learned ordering cannot reach them.
-      </p>
+      <CompareReading data={data} />
     </section>
   );
 }
 
-/** The same question asked from three points in history. */
+/** One or two sentences built from the comparison, so the claim moves with
+ *  the budget instead of being written for one run. */
+function CompareReading({ data }) {
+  const by = Object.fromEntries(data.rows.map((r) => [r.strategy, r]));
+  const m = by.model;
+  const d = by.diversity;
+  const n = by.insecticide_only;
+  if (!m) return null;
+  const parts = [];
+  if (n) {
+    const r = data.random_median_found;
+    const fromFilter = n.found - r;
+    const total = m.found - r;
+    const share =
+      total > 0 && fromFilter >= total / 2
+        ? ', so most of the gap to random comes from testing insecticides first'
+        : total > 0
+          ? ', so the model adds more than the insecticide filter does'
+          : '';
+    parts.push(
+      `Insecticides in arbitrary order find ${n.found} and the learned ordering finds ${m.found}, against ${r} for random order over the whole pool${share}.`,
+    );
+  }
+  if (d) {
+    const lost = m.found - d.found;
+    const gained = d.scaffolds_covered - m.scaffolds_covered;
+    if (lost > 0 && gained > 0) {
+      parts.push(
+        `The diversity penalty gives up ${lost} ${lost === 1 ? 'find' : 'finds'} to test ${gained} more scaffolds.`,
+      );
+    } else if (lost <= 0 && gained > 0) {
+      parts.push(`The diversity penalty tests ${gained} more scaffolds without losing a find.`);
+    } else {
+      parts.push(`The diversity penalty finds ${d.found} and covers ${d.scaffolds_covered} scaffolds.`);
+    }
+  }
+  return <p className="mt-4 text-xs leading-relaxed text-white/45">{parts.join(' ')}</p>;
+}
+
+/** The same question asked from three points in history, as one table so
+ *  the eras read against each other instead of as three separate cards. */
 export function EraPanel({ data }) {
   if (!data?.eras?.length) return null;
 
   return (
     <section className="glass lift rounded-xl p-5">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <Clock className="h-4 w-4 text-white/35" />
-        <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
-          Move the clock, re-run the question
-        </h2>
+        <h3 className="font-mono text-[11px] text-white/45">Move the clock, re-run the question</h3>
+        <span className="basis-full text-xs text-white/35">
+          Retrained at each cutoff, {data.budget} assays each.
+        </span>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        {data.eras.map((era, index) => (
-          <motion.div
-            key={era.cutoff_year}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="rounded-lg border border-white/6 bg-white/[0.02] p-3"
-          >
-            <div className="text-2xl font-semibold text-hive-400">{era.cutoff_year}</div>
-            <div className="mt-2 space-y-1 text-xs text-white/50">
-              <div>
-                <span className="tabular text-white/80">{era.train_molecules}</span> known
-              </div>
-              <div>
-                <span className="tabular text-white/80">{era.targets}</span> answers ahead
-              </div>
-              {era.speedup != null && (
-                <div className="pt-1 text-sm text-white/75">
-                  found <span className="tabular font-semibold">{era.found}</span>,{' '}
-                  <span className="text-hive-400">{era.speedup}×</span>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        ))}
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[19rem] text-sm">
+          <thead className="font-mono text-[10px] text-white/35">
+            <tr className="border-b border-white/8 text-right">
+              <th className="pb-2 text-left font-normal">cutoff</th>
+              <th className="pb-2 font-normal">known by then</th>
+              <th className="pb-2 font-normal">pool after</th>
+              <th className="pb-2 font-normal">found / answers</th>
+              <th className="pb-2 font-normal">fewer assays</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.eras.map((era, index) => (
+              <motion.tr
+                key={era.cutoff_year}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+                className="border-b border-white/5 text-right tabular text-white/70 last:border-0"
+              >
+                <td className="py-2.5 text-left font-serif-display text-2xl text-hive-400">
+                  {era.cutoff_year}
+                </td>
+                <td className="py-2.5">{era.train_molecules}</td>
+                <td className="py-2.5">{era.pool_molecules}</td>
+                <td className="whitespace-nowrap py-2.5">
+                  <span className="text-white/90">{era.found}</span>
+                  <span className="text-white/35"> / {era.targets}</span>
+                </td>
+                <td className="py-2.5 font-mono text-hive-400">
+                  {era.speedup != null ? `${era.speedup}×` : 'n/a'}
+                </td>
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <p className="mt-3 text-xs leading-relaxed text-white/40">
-        The lab is not tuned to one date. Move the cutoff and it retrains on
-        whatever was published by then, and the answers it has to find change
-        with it.
+        Move the cutoff and the lab retrains on whatever was published by then, so both the
+        training set and the answers it has to find change.
       </p>
     </section>
   );
@@ -136,9 +180,9 @@ export function RecordPanel({ rows }) {
     <section className="glass lift rounded-xl p-5">
       <div className="flex items-center gap-2">
         <Layers className="h-4 w-4 text-white/35" />
-        <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+        <h3 className="font-mono text-[11px] text-white/45">
           Research record
-        </h2>
+        </h3>
         <span className="ml-auto text-xs text-white/30">{rows.length} rows</span>
       </div>
 
@@ -206,14 +250,14 @@ export function MoleculePanel({ molecule, onClose }) {
 
       <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-xs sm:grid-cols-4">
         <Field label="first reported" value={dataset.year} />
-        <Field label="bee toxicity" value={dataset.label === 1 ? 'toxic' : 'safe'} />
+        <Field label="bee toxicity" value={dataset.label === 1 ? 'toxic' : 'non-toxic'} />
         <Field label="insecticide" value={dataset.insecticide === 1 ? 'yes' : 'no'} />
         <Field label="mol. weight" value={dataset.molecular_weight} />
       </div>
 
       {pubchem?.ok && (
         <div className="mt-4 rounded-lg border border-white/6 bg-white/[0.02] p-3">
-          <div className="text-[10px] uppercase tracking-wide text-white/35">
+          <div className="font-mono text-[10px] text-white/40">
             PubChem, fetched just now
           </div>
           <div className="mt-2 grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs sm:grid-cols-3">
@@ -243,7 +287,7 @@ export function MoleculePanel({ molecule, onClose }) {
 function Field({ label, value }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wide text-white/30">{label}</div>
+      <div className="font-mono text-[10px] text-white/35">{label}</div>
       <div className="tabular text-white/80">{value ?? '—'}</div>
     </div>
   );
