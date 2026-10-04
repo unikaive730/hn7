@@ -36,6 +36,36 @@ The headline includes the benefit of prioritizing known insecticides over the en
 
 The older `lab/scripts/baseline.py` uses the supplied official split files rather than the engine's strict year filter. Its saved result is AUROC 0.7947 with train/test counts 829/208. These two split definitions and their metrics should not be combined.
 
+## Agent specifications and policies
+
+Each specialist owns one scientific decision and is given only the tools that decision needs. The orchestrator never runs an experiment itself; it holds the budget and decides who works next. Configs live in `agents/beeguard/config.yaml` and `agents/beeguard/agents/<name>/config.yaml`, one directory per sub-agent, which is how Omnigent discovers them.
+
+| Agent | The decision it owns | Tools it can call | Input | Output |
+|---|---|---|---|---|
+| orchestrator | Who works next, and how much budget the run may spend | `sys_session_send`, `sys_read_inbox`, and the lab MCP server | The question and the assay budget | The measured acceleration, and where it is weakest |
+| literature | What counts as evidence for the question | `find_evidence` (OpenAlex, Europe PMC) | A focused query | Evidence cards carrying DOIs; says so when a search returns nothing |
+| insight | The one hypothesis worth testing, and what would falsify it | none; it reasons only over the cards it is handed | Evidence cards | A hypothesis, a confidence, and the result that would break it |
+| planner | Which of the competing experiments runs | `describe_pool`, `estimate_experiment`, `choose_experiment` | The hypothesis and the budget | The chosen experiment, the rejected one, and why |
+| runner | Nothing scientific. It executes and reports verbatim | `run_experiment` (gated), `test_hypothesis_on_unseen_chemistry` (gated) | The chosen experiment | The numbers the tool returned, unmodified |
+| analysis | Whether the result supports or breaks the hypothesis | `test_hypothesis_on_unseen_chemistry` (gated), `note_next_experiment` | The result and the hypothesis | Supported, rejected or inconclusive, and the next experiment it justifies |
+
+Two policies bind the run, declared under `guardrails.policies` in the bundle config:
+
+| Policy | Handler | Effect |
+|---|---|---|
+| `approve_experiments` | `lab.beeguard.policies.ask_before_experiment` | Returns `ASK` for `run_experiment` and `test_hypothesis_on_unseen_chemistry`, with a readable summary of what is about to be spent. Everything else is reading and reasoning, and is allowed |
+| `cap_tool_calls` | `omnigent.policies.builtins.safety.max_tool_calls_per_session` | Stops a run at 60 tool calls |
+
+The boundary is code the agents cannot edit, not a sentence in a prompt asking them to behave. Spending assay budget is a decision a person makes.
+
+## What we would run next
+
+Two experiments, in this order.
+
+**1. Settle whether the model adds anything beyond the insecticide filter.** This is the honest open question, and the page says so rather than hiding it. Random order over the whole 201-molecule pool needs a median of 191 assays to find all 13 answers and the lab needs 28, which is the 6.37×; none of 5,000 shuffles reached all 13 by assay 28 (p = 4.0 × 10⁻¹³). But most of that gap is the free `insecticide` annotation. Restricted to the 31 pool insecticides the ordering actually draws from, random needs a median of 30 and the lab needs 28, with 895 of 5,000 shuffles doing at least as well (p = 0.18) and a within-class AUROC of 0.628. Thirteen answers among thirty-one candidates cannot separate a real effect from noise. The experiment is a power problem, not a modelling one: pool several cutoff years so the within-class comparison runs on hundreds of answers instead of thirteen, and pre-register the within-class AUROC as the endpoint before looking.
+
+**2. Put the top candidates in front of actual bees.** The candidate funnel starts from 12,851 ChEMBL activity records on eleven pest species, keeps the 3,463 molecules absent from ApisTox, the 470 active at 10 mg/L or better, the 348 the model scores as bee-safe, and the 288 that also sit inside the applicability domain. Every one is a prediction with no bee measurement behind it. The first assay to order is the top of that list, for example CHEMBL2228438, active on *Mythimna separata* at 10 mg/L, scored 0.97 bee-safe at a Tanimoto of 0.71 to its nearest ApisTox neighbour, which is itself labelled non-toxic. An OECD 213/214 acute oral and contact test on the top ranked molecules, alongside a matched set the model scores as unsafe, turns the ranking into a measurement. Sixty molecules the model calls bee-safe are deliberately left off the list because nothing in training sits within 0.3 Tanimoto of them; they are the second batch, and the honest test of whether the applicability-domain cut was doing real work.
+
 ## Repository
 
 | Path | Role |
