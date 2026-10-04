@@ -19,6 +19,26 @@ GATED_TOOLS = {
 _ALLOW: dict[str, Any] = {"result": "ALLOW"}
 
 
+def _gated(name: str) -> str:
+    """Return the gated tool a call refers to, or an empty string.
+
+    The harness does not always hand the policy the bare tool name. An MCP
+    server contributes its own namespace, so `run_experiment` arrives as
+    `lab__run_experiment`, and an exact-match test silently lets it through.
+    That is not hypothetical: recorded run 516a4d6c spent 15 assays with no
+    approval because of it. Match the suffix on the usual separators instead,
+    and keep the comparison narrow enough that a tool merely ending in the same
+    word cannot slip past as something else.
+    """
+    for gated in GATED_TOOLS:
+        if name == gated:
+            return gated
+        for sep in ("__", ".", ":", "/"):
+            if name.endswith(f"{sep}{gated}"):
+                return gated
+    return ""
+
+
 def ask_before_experiment(event: dict[str, Any]) -> dict[str, Any]:
     """Pause for human approval before an experiment consumes assay budget.
 
@@ -31,8 +51,8 @@ def ask_before_experiment(event: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(data, dict):
         return _ALLOW
 
-    tool = data.get("name", "")
-    if tool not in GATED_TOOLS:
+    tool = _gated(data.get("name", ""))
+    if not tool:
         return _ALLOW
 
     args = data.get("arguments") or {}
