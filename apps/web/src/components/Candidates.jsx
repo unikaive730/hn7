@@ -102,7 +102,7 @@ function SafeBar({ value }) {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         />
       </div>
-      <span className="font-mono text-[11px] tabular text-white/75">{value.toFixed(2)}</span>
+      <span className="font-mono cap tabular text-white/75">{value.toFixed(2)}</span>
     </div>
   );
 }
@@ -116,13 +116,14 @@ function CandidateRow({ row, rank }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className="grid grid-cols-[72px_1fr] gap-3 border-t border-white/5 py-3 sm:grid-cols-[28px_96px_1fr_auto] sm:items-center sm:gap-4"
+      className="grid grid-cols-1 gap-3 border-t border-white/5 py-3 sm:grid-cols-[28px_96px_1fr_auto] sm:items-center sm:gap-4"
     >
       <span className="hidden text-right font-mono text-xs tabular text-white/30 sm:block">{rank}</span>
 
-      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-md border border-white/6 bg-night-900/60 sm:h-24 sm:w-24">
+      {/* The 72px drawing is an illegible smudge on a phone, so it starts at sm. */}
+      <div className="hidden h-24 w-24 items-center justify-center rounded-md border border-white/6 bg-night-900/60 sm:flex">
         {broken ? (
-          <span className="px-1 text-center text-[9px] text-white/30">no drawing</span>
+          <span className="px-1 text-center cap-sm text-white/30">no drawing</span>
         ) : (
           <img
             src={smilesSvg(row.smiles, 192)}
@@ -136,19 +137,19 @@ function CandidateRow({ row, rank }) {
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="font-mono text-[11px] text-white/30 sm:hidden">#{rank}</span>
+          <span className="font-mono cap text-white/30 sm:hidden">#{rank}</span>
           <a
             href={`https://www.ebi.ac.uk/chembl/compound_report_card/${row.chembl_id}/`}
             target="_blank"
             rel="noreferrer"
             title={row.name ?? row.chembl_id}
-            className="inline-flex min-w-0 max-w-full items-center gap-1 text-sm text-white/90 hover:text-hive-400"
+            className="tap inline-flex min-w-0 max-w-full items-center gap-1 text-sm text-white/90 hover:text-hive-400"
           >
             <span className="truncate">{row.name ?? row.chembl_id}</span>
             <ExternalLink className="h-3 w-3 shrink-0 text-white/25" />
           </a>
-          {row.name && <span className="font-mono text-[10px] text-white/30">{row.chembl_id}</span>}
-          <span className="rounded border border-hive-400/30 px-1.5 py-0.5 font-mono text-[10px] text-hive-400/85">
+          {row.name && <span className="font-mono cap-sm text-white/30">{row.chembl_id}</span>}
+          <span className="rounded border border-hive-400/30 px-1.5 py-0.5 font-mono cap-sm text-hive-400/85">
             hypothesis, needs bee assay
           </span>
         </div>
@@ -161,7 +162,7 @@ function CandidateRow({ row, rank }) {
           {row.year && <span className="text-white/30"> · {row.year}</span>}
         </div>
 
-        <div className="mt-1 truncate text-[11px] text-white/40" title={row.assay_description}>
+        <div className="mt-1 line-clamp-2 cap text-white/40 sm:truncate" title={row.assay_description}>
           nearest ApisTox: <span className="text-white/60">{row.nearest_name}</span>{' '}
           <span className={row.nearest_label ? 'text-warn' : 'text-signal'}>
             ({row.nearest_label ? 'toxic' : 'not toxic'})
@@ -170,14 +171,14 @@ function CandidateRow({ row, rank }) {
 
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 sm:hidden">
           <SafeBar value={row.bee_safe_score} />
-          <span className="font-mono text-[11px] text-white/45">sim {row.max_similarity.toFixed(2)}</span>
+          <span className="font-mono cap text-white/45">sim {row.max_similarity.toFixed(2)}</span>
         </div>
       </div>
 
       <div className="hidden w-44 space-y-1.5 sm:block">
-        <div className="font-mono text-[10px] text-white/35">bee-safe score</div>
+        <div className="font-mono cap-sm text-white/35">bee-safe score</div>
         <SafeBar value={row.bee_safe_score} />
-        <div className="flex items-center gap-2 text-[11px]">
+        <div className="flex items-center gap-2 cap">
           <span className="rounded border border-white/10 px-1.5 py-0.5 font-mono text-white/55">
             sim {row.max_similarity.toFixed(2)}
           </span>
@@ -237,8 +238,9 @@ export default function Candidates() {
           </p>
         </div>
         {data && (
-          <div className="font-mono text-[10px] leading-relaxed text-white/30 sm:text-right">
+          <div className="font-mono cap-sm leading-relaxed text-white/30 sm:text-right">
             {data.total_ranked} ranked
+            {data.ranked_scaffolds ? ` on ${data.ranked_scaffolds} Murcko scaffolds` : ''}
             <br />
             PubChem CID for {data.pubchem_cids_found} of {data.pubchem_lookups} looked up
           </div>
@@ -256,13 +258,13 @@ export default function Candidates() {
         <>
           <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_1.1fr]">
             <div>
-              <div className="mb-1 text-[10px] text-white/35">
+              <div className="mb-1 cap-sm text-white/35">
                 How the list was cut (log scale)
               </div>
               <Funnel funnel={data.funnel} />
             </div>
             <div className="space-y-3 text-xs leading-relaxed text-white/50">
-              <div className="rounded-lg border border-white/6 bg-white/[0.02] p-3 font-mono text-[11px] leading-relaxed text-white/55">
+              <div className="rounded-lg border border-white/6 bg-white/[0.02] p-3 font-mono cap leading-relaxed text-white/55">
                 <div>
                   <span className="text-white/30">active </span>
                   {data.rules.active}
@@ -280,6 +282,21 @@ export default function Candidates() {
                   {data.rules.sort}
                 </div>
               </div>
+              <p className="cap leading-relaxed text-white/40">
+                The bee-safe score is the forest's vote share over its 500 trees, not a calibrated
+                probability. Use it to rank, not as a risk estimate.
+                {data.ranked_scaffolds ? (
+                  <>
+                    {' '}
+                    The ranked list is not {data.total_ranked} independent hypotheses either: it
+                    sits on {data.ranked_scaffolds} Murcko scaffolds with{' '}
+                    {data.ranked_nearest_neighbours} distinct nearest ApisTox molecules, so
+                    neighbouring rows are often analogues of one chemotype.
+                  </>
+                ) : (
+                  <> Neighbouring rows are often analogues of the same chemotype.</>
+                )}
+              </p>
               <p>
                 {data.safe_but_out_of_domain.toLocaleString('en-US')} more molecules score as bee-safe
                 but share too little structure with ApisTox for that score to carry weight, so they are left
@@ -296,7 +313,7 @@ export default function Candidates() {
                 setPest(null);
                 setShown(PAGE);
               }}
-              className={`rounded-md border px-2 py-1 text-[11px] transition ${
+              className={`tap-y rounded-md border px-2 py-1 cap transition ${
                 pest == null
                   ? 'border-hive-400/50 bg-hive-400/10 text-hive-400'
                   : 'border-white/8 text-white/50 hover:border-white/20'
@@ -311,7 +328,7 @@ export default function Candidates() {
                   setPest(name);
                   setShown(PAGE);
                 }}
-                className={`rounded-md border px-2 py-1 text-[11px] italic transition ${
+                className={`tap-y rounded-md border px-2 py-1 cap italic transition ${
                   pest === name
                     ? 'border-hive-400/50 bg-hive-400/10 text-hive-400'
                     : 'border-white/8 text-white/50 hover:border-white/20'
@@ -343,7 +360,7 @@ export default function Candidates() {
             </button>
           )}
           {data.total_ranked > data.rows.length && (
-            <p className="mt-2 text-[11px] text-white/30">
+            <p className="mt-2 cap text-white/30">
               Showing the top {data.rows.length} of {data.total_ranked}. The rest are in
               lab/data/derived/chembl_external.json.
             </p>

@@ -71,7 +71,7 @@ export default function LearningLoop() {
             {data ? `, so it keeps the model trained on data up to ${data.cutoff_year}` : ''}.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3 text-[11px]">
+        <div className="flex flex-wrap gap-3 cap">
           <Segment label="budget" options={BUDGETS} value={budget} onChange={setBudget} />
           <Segment label="batch" options={BATCHES} value={batch} onChange={setBatch} />
         </div>
@@ -113,12 +113,12 @@ export default function LearningLoop() {
               n="3"
               caption="Queue position of each answer still untested, after every refit. A line that reaches the top row was assayed in that round."
               aside={
-                <div className="flex gap-1 text-[10px]">
+                <div className="flex gap-1 cap-sm">
                   {['retrain', 'frozen'].map((id) => (
                     <button
                       key={id}
                       onClick={() => setArm(id)}
-                      className={`rounded px-1.5 py-0.5 transition ${
+                      className={`tap-y rounded px-1.5 py-0.5 transition ${
                         arm === id ? 'bg-white/10 text-white/85' : 'text-white/35 hover:text-white/60'
                       }`}
                     >
@@ -134,7 +134,7 @@ export default function LearningLoop() {
 
           <RoundTable data={data} />
 
-          <p className="mt-4 break-words font-mono text-[10px] leading-relaxed text-white/25">
+          <p className="mt-4 break-words font-mono cap-sm leading-relaxed text-white/25">
             random forest, {data.trees} trees, seed {data.seed}, {data.features ?? 'Morgan fingerprints'} · each assay
             reads the measured label from ApisTox · MLflow run{' '}
             {data.mlflow_run_id ? data.mlflow_run_id.slice(0, 12) : 'not logged'} ·
@@ -155,7 +155,7 @@ function Segment({ label, options, value, onChange }) {
           <button
             key={option}
             onClick={() => onChange(option)}
-            className={`tabular rounded px-2 py-0.5 font-mono transition ${
+            className={`tap-y tabular rounded px-2 py-0.5 font-mono transition ${
               option === value ? 'bg-hive-400/15 text-hive-400' : 'text-white/45 hover:text-white/75'
             }`}
           >
@@ -223,12 +223,12 @@ function Figure({ n, caption, aside, children }) {
   return (
     <figure className="min-w-0">
       <div className="mb-2 flex items-center gap-2">
-        <span className="font-mono text-[10px] text-hive-400/70">fig {n}</span>
+        <span className="font-mono cap-sm text-hive-400/70">fig {n}</span>
         <span className="h-px flex-1 bg-white/6" />
         {aside}
       </div>
       {children}
-      <figcaption className="mt-1.5 text-[11px] leading-snug text-white/35">{caption}</figcaption>
+      <figcaption className="mt-1.5 cap leading-snug text-white/35">{caption}</figcaption>
     </figure>
   );
 }
@@ -243,7 +243,7 @@ const tooltipStyle = {
 
 function Legend() {
   return (
-    <div className="mb-1 flex gap-4 text-[10px] text-white/45">
+    <div className="mb-1 flex gap-4 cap-sm text-white/45">
       <span className="flex items-center gap-1.5">
         <span className="h-0.5 w-4 rounded" style={{ background: AMBER }} /> retraining
       </span>
@@ -353,6 +353,37 @@ function AurocChart({ data }) {
   );
 }
 
+/** Which answer the Verdict paragraph singles out: the one whose assay moved
+ *  most between the two arms, identified by pick order so the chart and the
+ *  sentence always point at the same molecule. */
+function largestGapIndex(data) {
+  const r = data.retrain.summary.hit_at ?? [];
+  const f = data.frozen.summary.hit_at ?? [];
+  let gap = null;
+  let index = -1;
+  r.forEach((at, i) => {
+    const d = (f[i] ?? Infinity) - at;
+    if (Number.isFinite(d) && d !== 0 && (gap === null || Math.abs(d) > Math.abs(gap))) {
+      gap = d;
+      index = i;
+    }
+  });
+  return index;
+}
+
+function nthAnswerPicked(data, arm, index) {
+  if (index < 0) return null;
+  let k = 0;
+  for (const round of data[arm].rounds) {
+    for (const pick of round.picked ?? []) {
+      if (!pick.target) continue;
+      if (k === index) return pick;
+      k += 1;
+    }
+  }
+  return null;
+}
+
 /** One line per answer: where it sits in the queue after each refit. */
 function RankTrace({ data, arm }) {
   const { rows, cids, maxRank } = useMemo(() => {
@@ -376,56 +407,90 @@ function RankTrace({ data, arm }) {
       });
       return row;
     });
-    return { rows: out, cids: ids, maxRank: top };
+    // Every answer is tested well before the budget runs out, so the rounds
+    // after the last live trace are empty plot. Stop the axis there.
+    let last = 0;
+    out.forEach((row, i) => {
+      if (ids.some((cid) => row[cid] != null)) last = i;
+    });
+    return { rows: out.slice(0, last + 1), cids: ids, maxRank: top };
   }, [data, arm]);
 
   const names = Object.fromEntries(data.targets_meta.map((t) => [String(t.cid), t.name]));
+  const gapIndex = largestGapIndex(data);
+  const marked = nthAnswerPicked(data, arm, gapIndex);
+  const markedCid = marked ? String(marked.cid) : null;
+  // Draw the marked trace last so it sits above the grey ones.
+  const drawOrder = markedCid ? [...cids.filter((c) => c !== markedCid), markedCid] : cids;
 
   return (
-    <div className="h-[22rem] w-full">
-      <ResponsiveContainer>
-        <LineChart data={rows} margin={{ top: 8, right: 10, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
-          <XAxis dataKey="assays" stroke={AXIS} tick={{ fontSize: 10 }} tickLine={false} />
-          <YAxis
-            stroke={AXIS}
-            tick={{ fontSize: 10 }}
-            tickLine={false}
-            reversed
-            domain={[0, maxRank]}
-            allowDecimals={false}
-            tickFormatter={(v) => (v === 0 ? 'tested' : v)}
-            width={48}
-          />
-          <Tooltip
-            contentStyle={tooltipStyle}
-            labelFormatter={(v) => `after ${v} assays`}
-            itemSorter={(item) => item.value}
-            formatter={(v, cid) => [v === 0 ? 'assayed this round' : `#${v} in queue`, names[cid] ?? cid]}
-          />
-          {cids.map((cid) => (
-            <Line
-              key={cid}
-              dataKey={cid}
-              stroke="rgba(255,255,255,0.32)"
-              strokeWidth={1.25}
-              connectNulls={false}
-              isAnimationActive={false}
-              dot={(props) =>
-                props.value == null || props.cy == null ? (
-                  <g key={`${cid}-${props.index}`} />
-                ) : props.value === 0 ? (
-                  <circle key={`${cid}-${props.index}`} cx={props.cx} cy={props.cy} r={3.5} fill={AMBER} />
-                ) : (
-                  <circle key={`${cid}-${props.index}`} cx={props.cx} cy={props.cy} r={1.4} fill="rgba(255,255,255,0.4)" />
-                )
-              }
-              activeDot={{ r: 3, fill: '#fff' }}
+    <>
+      <div className="h-[22rem] w-full">
+        <ResponsiveContainer>
+          <LineChart data={rows} margin={{ top: 8, right: 10, bottom: 0, left: 0 }}>
+            <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
+            <XAxis dataKey="assays" stroke={AXIS} tick={{ fontSize: 11 }} tickLine={false} />
+            <YAxis
+              stroke={AXIS}
+              tick={{ fontSize: 11 }}
+              tickLine={false}
+              reversed
+              domain={[0, maxRank]}
+              allowDecimals={false}
+              tickFormatter={(v) => (v === 0 ? 'tested' : v)}
+              width={52}
             />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+            <Tooltip
+              contentStyle={tooltipStyle}
+              labelFormatter={(v) => `after ${v} assays`}
+              itemSorter={(item) => item.value}
+              formatter={(v, cid) => [v === 0 ? 'assayed this round' : `#${v} in queue`, names[cid] ?? cid]}
+            />
+            {drawOrder.map((cid) => {
+              const on = cid === markedCid;
+              return (
+                <Line
+                  key={cid}
+                  dataKey={cid}
+                  stroke={on ? AMBER : 'rgba(255,255,255,0.22)'}
+                  strokeWidth={on ? 2 : 1.25}
+                  connectNulls={false}
+                  isAnimationActive={false}
+                  dot={(props) =>
+                    props.value == null || props.cy == null ? (
+                      <g key={`${cid}-${props.index}`} />
+                    ) : props.value === 0 ? (
+                      <circle
+                        key={`${cid}-${props.index}`}
+                        cx={props.cx}
+                        cy={props.cy}
+                        r={on ? 4 : 3.5}
+                        fill={on ? AMBER : 'rgba(255,255,255,0.55)'}
+                      />
+                    ) : (
+                      <circle
+                        key={`${cid}-${props.index}`}
+                        cx={props.cx}
+                        cy={props.cy}
+                        r={1.4}
+                        fill={on ? AMBER : 'rgba(255,255,255,0.4)'}
+                      />
+                    )
+                  }
+                  activeDot={{ r: 3, fill: '#fff' }}
+                />
+              );
+            })}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      {marked && (
+        <div className="mt-1 flex items-center gap-2 cap text-white/45">
+          <span className="inline-block h-0.5 w-5 rounded bg-hive-400" />
+          the {ordinal(gapIndex + 1)} answer, {marked.name}. The other {cids.length - 1} are grey.
+        </div>
+      )}
+    </>
   );
 }
 
@@ -435,14 +500,14 @@ function RoundTable({ data }) {
   return (
     <div className="mt-6">
       <div className="mb-2 flex items-center gap-2">
-        <span className="font-mono text-[10px] text-hive-400/70">table</span>
-        <span className="text-[11px] text-white/40">round by round, retraining arm unless marked</span>
+        <span className="font-mono cap-sm text-hive-400/70">table</span>
+        <span className="cap text-white/40">round by round, retraining arm unless marked</span>
         <span className="h-px flex-1 bg-white/6" />
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[34rem] border-collapse text-left text-[11px]">
+        <table className="w-full min-w-[34rem] border-collapse text-left cap">
           <thead>
-            <tr className="border-b border-white/8 text-[10px] text-white/35">
+            <tr className="border-b border-white/8 cap-sm text-white/35">
               <th className="py-1.5 pr-3 font-normal">round</th>
               <th className="py-1.5 pr-3 font-normal">assays</th>
               <th className="py-1.5 pr-3 font-normal">found</th>

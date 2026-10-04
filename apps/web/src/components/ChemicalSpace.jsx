@@ -102,7 +102,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
   return (
     <section className="relative">
       <header className="max-w-3xl">
-        <div className="font-mono text-[11px] text-hive-400/80">
+        <div className="font-mono cap text-hive-400/80">
           Chemical space
         </div>
         <h3 className="font-serif-display mt-2 text-[1.4rem] leading-tight text-wax sm:text-[1.8rem]">
@@ -134,7 +134,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
                     role="tab"
                     aria-selected={mode === m.id}
                     onClick={() => setMode(m.id)}
-                    className={`rounded px-3 py-1.5 text-xs transition ${
+                    className={`tap-y rounded px-3 py-1.5 text-xs transition ${
                       mode === m.id ? 'bg-white/10 text-white/90' : 'text-white/45 hover:text-white/75'
                     }`}
                   >
@@ -142,7 +142,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
                   </button>
                 ))}
               </div>
-              <span className="font-mono text-[10.5px] text-white/30">
+              <span className="font-mono cap-sm text-white/30">
                 {data.counts.train} dated ≤{data.cutoff_year} · {data.counts.pool} after ·{' '}
                 {data.counts.targets} answers
               </span>
@@ -155,7 +155,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
               onHover={setHovered}
               onPin={setPinned}
             />
-            <p className="mt-2 font-mono text-[10.5px] leading-relaxed text-white/30">
+            <p className="mt-2 font-mono cap-sm leading-relaxed text-white/30">
               {data.method}. The axes have no units. Close points share substructure, but
               long distances on the map are not to scale.
             </p>
@@ -165,7 +165,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
             <Legend mode={mode} cutoff={data.cutoff_year} counts={data.counts} />
             <Detail point={focus} cutoff={data.cutoff_year} pinned={!hovered && !!pinned} />
             <div>
-              <div className="mb-2 font-mono text-[10px] text-white/35">
+              <div className="mb-2 font-mono cap-sm text-white/35">
                 Hidden answers, by year
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -177,7 +177,7 @@ export default function ChemicalSpace({ cutoffYear = 2000 }) {
                     onFocus={() => setHovered(t)}
                     onBlur={() => setHovered(null)}
                     onClick={() => setPinned(t)}
-                    className={`max-w-[9.5rem] truncate rounded border px-2 py-1 text-[11px] transition ${
+                    className={`tap-y max-w-[9.5rem] truncate rounded border px-2 py-1 cap transition ${
                       focus?.id === t.id
                         ? 'border-hive-400/60 bg-hive-400/10 text-white/90'
                         : t.seen_scaffold
@@ -403,8 +403,8 @@ function MapCanvas({ points, mode, focus, onHover, onPin }) {
               alt=""
               className="mx-auto block h-[8.5rem] w-[8.5rem]"
             />
-            <div className="mt-1 truncate text-[11px] font-medium text-white/90">{focus.name}</div>
-            <div className="font-mono text-[10px] text-white/40">
+            <div className="mt-1 truncate cap font-medium text-white/90">{focus.name}</div>
+            <div className="font-mono cap-sm text-white/40">
               {focus.year} · {focus.label}
             </div>
           </motion.div>
@@ -443,13 +443,13 @@ function Legend({ mode, cutoff, counts }) {
           <div key={row.label} className="flex items-center gap-2 text-[12px] text-white/60">
             <Swatch color={row.color} small={row.small} />
             <span className="flex-1">{row.label}</span>
-            <span className="tabular font-mono text-[11px] text-white/35">{row.n}</span>
+            <span className="tabular font-mono cap text-white/35">{row.n}</span>
           </div>
         ))}
         <div className="flex items-center gap-2 text-[12px] text-white/60">
           <Swatch color="transparent" ring />
           <span className="flex-1">hidden answer</span>
-          <span className="tabular font-mono text-[11px] text-white/35">{counts.targets}</span>
+          <span className="tabular font-mono cap text-white/35">{counts.targets}</span>
         </div>
         <div className="flex items-center gap-2 text-[12px] text-white/60">
           <Swatch color="transparent" ring double />
@@ -477,10 +477,10 @@ function Detail({ point, cutoff, pinned }) {
           <div className="truncate text-sm font-medium text-white/90" title={point.name}>
             {point.name}
           </div>
-          <div className="font-mono text-[10.5px] text-white/35">CID {point.cid}</div>
+          <div className="font-mono cap-sm text-white/35">CID {point.cid}</div>
         </div>
         {pinned && (
-          <span className="shrink-0 rounded border border-white/10 px-1.5 py-0.5 font-mono text-[9.5px] uppercase text-white/40">
+          <span className="shrink-0 rounded border border-white/10 px-1.5 py-0.5 font-mono cap-sm uppercase text-white/40">
             pinned
           </span>
         )}
@@ -490,7 +490,7 @@ function Detail({ point, cutoff, pinned }) {
         alt={`2D structure of ${point.name}`}
         className="mx-auto mt-1 block aspect-square w-full max-w-[13rem]"
       />
-      <dl className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11.5px]">
+      <dl className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1.5 cap">
         <Field k="ApisTox year" v={point.year} />
         <Field k="bee toxicity" v={point.label} tone={point.label === 'toxic' ? 'text-warn' : 'text-signal'} />
         <Field k="set" v={inPool ? `after ${cutoff}` : `training`} />
@@ -499,7 +499,7 @@ function Detail({ point, cutoff, pinned }) {
         {inPool && <Field k="nearest known" v={point.nn_train_tanimoto?.toFixed(2)} />}
       </dl>
       {point.is_target && (
-        <div className="mt-2 border-t border-white/[0.06] pt-2 text-[11px] text-hive-400">
+        <div className="mt-2 border-t border-white/[0.06] pt-2 cap text-hive-400">
           Hidden answer: dated after {cutoff}, an insecticide, and non-toxic to honey bees in
           ApisTox.
         </div>
@@ -511,7 +511,7 @@ function Detail({ point, cutoff, pinned }) {
 function Field({ k, v, tone = 'text-white/80' }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-wide text-white/30">{k}</dt>
+      <dt className="cap-sm uppercase tracking-wide text-white/30">{k}</dt>
       <dd className={`tabular ${tone}`}>{v ?? 'n/a'}</dd>
     </div>
   );
@@ -541,7 +541,7 @@ function SimilarityHistogram({ points, sim, cutoff }) {
   return (
     <div className="mt-8 grid gap-6 border-t border-white/8 pt-6 lg:grid-cols-[minmax(0,1fr)_18.5rem]">
       <div className="min-w-0">
-        <div className="font-mono text-[10px] text-white/35">
+        <div className="font-mono cap-sm text-white/35">
           Nearest molecule dated {cutoff} or earlier, Tanimoto similarity
         </div>
         <div className="mt-3 h-52 w-full">
@@ -594,7 +594,7 @@ function SimilarityHistogram({ points, sim, cutoff }) {
         <Median label="new scaffold" q={sim.pool_unseen_scaffold} swatch="rgba(251,191,36,0.18)" outline />
         <Median label="answers, known scaffold" q={sim.targets_seen_scaffold} swatch="#fbbf24" />
         <Median label="answers, new scaffold" q={sim.targets_unseen_scaffold} swatch="#fbbf24" />
-        <p className="pt-1 text-[11px] text-white/35">
+        <p className="pt-1 cap text-white/35">
           Median, then the 25th to 75th percentile, for each group. The bars count all{' '}
           {sim.pool_all.n} molecules dated after {cutoff} once each. A value of 1.00 would mean
           the training set holds the same fingerprint.
@@ -612,10 +612,10 @@ function Median({ label, q, swatch, outline }) {
         style={{ background: swatch, border: outline ? '1px solid rgba(251,191,36,0.6)' : undefined }}
       />
       <span className="flex-1">
-        {label} <span className="font-mono text-[10.5px] text-white/30">n={q.n}</span>
+        {label} <span className="font-mono cap-sm text-white/30">n={q.n}</span>
       </span>
       <span className="tabular font-mono text-white/80">{q.median.toFixed(2)}</span>
-      <span className="tabular font-mono text-[10.5px] text-white/30">
+      <span className="tabular font-mono cap-sm text-white/30">
         {q.q25.toFixed(2)}-{q.q75.toFixed(2)}
       </span>
     </div>

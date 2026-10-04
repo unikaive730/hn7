@@ -73,7 +73,7 @@ export default function RigorPanel() {
           </p>
         </div>
         {data && (
-          <div className="font-mono text-[10px] leading-relaxed text-white/30 sm:text-right">
+          <div className="font-mono cap-sm leading-relaxed text-white/30 sm:text-right">
             built {data.generated_at}
             <br />
             dataset sha256 {data.dataset_sha256.slice(0, 12)}
@@ -109,7 +109,7 @@ function Part({ letter, title, children, aside }) {
   return (
     <div className="min-w-0">
       <div className="mb-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="font-mono text-[11px] text-hive-400/80">{letter}</span>
+        <span className="font-mono cap text-hive-400/80">{letter}</span>
         <h3 className="text-[13px] font-medium text-white/85">{title}</h3>
         {aside && <div className="ml-auto">{aside}</div>}
       </div>
@@ -128,7 +128,7 @@ function Baselines({ data }) {
   const ours = base.model_assays_to_all;
 
   const toggle = (
-    <div className="flex rounded-md border border-white/8 p-0.5 text-[10px]">
+    <div className="flex rounded-md border border-white/8 p-0.5 cap-sm">
       {[
         ['whole_pool', `whole pool, ${whole.candidates}`],
         ['insecticides_only', `insecticides only, ${inClass.candidates}`],
@@ -136,7 +136,7 @@ function Baselines({ data }) {
         <button
           key={id}
           onClick={() => setWhich(id)}
-          className={`rounded px-2 py-0.5 transition ${
+          className={`tap-y rounded px-2 py-0.5 transition ${
             which === id ? 'bg-hive-400/15 text-hive-400' : 'text-white/40 hover:text-white/70'
           }`}
         >
@@ -217,16 +217,22 @@ function Baselines({ data }) {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              <p className="mt-1 text-[11px] text-white/35">
+              <p className="mt-1 cap text-white/35">
                 Assays random ordering needs to find all {base.answers}, over {thousands(base.shuffles)} shuffles (seed{' '}
-                {base.seed}). Dashed line: random median.
+                {base.seed}). Dashed line: random median. The discovery curve and the answer gallery
+                draw the same baseline at 400 and 500 shuffles, enough for a median on screen; this
+                is the stress-test count.
               </p>
             </div>
             <PerK base={base} />
           </div>
 
           <div className="grid grid-cols-2 gap-3 md:block md:space-y-3 md:border-l md:border-white/6 md:pl-5">
-            <Readout label="random, median" value={n0(base.random_all_p50)} note={`exact ${base.exact_median_all}`} />
+            <Readout
+              label={`random, median over ${thousands(base.shuffles)} shuffles`}
+              value={n0(base.random_all_p50)}
+              note={`${base.exact_median_all} exact`}
+            />
             <Readout label="random, 5th to 95th" value={`${n0(base.random_all_p5)} to ${n0(base.random_all_p95)}`} />
             <Readout label="this lab" value={ours} accent />
             <Readout
@@ -234,7 +240,7 @@ function Baselines({ data }) {
               value={`${thousands(base.shuffles_at_or_below_model)} / ${thousands(base.shuffles)}`}
             />
             <Readout label="exact probability" value={<Sci value={base.exact_p_all_within_model} />} />
-            <p className="col-span-2 pt-1 text-[10px] leading-snug text-white/30">
+            <p className="col-span-2 pt-1 cap-sm leading-snug text-white/30">
               exact = C({ours}, {base.answers}) / C({base.candidates}, {base.answers}), the chance all {base.answers}{' '}
               land in the first {ours} picks.
             </p>
@@ -249,10 +255,10 @@ function Baselines({ data }) {
 function Readout({ label, value, note, accent }) {
   return (
     <div>
-      <div className="text-[10px] text-white/35">{label}</div>
+      <div className="cap-sm text-white/35">{label}</div>
       <div className={`tabular font-mono text-lg leading-tight ${accent ? 'text-hive-400' : 'text-white/85'}`}>
         {value}
-        {note && <span className="ml-2 text-[10px] text-white/30">{note}</span>}
+        {note && <span className="ml-2 cap-sm text-white/30">{note}</span>}
       </div>
     </div>
   );
@@ -284,7 +290,7 @@ function PerK({ base }) {
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <p className="mt-1 text-[11px] text-white/35">
+      <p className="mt-1 cap text-white/35">
         Assays spent before the k-th answer turns up. Shaded: random, 5th to 95th percentile.
       </p>
     </div>
@@ -323,12 +329,12 @@ function Ablation({ data }) {
   const morganRf = byKey['random_forest|morgan'];
 
   const toggle = (
-    <div className="flex rounded-md border border-white/8 p-0.5 text-[10px]">
+    <div className="flex rounded-md border border-white/8 p-0.5 cap-sm">
       {METRICS.map((m) => (
         <button
           key={m.id}
           onClick={() => setMetric(m.id)}
-          className={`rounded px-2 py-0.5 transition ${
+          className={`tap-y rounded px-2 py-0.5 transition ${
             metric === m.id ? 'bg-hive-400/15 text-hive-400' : 'text-white/40 hover:text-white/70'
           }`}
         >
@@ -341,9 +347,9 @@ function Ablation({ data }) {
   return (
     <Part letter="b" title="Ablation over model and fingerprint" aside={toggle}>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[19rem] border-collapse text-[11px]">
+        <table className="w-full min-w-[19rem] border-collapse cap">
           <thead>
-            <tr className="text-[10px] text-white/35">
+            <tr className="cap-sm text-white/35">
               <th className="py-1.5 pr-2 text-left font-normal" />
               {fingerprints.map((fp) => (
                 <th key={fp.key} className="px-1.5 py-1.5 text-left font-normal" title={fp.label}>
@@ -382,11 +388,11 @@ function Ablation({ data }) {
                           {metric === 'auroc' ? n3(value) : n0(value)}
                         </div>
                         {metric === 'auroc' && model.key !== 'dummy' && (
-                          <div className="tabular font-mono text-[9px] text-white/30">
+                          <div className="tabular font-mono cap-sm text-white/30">
                             {n3(cell.ci_low)} to {n3(cell.ci_high)}
                           </div>
                         )}
-                        <div className="truncate font-mono text-[9px] text-white/20" title={cell.mlflow_run_id ?? ''}>
+                        <div className="truncate font-mono cap-sm text-white/20" title={cell.mlflow_run_id ?? ''}>
                           {cell.mlflow_run_id ? cell.mlflow_run_id.slice(0, 8) : cell.note ? 'tie-breaks' : ''}
                         </div>
                       </div>
@@ -423,12 +429,15 @@ function Scaffold({ data }) {
     { label: 'scaffold seen in training', n: s.seen_n, auroc: s.seen_auroc, ci: s.seen_ci },
     { label: 'scaffold never seen', n: s.unseen_n, auroc: s.unseen_auroc, ci: s.unseen_ci },
   ];
+  // Read from the intervals themselves rather than asserted in prose.
+  const overlaps = s.seen_ci?.[0] != null && s.unseen_ci?.[1] != null && s.seen_ci[0] <= s.unseen_ci[1];
+  const ac = s.acyclic_check;
   return (
     <Part letter="c" title="Does it hold on unfamiliar chemistry?">
       <div className="space-y-3">
         {rows.map((row, i) => (
           <div key={row.label}>
-            <div className="flex items-baseline justify-between text-[11px]">
+            <div className="flex items-baseline justify-between cap">
               <span className="text-white/60">
                 {row.label} <span className="text-white/30">n = {row.n}</span>
               </span>
@@ -451,7 +460,7 @@ function Scaffold({ data }) {
             </div>
           </div>
         ))}
-        <div className="flex justify-between font-mono text-[9px] text-white/25">
+        <div className="flex justify-between font-mono cap-sm text-white/25">
           <span>0.5</span>
           <span>0.75</span>
           <span>1.0</span>
@@ -460,7 +469,25 @@ function Scaffold({ data }) {
       <p className="mt-2 text-[12px] leading-relaxed text-white/55">
         Murcko scaffolds. AUROC drops by {n3(s.seen_auroc - s.unseen_auroc)} on scaffolds absent from the pre-
         {data.setup.cutoff_year} data, and {s.targets_on_unseen_scaffolds} of the {s.targets} answers sit there. Bars
-        are bootstrap 95% intervals.
+        are bootstrap 95% intervals.{' '}
+        {overlaps && (
+          <span className="text-white/45">
+            The two intervals overlap ({n3(s.seen_ci[0])} to {n3(s.seen_ci[1])} against {n3(s.unseen_ci[0])}{' '}
+            to {n3(s.unseen_ci[1])}), so read this as a tendency, not a measured gap.
+          </span>
+        )}
+        {ac && (
+          <span className="text-white/45">
+            {' '}
+            A second caveat in the split itself: a molecule with no ring has an empty Murcko scaffold,{' '}
+            {ac.train_molecules_without_a_ring} training molecules share it, so the{' '}
+            {ac.moved_out_of_seen} acyclic pool molecules count as seen. Moving them across gives{' '}
+            {Number(ac.seen_auroc).toFixed(3)} (n = {ac.seen_n}) against{' '}
+            {Number(ac.unseen_auroc).toFixed(3)} (n = {ac.unseen_n}); the bars above are the published
+            split, unchanged. None of the answers is acyclic, so{' '}
+            {ac.targets_on_unseen_scaffolds} of {s.targets} on unseen scaffolds holds either way.
+          </span>
+        )}
       </p>
     </Part>
   );
@@ -496,13 +523,13 @@ function Seeds({ data }) {
           />
         ))}
       </div>
-      <div className="flex justify-between font-mono text-[9px] text-white/25">
+      <div className="flex justify-between font-mono cap-sm text-white/25">
         <span>{lo.toFixed(3)}</span>
         <span>AUROC</span>
         <span>{hi.toFixed(3)}</span>
       </div>
 
-      <table className="mt-3 w-full border-collapse font-mono text-[10px]">
+      <table className="mt-3 w-full border-collapse font-mono cap-sm">
         <thead>
           <tr className="text-white/30">
             <th className="py-1 text-left font-normal">seed</th>
@@ -540,7 +567,7 @@ function Seeds({ data }) {
 function MlflowFooter({ data }) {
   const m = data.mlflow;
   return (
-    <div className="mt-6 border-t border-white/6 pt-3 font-mono text-[10px] leading-relaxed text-white/30">
+    <div className="mt-6 border-t border-white/6 pt-3 font-mono cap-sm leading-relaxed text-white/30">
       MLflow: {m.runs} runs in experiment &quot;{m.experiment_name}&quot; (id {m.experiment_id}), file store at{' '}
       {m.tracking_dir}. Open with <span className="text-white/45">MLFLOW_ALLOW_FILE_STORE=true mlflow ui --backend-store-uri {m.tracking_dir}</span>.
       Rebuild: <span className="text-white/45">{data.command}</span>

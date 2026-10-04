@@ -8,7 +8,7 @@
       name="description"
       content="A lab of agents that knows only the chemistry published up to 2000 decides which newer insecticides to test on honey bees first, then is scored against what was confirmed later. Every number on the page comes from code running on the data."
     />
-    <!-- Canonical: set to the deployed URL, e.g. <link rel="canonical" href="https://YOUR-DEPLOY-URL/" /> -->
+    <link rel="canonical" href="https://beeguard.marketpilot.it/" />
     <meta name="theme-color" content="#07070b" />
     <meta name="color-scheme" content="dark" />
 
@@ -17,15 +17,16 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Open Graph. og:image and og:url should be absolute once the deploy URL is known. -->
+    <!-- Open Graph. Absolute URLs, so crawlers can resolve the card. -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://beeguard.marketpilot.it/" />
     <meta property="og:site_name" content="BeeGuard Lab" />
     <meta property="og:title" content="BeeGuard Lab - agents that rediscover bee-safe insecticides" />
     <meta
       property="og:description"
       content="Agents with a knowledge cutoff of 2000 choose which newer insecticides to test on honey bees first. Scored against what was confirmed later."
     />
-    <meta property="og:image" content="/og.png" />
+    <meta property="og:image" content="https://beeguard.marketpilot.it/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -40,7 +41,7 @@
       name="twitter:description"
       content="Agents with a knowledge cutoff of 2000 choose which newer insecticides to test on honey bees first. Scored against what was confirmed later."
     />
-    <meta name="twitter:image" content="/og.png" />
+    <meta name="twitter:image" content="https://beeguard.marketpilot.it/og.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,6 +59,8 @@
           {
             "@type": "SoftwareApplication",
             "name": "BeeGuard Lab",
+            "url": "https://beeguard.marketpilot.it/",
+            "image": "https://beeguard.marketpilot.it/og.png",
             "applicationCategory": "ScientificApplication",
             "operatingSystem": "Web",
             "description": "An agentic discovery loop over honey bee toxicity data. Agents limited to the chemistry known by a cutoff year order assays for newer insecticides and are scored against later confirmations.",

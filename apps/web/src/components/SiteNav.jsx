@@ -171,7 +171,7 @@ export default function SiteNav() {
           href={REPO}
           target="_blank"
           rel="noreferrer"
-          className="hidden shrink-0 items-center gap-1 font-mono text-[11px] text-wax/55 transition-colors hover:text-hive-400 md:inline-flex"
+          className="cap hidden shrink-0 items-center gap-1 font-mono text-wax/55 transition-colors hover:text-hive-400 md:inline-flex"
         >
           Code
           <ArrowUpRight className="h-3 w-3" />

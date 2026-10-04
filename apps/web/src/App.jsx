@@ -44,6 +44,8 @@ const Ledger = lazy(() => import('./components/Ledger.jsx'));
 
 const CUTOFF = 2000; // the experiment's design input, not a result
 const DEFAULT_BUDGET = 30; // the slider's starting value, also an input
+const REVEAL_MS = 2500; // how long the whole queue takes to appear, at any budget
+const REVEAL_TICK_MS = 55; // one row per tick at the default budget
 
 const STRATEGIES = [
   { id: 'model', label: 'Learned ordering', hint: 'Insecticides first, lowest predicted bee risk first' },
@@ -67,9 +69,16 @@ export default function App() {
   const [strategy, setStrategy] = useState('model');
   const [budget, setBudget] = useState(DEFAULT_BUDGET);
   const [result, setResult] = useState(null);
+  // The same retrospective preview the hero shows, so the dial and the queue
+  // hold real numbers before anyone clicks. It is never presented as a run the
+  // judge approved: every panel that shows it says where it came from.
+  const [preview, setPreview] = useState(null);
   const [stage, setStage] = useState(null);
   const [awaitingApproval, setAwaitingApproval] = useState(false);
-  const [revealed, setRevealed] = useState(0);
+  // True from the moment a run lands until its queue has finished appearing.
+  // The counter itself lives inside AssayPanel so that one row arriving does
+  // not re-render the rest of the page forty times.
+  const [revealing, setRevealing] = useState(false);
   const [evidence, setEvidence] = useState(null);
   const [error, setError] = useState(null);
   const [curve, setCurve] = useState(null);
@@ -77,17 +86,20 @@ export default function App() {
   const [eras, setEras] = useState(null);
   const [record, setRecord] = useState([]);
   const [molecule, setMolecule] = useState(null);
-  const revealTimer = useRef(null);
   const phase = useRef('idle');
 
   useEffect(() => {
     getFacts(CUTOFF).then(setFacts).catch((e) => setError(e.message));
+    // Same ordering and budget the hero's /api/headline preview uses, asked for
+    // with the rows attached so the queue has something true to show at rest.
+    runExperiment({ strategy: 'model', budget: DEFAULT_BUDGET })
+      .then(setPreview)
+      .catch(() => {});
     // The discovery charts show the default run until a judge runs their own.
     getCurve('model', DEFAULT_BUDGET).then(setCurve).catch(() => {});
     compareStrategies(DEFAULT_BUDGET).then(setComparison).catch(() => {});
     getEras(DEFAULT_BUDGET).then(setEras).catch(() => {});
     getRecord(40).then((r) => setRecord(r.rows ?? [])).catch(() => {});
-    return () => clearInterval(revealTimer.current);
   }, []);
 
   /** Walk the loop. The literature step is a live search, the approval is a
@@ -99,8 +111,7 @@ export default function App() {
     setResult(null);
     setMolecule(null);
     setEvidence(null);
-    setRevealed(0);
-    clearInterval(revealTimer.current);
+    setRevealing(false);
 
     for (const id of ['literature', 'insight', 'planner']) {
       setStage(id);
@@ -126,6 +137,7 @@ export default function App() {
     setStage('runner');
     try {
       const run = await runExperiment({ strategy, budget });
+      setRevealing(true);
       setResult(run);
       setStage('analysis');
 
@@ -135,21 +147,17 @@ export default function App() {
       compareStrategies(budget).then(setComparison).catch((e) => setError(`Strategy comparison failed: ${e.message}`));
       getRecord(40).then((r) => setRecord(r.rows ?? [])).catch(() => {});
 
-      let shown = 0;
-      revealTimer.current = setInterval(() => {
-        shown += 1;
-        setRevealed(shown);
-        if (shown >= run.assays.length) {
-          clearInterval(revealTimer.current);
-          phase.current = 'idle';
-        }
-      }, 55);
     } catch (e) {
       setError(e.message);
       setStage(null);
       phase.current = 'idle';
     }
   }, [strategy, budget]);
+
+  const finishReveal = useCallback(() => {
+    setRevealing(false);
+    phase.current = 'idle';
+  }, []);
 
   const deny = useCallback(() => {
     if (phase.current !== 'approval') return;
@@ -199,10 +207,10 @@ export default function App() {
                   budget={budget}
                   setBudget={setBudget}
                   onRun={startLoop}
-                  busy={!facts || (stage !== null && (!result || revealed < result.assays.length))}
+                  busy={!facts || (stage !== null && (!result || revealing))}
                   facts={facts}
                 />
-                <SpeedupPanel result={result} budget={budget} facts={facts} />
+                <SpeedupPanel result={result} preview={preview} budget={budget} facts={facts} />
               </div>
 
               <div className="min-w-0 space-y-5">
@@ -217,7 +225,12 @@ export default function App() {
                   )}
                 </AnimatePresence>
 
-                <AssayPanel result={result} revealed={revealed} onOpen={openMolecule} />
+                <AssayPanel
+                  result={result}
+                  preview={preview}
+                  onOpen={openMolecule}
+                  onDone={finishReveal}
+                />
                 {molecule && (
                   <MoleculePanel molecule={molecule} onClose={() => setMolecule(null)} />
                 )}
@@ -346,7 +359,7 @@ function Chapter({ id, index, label, title, lede, children }) {
 
 function Pipeline({ stage, stageIndex }) {
   return (
-    <div className="glass lift flex items-stretch gap-1 overflow-x-auto rounded-xl p-2">
+    <div className="glass lift fade-right-phone flex items-stretch gap-1 overflow-x-auto rounded-xl p-2">
       {STAGES.map((s, index) => {
         const Icon = s.icon;
         const active = s.id === stage;
@@ -366,7 +379,7 @@ function Pipeline({ stage, stageIndex }) {
               />
             )}
             <div className="flex items-center gap-1.5">
-              <span className="font-mono text-[10px] text-white/25">{index + 1}</span>
+              <span className="cap-sm font-mono text-white/35">{index + 1}</span>
               <Icon
                 className={`h-3.5 w-3.5 ${
                   active ? 'text-hive-400' : done ? 'text-signal/70' : 'text-white/25'
@@ -380,7 +393,7 @@ function Pipeline({ stage, stageIndex }) {
                 {s.label}
               </span>
             </div>
-            <span className="text-[10.5px] text-white/35">{s.note}</span>
+            <span className="cap-sm text-white/40">{s.note}</span>
           </div>
         );
       })}
@@ -391,7 +404,7 @@ function Pipeline({ stage, stageIndex }) {
 function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts }) {
   return (
     <section className="glass lift rounded-xl p-5">
-      <h3 className="font-mono text-[11px] text-white/45">Ordering</h3>
+      <h3 className="cap font-mono text-white/45">Ordering</h3>
 
       <div className="mt-3 space-y-1.5">
         {STRATEGIES.map((option) => (
@@ -407,14 +420,14 @@ function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts
             }`}
           >
             <div className="text-sm font-medium text-white/85">{option.label}</div>
-            <div className="text-[11px] text-white/40">{option.hint}</div>
+            <div className="cap text-white/40">{option.hint}</div>
           </button>
         ))}
       </div>
 
       <div className="mt-5">
         <div className="flex items-baseline justify-between">
-          <label htmlFor="budget" className="font-mono text-[11px] text-white/45">
+          <label htmlFor="budget" className="cap font-mono text-white/45">
             Assay budget
           </label>
           <span className="tabular text-lg font-semibold text-hive-400">{budget}</span>
@@ -428,9 +441,9 @@ function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts
           max={facts?.pool_molecules ?? 201}
           value={budget}
           onChange={(event) => setBudget(Number(event.target.value))}
-          className="mt-2 w-full accent-hive-500"
+          className="mt-2 h-10 w-full accent-hive-500 md:h-4"
         />
-        <p className="mt-1.5 text-[11px] text-white/35">
+        <p className="cap mt-1.5 text-white/40">
           One simulated assay reveals an existing dataset label.
         </p>
       </div>
@@ -447,23 +460,46 @@ function Controls({ strategy, setStrategy, budget, setBudget, onRun, busy, facts
   );
 }
 
-function SpeedupPanel({ result, budget, facts }) {
+function SpeedupPanel({ result, preview, budget, facts }) {
+  // Before the first approval the panel shows the preview the page computed on
+  // load. The caption always names which of the two is on screen.
+  const shown = result ?? preview;
+  const isPreview = !result && Boolean(preview);
+  // The ratio is the random median divided by the budget, so a budget larger
+  // than that median puts it under 1. Saying "fewer assays than random" there
+  // would state the opposite of the number.
+  const under = shown != null && shown.speedup < 1;
+
   return (
     <section className="glass lift rounded-xl p-5">
       <SpeedupDial
-        speedup={result?.speedup}
-        found={result?.found}
+        speedup={shown?.speedup}
+        found={shown?.found}
         total={facts?.targets}
-        budget={result?.budget ?? budget}
-        label="fewer assays than random"
+        budget={shown?.budget ?? budget}
+        label={under ? 'random assays per assay spent' : 'fewer assays than random'}
       />
-      {result ? (
-        <p className="mt-3 text-center text-xs leading-relaxed text-white/45">
-          Random order over all {facts?.pool_molecules ?? 'the'} pool molecules needs{' '}
-          <span className="font-semibold text-white/70">{result.random_assays_for_same_hits}</span>{' '}
-          assays (median of shuffled orders) to find the same {result.found}. The Rigor
-          section repeats the test against random order inside the insecticides only.
-        </p>
+      {shown ? (
+        <>
+          <p className="mt-3 text-center text-xs leading-relaxed text-white/45">
+            Random order over all {facts?.pool_molecules ?? 'the'} pool molecules needs{' '}
+            <span className="font-semibold text-white/70">{shown.random_assays_for_same_hits}</span>{' '}
+            assays (median of shuffled orders) to find the same {shown.found}. The Rigor
+            section repeats the test against random order inside the insecticides only.
+          </p>
+          {under && (
+            <p className="mt-2 text-center text-xs leading-relaxed text-white/45">
+              This budget is larger than the {shown.random_assays_for_same_hits} assays random
+              order needs, so the ratio falls below 1 and there is no saving left to measure.
+            </p>
+          )}
+          {isPreview && (
+            <p className="cap mt-2 text-center leading-relaxed text-white/40">
+              Retrospective preview, computed on load: learned ordering at {shown.budget} assays.
+              Run the loop to compute your own here.
+            </p>
+          )}
+        </>
       ) : (
         <p className="mt-3 text-center text-xs leading-relaxed text-white/35">
           Empty until you run the loop.
@@ -484,12 +520,15 @@ function ApprovalCard({ strategy, budget, onApprove, onDeny }) {
     >
       <div className="flex items-center gap-2 text-hive-400">
         <ShieldCheck className="h-4 w-4" />
-        <span className="font-mono text-[11px]">Approval needed</span>
+        <span className="cap font-mono">Approval needed</span>
       </div>
       <p className="mt-3 text-[15px] text-white/85">
         The planner wants to spend{' '}
-        <span className="font-semibold text-hive-400">{budget} assays</span> on the{' '}
-        {STRATEGIES.find((s) => s.id === strategy)?.label.toLowerCase()}.
+        <span className="font-semibold text-hive-400">{budget} assays</span> using{' '}
+        <span className="font-semibold text-hive-400">
+          {STRATEGIES.find((s) => s.id === strategy)?.label}
+        </span>
+        .
       </p>
       <p className="mt-1.5 text-xs leading-relaxed text-white/45">
         This interactive ranking waits for you to accept; the headline is a retrospective preview.
@@ -513,8 +552,38 @@ function ApprovalCard({ strategy, budget, onApprove, onDeny }) {
   );
 }
 
-function AssayPanel({ result, revealed, onOpen }) {
-  if (!result) {
+function AssayPanel({ result, preview, onOpen, onDone }) {
+  const shown = result ?? preview;
+  const isPreview = !result && Boolean(preview);
+  const [revealed, setRevealed] = useState(0);
+
+  // The reveal is a reading aid, not a measurement: the server answers in well
+  // under a second. The tick rate is fixed and the step widens with the budget,
+  // so the whole queue lands in about REVEAL_MS at any budget. At 30 assays the
+  // step is one row and the default looks exactly as it did; at 201 it is five,
+  // instead of holding the controls shut for seventeen seconds.
+  useEffect(() => {
+    if (!result) {
+      setRevealed(0);
+      return undefined;
+    }
+    const total = result.assays.length;
+    const frames = Math.max(1, Math.round(REVEAL_MS / REVEAL_TICK_MS));
+    const chunk = Math.max(1, Math.ceil(total / frames));
+    let seen = 0;
+    setRevealed(0);
+    const timer = setInterval(() => {
+      seen = Math.min(total, seen + chunk);
+      setRevealed(seen);
+      if (seen >= total) {
+        clearInterval(timer);
+        onDone?.();
+      }
+    }, REVEAL_TICK_MS);
+    return () => clearInterval(timer);
+  }, [result, onDone]);
+
+  if (!shown) {
     return (
       <section className="glass lift grid min-h-[13rem] place-items-center rounded-xl p-5 text-center">
         <div className="max-w-sm">
@@ -531,14 +600,31 @@ function AssayPanel({ result, revealed, onOpen }) {
   return (
     <section className="glass lift rounded-xl p-5">
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="font-mono text-[11px] text-white/45">Assay queue</h3>
+        <h3 className="cap font-mono text-white/45">
+          Assay queue{isPreview ? ', preview' : ''}
+        </h3>
         <span className="text-xs text-white/40">
-          hits at {result.found_at.join(', ') || 'none'}
+          hits at {shown.found_at.join(', ') || 'none'}
         </span>
       </div>
+      {isPreview && (
+        <p className="cap mb-2 leading-relaxed text-white/40">
+          Learned ordering at {shown.budget} assays, computed when the page loaded. Approving a
+          run replaces it with yours.
+        </p>
+      )}
       <div className="max-h-[22rem] overflow-y-auto pr-1">
-        <AssayStream assays={result.assays} revealed={revealed} onOpen={onOpen} />
+        <AssayStream
+          assays={shown.assays}
+          revealed={isPreview ? shown.assays.length : revealed}
+          onOpen={onOpen}
+        />
       </div>
+      <p className="cap mt-2 leading-relaxed text-white/40">
+        No applicability-domain cut is applied to this queue: every pool molecule is scored, so an
+        inorganic salt with no close training analogue can sit near the top. The forward candidate
+        list in Chemistry applies that cut; this retrospective ordering does not.
+      </p>
     </section>
   );
 }
@@ -552,7 +638,7 @@ function CurvePanel({ curve, facts }) {
   return (
     <section className="glass lift min-w-0 rounded-xl p-5">
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="font-mono text-[11px] text-white/45">
+        <h3 className="cap font-mono text-white/45">
           Discovery curve · {STRATEGY_NAME[curve.strategy] ?? curve.strategy}, {curve.budget} assays
         </h3>
       </div>
@@ -560,7 +646,8 @@ function CurvePanel({ curve, facts }) {
       <p className="mt-2 text-xs leading-relaxed text-white/40">
         Answers found against assays spent. The amber line is this lab; the dashed line is the
         random median and the grey band is random order from the 10th to the 90th percentile
-        over {curve.shuffles} shuffles.
+        over {curve.shuffles} shuffles, enough for a median on screen; the 5,000-shuffle stress
+        test is in Rigor.
       </p>
     </section>
   );
@@ -581,7 +668,7 @@ function EvidencePanel({ evidence }) {
     <section className="glass lift rounded-xl p-5">
       <div className="flex items-center gap-2">
         <BookOpen className="h-4 w-4 text-white/35" />
-        <h3 className="font-mono text-[11px] text-white/45">
+        <h3 className="cap font-mono text-white/45">
           Literature step, searched when you pressed run
         </h3>
       </div>
@@ -604,7 +691,7 @@ function EvidencePanel({ evidence }) {
           </motion.li>
         ))}
       </ul>
-      <p className="mt-3 text-[11px] leading-relaxed text-white/30">
+      <p className="cap mt-3 leading-relaxed text-white/40">
         Returned by {ok.join(' and ')}.
         {failed.length > 0 && ` ${failed.join(' and ')} returned nothing this time, so nothing is shown for it.`}
       </p>

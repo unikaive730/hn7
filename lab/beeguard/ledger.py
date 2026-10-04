@@ -29,6 +29,8 @@ import httpx
 import numpy as np
 import pandas as pd
 
+from .brand import REGISTRY as SOURCE_REGISTRY
+
 BEEGUARD = Path(__file__).resolve().parent
 LAB = BEEGUARD.parent
 ROOT = LAB.parent
@@ -336,8 +338,40 @@ def _probe_one(source: dict[str, Any]) -> dict[str, Any]:
         }
 
 
+_probe_refreshing = threading.Event()
+
+
+def _refresh_sources_in_background() -> None:
+    """Re-probe without holding up the caller. One refresh at a time."""
+    if _probe_refreshing.is_set():
+        return
+    _probe_refreshing.set()
+
+    def work() -> None:
+        try:
+            live_sources(refresh=True)
+        except Exception:  # a refresh failure leaves the old rows in place
+            pass
+        finally:
+            _probe_refreshing.clear()
+
+    threading.Thread(target=work, name="ledger-probe", daemon=True).start()
+
+
 def live_sources(refresh: bool = False) -> dict[str, Any]:
-    """Probe every service lab code calls. Results are cached for ten minutes."""
+    """Probe every service lab code calls.
+
+    A cached round is served straight away and the refresh happens on a
+    background thread, so no page load waits on an outside service. The
+    payload carries ``age_seconds``, so the page can say how old it is.
+    """
+    age = time.time() - _probe_cache["at"]
+    have = _probe_cache["rows"] is not None
+    if have and not refresh:
+        if age >= _PROBE_TTL:
+            _refresh_sources_in_background()
+        return {**_probe_cache["payload"], "age_seconds": round(age)}
+
     with _probe_lock:
         age = time.time() - _probe_cache["at"]
         fresh = _probe_cache["rows"] is not None and age < _PROBE_TTL
@@ -641,15 +675,54 @@ def lines_of_code() -> list[dict[str, Any]]:
 
 # ------------------------------------------------------------------ summary
 
+_STATIC_TTL = 1800
 _static_lock = threading.Lock()
 _static_cache: dict[str, Any] = {"at": 0.0, "payload": None}
+_static_refreshing = threading.Event()
+
+
+def _refresh_static_in_background() -> None:
+    """Rebuild the inventory off the request path. One rebuild at a time."""
+    if _static_refreshing.is_set():
+        return
+    _static_refreshing.set()
+
+    def work() -> None:
+        try:
+            with _static_lock:
+                _static_cache["at"] = 0.0
+                _build_static_ledger()
+        except Exception:  # a failed rebuild leaves the previous payload in place
+            pass
+        finally:
+            _static_refreshing.clear()
+
+    threading.Thread(target=work, name="ledger-static", daemon=True).start()
 
 
 def static_ledger() -> dict[str, Any]:
-    """Everything that does not need the network. Cached for 60 seconds."""
+    """Everything that does not need the network.
+
+    Counting files, packages and source lines takes seconds, so a built
+    inventory is served straight away and rebuilt on a background thread
+    once it is older than the window. ``computed_at`` says when it was built.
+    """
+    payload = _static_cache["payload"]
+    if payload:
+        if time.time() - _static_cache["at"] >= _STATIC_TTL:
+            _refresh_static_in_background()
+        return payload
     with _static_lock:
-        if _static_cache["payload"] and time.time() - _static_cache["at"] < 60:
+        if _static_cache["payload"]:
             return _static_cache["payload"]
+        return _build_static_ledger()
+
+
+def _build_static_ledger() -> dict[str, Any]:
+    """Walk the repository and store the result. Callers hold `_static_lock`."""
+    if False:
+        pass
+    else:
         started = time.perf_counter()
         payload = {
             "datasets": datasets(),
@@ -976,6 +1049,11 @@ def data_card(cutoff_year: int = 2000) -> dict[str, Any]:
 
     strategies = _strategy_names(_Source(BEEGUARD / "engine.py"))
 
+    # CC BY-NC 4.0 asks for credit the way the creators ask for it, which for a
+    # published benchmark is the paper. Taken from the source registry rather
+    # than retyped, so the card and the footer always carry the same citation.
+    apistox_source = next((s for s in SOURCE_REGISTRY if s.get("id") == "apistox"), {})
+
     return {
         "strategies": strategies,
         "dataset": {
@@ -983,6 +1061,9 @@ def data_card(cutoff_year: int = 2000) -> dict[str, Any]:
             "source_url": manifest.get("url"),
             "license": licence["license"],
             "license_from": licence["license_from"],
+            "license_url": apistox_source.get("license_url"),
+            "citation": apistox_source.get("citation"),
+            "citation_doi": apistox_source.get("doi"),
             "sha256": manifest.get("sha256"),
             "molecules": int(len(full)),
             "toxic": int(full["label"].sum()),

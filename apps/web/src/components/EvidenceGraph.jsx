@@ -509,13 +509,13 @@ function GraphCanvas({ data, selected, onSelect, pinned, onPin }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.12 }}
-            className="pointer-events-auto absolute z-10 w-64 rounded-md border border-white/10 bg-night-800/95 p-2.5 text-[11px] shadow-xl backdrop-blur"
+            className="pointer-events-auto absolute z-10 w-64 rounded-md border border-white/10 bg-night-800/95 p-2.5 cap shadow-xl backdrop-blur"
             style={{
               left: Math.min(Math.max(tipNode.x - 128, 4), (layout?.W ?? 300) - 260),
               top: tipNode.y > (layout?.H ?? 0) * 0.6 ? tipNode.y - 118 : tipNode.y + 14,
             }}
           >
-            <div className="flex items-baseline gap-2 font-mono text-[10px] text-white/40">
+            <div className="flex items-baseline gap-2 font-mono cap-sm text-white/40">
               <span style={{ color: tipNode.ref.after_cutoff ? undefined : EARLY }}>
                 {tipNode.ref.year ?? 'no year'}
               </span>
@@ -544,7 +544,7 @@ function GraphCanvas({ data, selected, onSelect, pinned, onPin }) {
         )}
       </AnimatePresence>
 
-      <div className="pointer-events-none mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] text-white/40 sm:absolute sm:bottom-1 sm:left-1 sm:mt-0">
+      <div className="pointer-events-none mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono cap-sm text-white/40 sm:absolute sm:bottom-1 sm:left-1 sm:mt-0">
         <span className="flex items-center gap-1.5">
           <svg width="12" height="12" viewBox="0 0 12 12">
             <path d={hexPath(6, 6, 5)} fill="#1c1c27" stroke={AMBER} />
@@ -634,7 +634,7 @@ function YearBars({ molecule, cutoff }) {
         </ResponsiveContainer>
       </div>
       {older > 0 && (
-        <p className="mt-1 font-mono text-[10px] text-white/30">
+        <p className="mt-1 font-mono cap-sm text-white/30">
           {older} record{older > 1 ? 's' : ''} dated before {first} not drawn
         </p>
       )}
@@ -647,7 +647,7 @@ function PaperRow({ paper, moleculeId, strict = false }) {
   return (
     <li className="group grid grid-cols-[2.6rem_1fr] gap-x-2 border-t border-white/5 py-2 first:border-t-0">
       <span
-        className="font-mono text-[11px] tabular"
+        className="font-mono cap tabular"
         style={{ color: paper.after_cutoff ? 'rgba(255,255,255,0.5)' : EARLY }}
       >
         {paper.year ?? '----'}
@@ -665,7 +665,7 @@ function PaperRow({ paper, moleculeId, strict = false }) {
         ) : (
           <span className="line-clamp-2 text-[12.5px] leading-snug text-white/80">{paper.title}</span>
         )}
-        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 font-mono text-[10px] text-white/35">
+        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 font-mono cap-sm text-white/35">
           <span className="truncate">{paper.venue ?? 'no venue listed'}</span>
           <span>cited {fmt(paper.cited_by)}</span>
           {moleculeId && (
@@ -703,19 +703,19 @@ function MoleculeDetail({ data, molecule, papersById }) {
     >
       <div className="flex items-start gap-3">
         <div className="shrink-0 text-right">
-          <div className="font-mono text-[10px] uppercase tracking-widest text-white/30">rank</div>
+          <div className="font-mono cap-sm uppercase tracking-widest text-white/30">rank</div>
           <div className="font-mono text-3xl font-semibold leading-none text-hive-400 tabular">
             {molecule.rank}
           </div>
-          <div className="mt-0.5 font-mono text-[10px] text-white/30">of {data.lab.pool_size}</div>
+          <div className="mt-0.5 font-mono cap-sm text-white/30">of {data.lab.pool_size}</div>
         </div>
         <div className="min-w-0 border-l border-white/8 pl-3">
           <h3 className="truncate text-lg font-medium text-white/95">{molecule.label}</h3>
-          <p className="mt-0.5 font-mono text-[10.5px] text-white/40">
+          <p className="mt-0.5 font-mono cap-sm text-white/40">
             CID {molecule.cid} · in ApisTox from {molecule.apistox_year} ·{' '}
             {molecule.scaffold_seen ? 'scaffold seen before' : 'scaffold new to the model'}
           </p>
-          <p className="mt-0.5 font-mono text-[10.5px] text-white/30">
+          <p className="mt-0.5 font-mono cap-sm text-white/30">
             query {molecule.query} ({molecule.term_from})
           </p>
         </div>
@@ -740,26 +740,26 @@ function MoleculeDetail({ data, molecule, papersById }) {
             loading="lazy"
           />
         </div>
-        <dl className="grid grid-cols-2 gap-x-3 gap-y-2 font-mono text-[11px]">
+        <dl className="grid grid-cols-2 gap-x-3 gap-y-2 font-mono cap">
           <div>
-            <dt className="text-[9.5px] uppercase tracking-wider text-white/30">by {cutoff}</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/30">by {cutoff}</dt>
             <dd className="text-xl tabular" style={{ color: a.before ? EARLY : 'rgba(255,255,255,0.85)' }}>
               {fmt(a.before)}
             </dd>
           </div>
           <div>
-            <dt className="text-[9.5px] uppercase tracking-wider text-white/30">after</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/30">after</dt>
             <dd className="text-xl tabular text-white/85">{fmt(a.after)}</dd>
           </div>
           <div>
-            <dt className="text-[9.5px] uppercase tracking-wider text-white/30">bee, by {cutoff}</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/30">bee, by {cutoff}</dt>
             <dd className="tabular text-white/70">{fmt(b.before)}</dd>
           </div>
           <div>
-            <dt className="text-[9.5px] uppercase tracking-wider text-white/30">bee, after</dt>
+            <dt className="cap-sm uppercase tracking-wider text-white/30">bee, after</dt>
             <dd className="tabular text-hive-400">{fmt(b.after)}</dd>
           </div>
-          <div className="col-span-2 text-[10px] text-white/35">
+          <div className="col-span-2 cap-sm text-white/35">
             first bee record: {b.first_year ?? 'none'}
           </div>
         </dl>
@@ -769,7 +769,7 @@ function MoleculeDetail({ data, molecule, papersById }) {
         <YearBars molecule={molecule} cutoff={cutoff} />
       </div>
 
-      <div className="mt-3 flex items-center gap-3 border-b border-white/8 text-[11px]">
+      <div className="mt-3 flex items-center gap-3 border-b border-white/8 cap">
         {[
           ['cited', `most cited (${cited.length})`],
           ['early', `dated by ${cutoff} (${early.length} of ${fmt(a.before)})`],
@@ -778,7 +778,7 @@ function MoleculeDetail({ data, molecule, papersById }) {
             key={id}
             onClick={() => setTab(id)}
             disabled={id === 'early' && !early.length}
-            className={`-mb-px border-b px-0.5 pb-1.5 transition disabled:cursor-not-allowed disabled:opacity-30 ${
+            className={`tap-y -mb-px border-b px-0.5 pb-1.5 transition disabled:cursor-not-allowed disabled:opacity-30 ${
               tab === id ? 'border-hive-400 text-white/85' : 'border-transparent text-white/40 hover:text-white/70'
             }`}
           >
@@ -795,7 +795,7 @@ function MoleculeDetail({ data, molecule, papersById }) {
         )}
       </ul>
       {tab === 'early' && (
-        <p className="mt-2 text-[11px] leading-relaxed text-white/35">
+        <p className="mt-2 cap leading-relaxed text-white/35">
           {lit} matched these on title or abstract. Where the title does not name the
           molecule, open the record before trusting the date: indexes sometimes attach a later
           abstract to an old entry.
@@ -809,16 +809,16 @@ function ConceptDetail({ data, concept, papersById }) {
   const cited = concept.top_paper_ids.map((id) => papersById.get(id)).filter(Boolean);
   return (
     <motion.div key={concept.id} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}>
-      <div className="font-mono text-[10px] uppercase tracking-widest text-white/30">concept</div>
+      <div className="font-mono cap-sm uppercase tracking-widest text-white/30">concept</div>
       <h3 className="mt-1 text-lg font-medium text-white/95">{concept.label}</h3>
-      <p className="mt-1 font-mono text-[10.5px] text-white/35">query {concept.query}</p>
+      <p className="mt-1 font-mono cap-sm text-white/35">query {concept.query}</p>
       <div className="mt-3 flex gap-6 font-mono">
         <div>
-          <div className="text-[9.5px] uppercase tracking-wider text-white/30">by {data.cutoff_year}</div>
+          <div className="cap-sm uppercase tracking-wider text-white/30">by {data.cutoff_year}</div>
           <div className="text-xl tabular text-white/85">{fmt(concept.before)}</div>
         </div>
         <div>
-          <div className="text-[9.5px] uppercase tracking-wider text-white/30">after</div>
+          <div className="cap-sm uppercase tracking-wider text-white/30">after</div>
           <div className="text-xl tabular text-white/85">{fmt(concept.after)}</div>
         </div>
       </div>
@@ -845,7 +845,7 @@ function LagRows({ data, selected, onSelect }) {
 
   return (
     <div>
-      <div className={`grid ${cols} items-end gap-x-2 border-b border-white/8 pb-1.5 font-mono text-[9.5px] uppercase tracking-wider text-white/30`}>
+      <div className={`grid ${cols} items-end gap-x-2 border-b border-white/8 pb-1.5 font-mono cap-sm uppercase tracking-wider text-white/30`}>
         <span>rank</span>
         <span>molecule</span>
         <span>by {cutoff}</span>
@@ -867,7 +867,7 @@ function LagRows({ data, selected, onSelect }) {
                   isSel ? 'bg-hive-400/[0.07]' : 'hover:bg-white/[0.025]'
                 }`}
               >
-                <span className={`font-mono text-[11px] tabular ${isSel ? 'text-hive-400' : 'text-white/45'}`}>
+                <span className={`font-mono cap tabular ${isSel ? 'text-hive-400' : 'text-white/45'}`}>
                   {m.rank}
                 </span>
                 <span className={`truncate text-[12px] ${isSel ? 'text-white' : 'text-white/75'}`}>
@@ -875,7 +875,7 @@ function LagRows({ data, selected, onSelect }) {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span
-                    className="w-6 shrink-0 font-mono text-[10px] tabular"
+                    className="w-6 shrink-0 font-mono cap-sm tabular"
                     style={{ color: a.before ? EARLY : 'rgba(255,255,255,0.3)' }}
                   >
                     {fmt(a.before)}
@@ -894,12 +894,12 @@ function LagRows({ data, selected, onSelect }) {
                       style={{ width: `${scale(a.after)}%` }}
                     />
                   </span>
-                  <span className="w-[4.4rem] shrink-0 whitespace-nowrap text-right font-mono text-[10px] tabular text-white/80">
+                  <span className="w-[4.4rem] shrink-0 whitespace-nowrap text-right font-mono cap-sm tabular text-white/80">
                     {fmt(a.after)}
                     <span className={b.after > 0 ? 'text-hive-400' : 'text-white/25'}> · {fmt(b.after)}</span>
                   </span>
                 </span>
-                <span className="hidden text-right font-mono text-[10.5px] tabular text-white/45 sm:block">
+                <span className="hidden text-right font-mono cap-sm tabular text-white/45 sm:block">
                   {b.first_year ?? 'none'}
                   {suspect(m) && <span className="text-warn">?</span>}
                 </span>
@@ -908,7 +908,7 @@ function LagRows({ data, selected, onSelect }) {
           );
         })}
       </ul>
-      <p className="mt-2 font-mono text-[10px] leading-relaxed text-white/30">
+      <p className="mt-2 font-mono cap-sm leading-relaxed text-white/30">
         Bars are log scale. Amber count: records that also name bees or pollinators.
         {flagged.length > 0 &&
           ` ? marks a first bee record more than 10 years older than the molecule's ApisTox entry (${flagged.join(', ')}); its "dated by ${cutoff}" list shows which record that is.`}
@@ -1013,14 +1013,14 @@ function Timeline({ timeline, cutoff }) {
                     return next;
                   })
                 }
-                className={`flex w-full items-baseline gap-2 text-left text-[11.5px] transition ${off ? 'opacity-35' : ''}`}
+                className={`flex w-full items-baseline gap-2 text-left cap transition max-md:py-2.5 ${off ? 'opacity-35' : ''}`}
               >
                 <span
                   className="mt-1 inline-block h-[2px] w-4 shrink-0"
                   style={{ background: TIMELINE_COLORS[s.id] ?? '#fff' }}
                 />
                 <span className="shrink-0 whitespace-nowrap text-white/75">{s.label}</span>
-                <span className="hidden min-w-0 truncate font-mono text-[10px] text-white/30 sm:inline" title={s.query}>
+                <span className="hidden min-w-0 truncate font-mono cap-sm text-white/30 sm:inline" title={s.query}>
                   {s.query}
                 </span>
               </button>
@@ -1028,7 +1028,7 @@ function Timeline({ timeline, cutoff }) {
           );
         })}
       </ul>
-      <p className="mt-2 font-mono text-[10px] leading-relaxed text-white/30">
+      <p className="mt-2 font-mono cap-sm leading-relaxed text-white/30">
         Records per publication year, log scale.{lastFull ? ` ${lastFull} is a partial year.` : ''}
         {omittedText &&
           ` Dated before ${from} and left off the chart, still counted in the totals: ${omittedText}.`}
@@ -1085,7 +1085,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
           <TriangleAlert className="h-4 w-4" />
           Literature graph unavailable
         </div>
-        <p className="mt-2 font-mono text-[11px] text-white/45">{error}</p>
+        <p className="mt-2 font-mono cap text-white/45">{error}</p>
       </section>
     );
   }
@@ -1093,7 +1093,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
   if (!data || !timeline) {
     return (
       <section className="glass rounded-xl p-5">
-        <div className="flex items-center gap-2 font-mono text-[11px] text-white/40">
+        <div className="flex items-center gap-2 font-mono cap text-white/40">
           <Network className="h-4 w-4 animate-pulse text-white/30" />
           loading the literature fetch for {cutoffYear}
         </div>
@@ -1129,19 +1129,19 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
 
       <header className="relative flex flex-col gap-4 border-b border-white/6 px-5 pb-4 pt-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <div className="font-mono text-[10px] text-hive-400/80">Literature</div>
-          <h2 className="font-serif-display mt-1 text-2xl leading-tight text-wax sm:text-[1.75rem]">
+          <div className="font-mono cap-sm text-hive-400/80">Literature</div>
+          <h3 className="mt-1.5 font-mono text-[13px] uppercase tracking-[0.14em] leading-relaxed text-white/75">
             {s.share_after == null
               ? `No ${lit} record names any of the ${s.molecules} answers`
               : `${pctAfter}% of the records that name the ${s.molecules} answers are dated after ${cutoff}`}
-          </h2>
+          </h3>
           <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-white/55">
             {lit} lists <span style={{ color: EARLY }}>{fmt(s.papers_before)}</span> records that name
             one of them in the title or abstract up to {cutoff}, and {fmt(s.papers_after)} after. The
             lab ranked all {s.molecules} from data that stops at {cutoff}.
           </p>
         </div>
-        <div className="shrink-0 font-mono text-[10.5px] leading-relaxed text-white/40 lg:text-right">
+        <div className="shrink-0 font-mono cap-sm leading-relaxed text-white/40 lg:text-right">
           <div>
             fetched <span className="text-white/70">{shortDate(data.fetched_at)}</span>
           </div>
@@ -1196,9 +1196,11 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
         ))}
       </dl>
 
+      <Exception data={data} cutoff={cutoff} lit={lit} />
+
       <div className="relative grid grid-cols-1 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
         <div className="min-w-0 border-b border-white/6 p-3 sm:p-4 lg:border-b-0 lg:border-r">
-          <div className="mb-1 flex items-center gap-2 px-1 font-mono text-[10px] text-white/35">
+          <div className="mb-1 flex items-center gap-2 px-1 font-mono cap-sm text-white/35">
             <Network className="h-3.5 w-3.5" />
             {data.molecules.length} molecules · {data.concepts.length} concepts · {data.papers.length} papers ·{' '}
             {data.edges.length} links
@@ -1218,7 +1220,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
               <button
                 key={c.id}
                 onClick={() => setSelected(c.id)}
-                className={`rounded border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider transition ${
+                className={`tap-y rounded border px-2 py-0.5 font-mono cap-sm uppercase tracking-wider transition ${
                   selected === c.id
                     ? 'border-white/40 text-white/85'
                     : 'border-white/10 text-white/40 hover:border-white/25 hover:text-white/70'
@@ -1242,7 +1244,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
           <h3 className="text-[13px] font-medium text-white/85">
             Records by and after {cutoff}, in the lab&apos;s queue order
           </h3>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-white/40">
+          <p className="mt-1 cap leading-relaxed text-white/40">
             Top row is the first molecule the lab would test. Left bar: records dated {cutoff} or
             earlier. Right bar: after {cutoff}. Click a row to open it in the panel above.
           </p>
@@ -1252,7 +1254,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
         </div>
         <div className="p-5">
           <h3 className="text-[13px] font-medium text-white/85">Records per year</h3>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-white/40">
+          <p className="mt-1 cap leading-relaxed text-white/40">
             {data.concepts.length} background topics next to the {s.molecules} answers summed. Click
             an entry in the key to hide or show its line.
           </p>
@@ -1262,7 +1264,7 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
         </div>
       </div>
 
-      <footer className="relative border-t border-white/6 px-5 py-3 font-mono text-[10px] leading-relaxed text-white/30">
+      <footer className="relative border-t border-white/6 px-5 py-3 font-mono cap-sm leading-relaxed text-white/30">
         Source: {data.method} Bee subset adds {data.bee_terms}. Names: ApisTox, or the PubChem synonym where ApisTox
         lists an IUPAC-style name. Solid line: the paper came back from that node&apos;s query.
         Dashed: the node&apos;s name appears in the paper&apos;s title or abstract. Rank: position in
@@ -1270,5 +1272,35 @@ export default function EvidenceGraph({ cutoffYear = 2000 }) {
         trained on {fmt(data.lab.train_size)} molecules recorded by {cutoff}.
       </footer>
     </section>
+  );
+}
+
+/** The one answer with pre-cutoff bee literature, named rather than averaged.
+ *  Everything here is read from the same /api/evidence/graph payload. */
+function Exception({ data, cutoff, lit }) {
+  const worst = data.molecules.reduce(
+    (a, m) => ((m.bee?.before ?? 0) > (a?.bee?.before ?? 0) ? m : a),
+    null,
+  );
+  if (!worst || !(worst.bee?.before > 0)) return null;
+  const ranks = data.molecules.map((m) => m.rank).filter((r) => r != null);
+  const without = ranks.filter((r) => r !== worst.rank);
+  const lastWithout = without.length ? Math.max(...without) : null;
+  const isLast = worst.rank === Math.max(...ranks);
+
+  return (
+    <div className="relative border-b border-white/6 px-5 py-3 cap leading-relaxed text-white/50">
+      <span className="text-white/75">The exception is {worst.label}.</span> {lit} holds{' '}
+      {worst.all?.before} records on it dated {cutoff} or earlier, first in {worst.all?.first_year},
+      and {worst.bee.before} of those name bees.
+      {isLast && lastWithout != null && (
+        <>
+          {' '}
+          It is also the last answer the lab reaches, at rank {worst.rank}, so dropping it leaves{' '}
+          {without.length} answers inside {lastWithout} assays and the result gets stronger, not
+          weaker.
+        </>
+      )}
+    </div>
   );
 }

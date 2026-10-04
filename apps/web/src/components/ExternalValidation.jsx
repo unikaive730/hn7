@@ -65,7 +65,7 @@ function ScoreTooltip({ active, payload }) {
     <div style={tooltipStyle} className="px-2.5 py-2 text-white/80">
       <div className="text-white/95">{r.name}</div>
       <div className="text-white/50">{speciesShort(r.species)} · LD50 {ld50(r.ld50_ug_per_bee)} ug/bee</div>
-      <div>P(toxic) {r.p_toxic.toFixed(3)}</div>
+      <div>vote share {r.p_toxic.toFixed(3)}</div>
       <div>max similarity {r.max_similarity.toFixed(2)}</div>
     </div>
   );
@@ -79,7 +79,7 @@ function Stat({ value, total, caption, tone = 'text-white/85' }) {
         {value}
         <span className="text-white/25">/{total}</span>
       </div>
-      <div className="mt-0.5 text-[10px] leading-tight text-white/40">{caption}</div>
+      <div className="mt-0.5 cap-sm leading-tight text-white/40">{caption}</div>
     </div>
   );
 }
@@ -132,7 +132,7 @@ export default function ExternalValidation() {
           </p>
         </div>
         {data && (
-          <div className="font-mono text-[10px] leading-relaxed text-white/30 sm:text-right">
+          <div className="font-mono cap-sm leading-relaxed text-white/30 sm:text-right">
             ChEMBL pulled {data.chembl_fetched_at?.slice(0, 16).replace('T', ' ')} UTC
             <br />
             CC BY-SA 3.0
@@ -150,7 +150,7 @@ export default function ExternalValidation() {
       {data && view && data.honey_bee && (
         <>
           {/* Where the test set came from, as counts. */}
-          <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-white/45">
+          <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono cap text-white/45">
             <span>
               <span className="text-white/80">{data.chembl_records.apis_all}</span> honey bee records
             </span>
@@ -183,7 +183,7 @@ export default function ExternalValidation() {
                       tick={{ fontSize: 10 }}
                       tickLine={false}
                       label={{
-                        value: 'predicted P(toxic)',
+                        value: 'forest vote share',
                         position: 'insideBottom',
                         offset: -10,
                         fill: AXIS,
@@ -213,7 +213,7 @@ export default function ExternalValidation() {
                   </ScatterChart>
                 </ResponsiveContainer>
               </div>
-              <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-white/40">
+              <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 cap-sm text-white/40">
                 <span className="flex items-center gap-1.5">
                   <span className="inline-block h-2.5 w-2.5 rounded-full bg-hive-400" /> right call
                 </span>
@@ -224,31 +224,51 @@ export default function ExternalValidation() {
                   <span className="inline-block h-2.5 w-2.5 rounded-full border-2 border-white/50" /> outside
                   domain (max similarity &lt; {data.domain_min_similarity})
                 </span>
+                <span className="basis-full text-white/35">
+                  The axis is the forest's vote share over its 500 trees. It ranks molecules; it
+                  is not a calibrated probability.
+                </span>
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="font-mono text-5xl leading-none tabular text-hive-400">
+                <div className="font-mono cap-sm uppercase tracking-wider text-white/35">
+                  A labelling check, not a benchmark
+                </div>
+                {data.honey_bee.pairs_total ? (
+                  <p className="mt-1.5 text-[15px] leading-snug text-white/80">
+                    <span className="font-mono tabular text-hive-400">
+                      {data.honey_bee.pairs_total} pairs
+                    </span>{' '}
+                    are the whole test: {data.honey_bee.toxic} toxic against{' '}
+                    {data.honey_bee.nontoxic} not toxic, over {data.honey_bee.n} honey bee
+                    molecules. It asks whether the ApisTox labelling rule still holds on records
+                    from other papers. It does not measure accuracy.
+                  </p>
+                ) : (
+                  <p className="mt-1.5 text-[15px] leading-snug text-white/80">
+                    {data.honey_bee.auroc_note}
+                  </p>
+                )}
+                <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span className="font-mono text-lg leading-none tabular text-white/70">
                     {data.honey_bee.auroc != null ? data.honey_bee.auroc.toFixed(2) : 'n/a'}
                   </span>
-                  <span className="text-[11px] text-white/35">
-                    AUROC, honey bee
+                  <span className="cap text-white/40">
+                    AUROC
+                    {data.honey_bee.pairs_total
+                      ? `, from ${data.honey_bee.pairs_ordered} of those ${data.honey_bee.pairs_total} pairs coming out the right way round`
+                      : ''}
                   </span>
                 </div>
-                <p className="mt-2 text-[11px] leading-snug text-white/45">
-                  {data.honey_bee.pairs_total
-                    ? `${data.honey_bee.pairs_ordered} of ${data.honey_bee.pairs_total} toxic/non-toxic pairs come out the right way round. The set runs ${data.honey_bee.toxic} toxic against ${data.honey_bee.nontoxic} not toxic, so those ${data.honey_bee.pairs_total} pairs are the whole test.`
-                    : data.honey_bee.auroc_note}
-                </p>
               </div>
 
               <div className="flex divide-x divide-white/8 border-t border-white/8 pt-3">
                 <Stat
                   value={data.honey_bee.correct}
                   total={data.honey_bee.n}
-                  caption={`right at the ${data.call_threshold} cut`}
+                  caption={`right at the ${data.call_threshold} vote-share cut`}
                 />
                 <Stat
                   value={data.honey_bee.in_domain_correct}
@@ -274,14 +294,14 @@ export default function ExternalValidation() {
           {/* Per-molecule table: the whole test set fits on screen. */}
           <div className="mt-5 overflow-x-auto rounded-lg border border-white/6">
             <table className="w-full min-w-[640px] text-left text-xs">
-              <thead className="bg-white/[0.03] text-[10px] uppercase tracking-wide text-white/35">
+              <thead className="bg-white/[0.03] cap-sm uppercase tracking-wide text-white/35">
                 <tr>
                   <th className="px-3 py-2 font-normal">Molecule</th>
                   <th className="px-3 py-2 font-normal">Bee</th>
                   <th className="px-3 py-2 font-normal">LD50, ug/bee</th>
                   <th className="px-3 py-2 font-normal">ChEMBL label</th>
                   <th className="px-3 py-2 font-normal">ApisTox label</th>
-                  <th className="px-3 py-2 text-right font-normal">P(toxic)</th>
+                  <th className="px-3 py-2 text-right font-normal">Vote share</th>
                   <th className="px-3 py-2 text-right font-normal">Max sim.</th>
                 </tr>
               </thead>
@@ -299,12 +319,12 @@ export default function ExternalValidation() {
                         href={`https://www.ebi.ac.uk/chembl/compound_report_card/${r.chembl_id}/`}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-white/85 hover:text-hive-400"
+                        className="tap inline-flex items-center gap-1 text-white/85 hover:text-hive-400"
                       >
                         {r.name} <ExternalLink className="h-3 w-3 text-white/25" />
                       </a>
                       {r.name_in_apistox && (
-                        <div className="text-[10px] text-white/35">
+                        <div className="cap-sm text-white/35">
                           same name in ApisTox, different structure record
                         </div>
                       )}

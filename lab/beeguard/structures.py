@@ -358,6 +358,10 @@ def hidden(cutoff_year: int = 2000) -> dict:
         "train_molecules": int(len(lab.train)),
         "targets": total,
         "unseen_scaffold_targets": int(sum(1 for r in rows if not r["seen_scaffold"])),
+        # The learned ordering gates on `insecticide == 1`, so every pick comes
+        # from this subset. It is the honest denominator for a hit rate; the
+        # whole-pool rate (targets / pool_molecules) is not what it is beating.
+        "pool_insecticides": int((pool["insecticide"] == 1).sum()),
         "model_rank_of_last": model_last,
         "random_median_for_all": random_last,
         "shuffles": SHUFFLES,

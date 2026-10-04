@@ -15,30 +15,63 @@ async function api(path, signal) {
 
 const DEFAULT_BUDGET = 30; // the experiment's input, not a result
 
+const count = (n) => (typeof n === 'number' ? n.toLocaleString('en-US') : null);
+
 function useHeadline() {
   const [state, setState] = useState({ facts: null, run: null, order: null, error: null });
+  // How little of this chemistry has ever been measured on bees, and the
+  // control the headline ratio has to survive. Separate state so a slow or
+  // missing side call never holds up the main readout.
+  const [scarcity, setScarcity] = useState(null);
+  const [control, setControl] = useState(null);
 
   useEffect(() => {
     let alive = true;
     const controller = new AbortController();
-    (async () => {
-      try {
-        const { facts, run, order } = await api(
-          `/api/headline?budget=${DEFAULT_BUDGET}`,
-          controller.signal,
-        );
+    const get = (path) => api(path, controller.signal);
+
+    get(`/api/headline?budget=${DEFAULT_BUDGET}`)
+      .then(({ facts, run, order }) => {
         if (alive) setState({ facts, run, order, error: null });
-      } catch (error) {
+      })
+      .catch((error) => {
         if (alive) setState((s) => ({ ...s, error: error.message }));
-      }
-    })();
+      });
+
+    // /api/external counts the honey bee records in the whole of ChEMBL;
+    // /api/candidates counts the pest-active molecules with no bee row in
+    // either source, and how many of those the lab can actually rank.
+    Promise.all([get('/api/external'), get('/api/candidates')])
+      .then(([external, candidates]) => {
+        if (!alive) return;
+        setScarcity({
+          chembl_bee_molecules: external?.chembl_records?.apis_molecules,
+          unmeasured: candidates?.funnel?.not_in_apistox,
+          ranked: candidates?.total_ranked,
+        });
+      })
+      .catch(() => {
+        if (alive) setScarcity({}); // asked and did not answer: print nothing
+      });
+
+    // The control the 6.37x has to beat: the same insecticides, arbitrary order.
+    get(`/api/compare?budget=${DEFAULT_BUDGET}`)
+      .then((compare) => {
+        if (!alive) return;
+        const row = compare?.rows?.find((r) => r.strategy === 'insecticide_only');
+        setControl(row ? { arbitrary_found: row.found, targets: compare.targets } : {});
+      })
+      .catch(() => {
+        if (alive) setControl({});
+      });
+
     return () => {
       alive = false;
       controller.abort();
     };
   }, []);
 
-  return state;
+  return { ...state, scarcity, control };
 }
 
 export default function Hero() {
@@ -46,7 +79,7 @@ export default function Hero() {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const imageY = useTransform(scrollYProgress, [0, 1], ['0%', reduce ? '0%' : '16%']);
-  const { facts, run, order, error } = useHeadline();
+  const { facts, run, order, error, scarcity, control } = useHeadline();
   const cutoff = facts?.cutoff_year;
 
   return (
@@ -71,14 +104,14 @@ export default function Hero() {
         </motion.div>
         <div className="absolute inset-0 bg-[linear-gradient(to_top,var(--color-night-950)_2%,rgba(7,7,11,0.55)_38%,transparent_70%)] md:bg-[linear-gradient(90deg,var(--color-night-950)_0%,rgba(7,7,11,0.92)_32%,rgba(7,7,11,0.45)_56%,rgba(7,7,11,0)_78%)]" />
         <div className="absolute inset-x-0 bottom-0 hidden h-40 bg-linear-to-t from-night-900 to-transparent md:block" />
-        <p className="absolute right-4 top-3 font-mono text-[10px] tracking-wide text-wax/45 md:bottom-5 md:right-6 md:top-auto">
+        <p className="cap-sm absolute right-4 top-3 font-mono tracking-wide text-wax/45 md:bottom-5 md:right-6 md:top-auto">
           Generated illustration, not a photograph
         </p>
       </div>
 
       <div className="relative mx-auto -mt-24 max-w-6xl px-4 pb-14 sm:px-6 md:mt-0 md:px-8 md:pb-14 md:pt-[8vh]">
         <div className="max-w-[36rem] lg:max-w-[37rem]">
-          <p className="font-mono text-[12px] text-hive-400/90">
+          <p className="cap font-mono text-hive-400/90">
             Retrospective test
             {cutoff ? <span className="text-wax/50"> · compound-year cutoff {cutoff}</span> : null}
           </p>
@@ -87,8 +120,10 @@ export default function Hero() {
             BeeGuard Lab
           </h1>
 
-          <p className="mt-5 max-w-[32rem] text-[17px] leading-relaxed text-wax/72">
-            Rank insecticides first reported after {cutoff ?? 'a cutoff year'} using
+          <Lede facts={facts} scarcity={scarcity} />
+
+          <p className="mt-4 max-w-[32rem] text-[15px] leading-relaxed text-wax/60">
+            The lab ranks insecticides first reported after {cutoff ?? 'a cutoff year'} using
             earlier compounds’ toxicity labels. Simulated assays reveal the held-out
             labels to measure which ordering finds them first.
           </p>
@@ -103,14 +138,15 @@ export default function Hero() {
             </a>
             <a
               href="#agents"
-              className="group inline-flex items-center gap-1.5 text-sm text-wax/80 underline decoration-wax/25 underline-offset-[6px] transition-colors hover:text-wax hover:decoration-hive-400"
+              className="tap group gap-1.5 text-sm text-wax/80 underline decoration-wax/25 underline-offset-[6px] transition-colors hover:text-wax hover:decoration-hive-400"
             >
               See the agents
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </a>
           </div>
 
-          <Readout facts={facts} run={run} error={error} />
+          <Readout facts={facts} run={run} error={error} control={control} />
+          <CandidateLink scarcity={scarcity} />
           <OrderStrip facts={facts} run={run} order={order} reduce={reduce} />
         </div>
       </div>
@@ -118,8 +154,62 @@ export default function Hero() {
   );
 }
 
+/** Why ordering assays is worth anything: almost nothing has been measured.
+ *  1,035 is train + pool from /api/headline, 8 is the honey bee molecule count
+ *  in the whole of ChEMBL from /api/external, 3,463 is the pest-active
+ *  molecules with no bee row in either source from /api/candidates. Nothing
+ *  prints until all three have answered. */
+function Lede({ facts, scarcity }) {
+  const labelled = facts ? facts.train_molecules + facts.pool_molecules : null;
+  const chembl = scarcity?.chembl_bee_molecules;
+  const unmeasured = scarcity?.unmeasured;
+  const ready = labelled != null && chembl != null && unmeasured != null;
+
+  if (!ready) {
+    // Reserve the space while the calls are in flight; give it back if they
+    // came back empty, rather than leaving a hole where a number should be.
+    return <div className={scarcity ? '' : 'mt-5 h-20 sm:h-16'} aria-hidden="true" />;
+  }
+
+  return (
+    <motion.p
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="mt-5 max-w-[32rem] text-[17px] leading-relaxed text-wax/80"
+    >
+      Bee toxicity is measured on live bees, one compound at a time. ApisTox
+      carries labels for {count(labelled)} molecules, all of ChEMBL adds honey
+      bee records for {count(chembl)} more, and {count(unmeasured)} pest-active
+      molecules have no bee measurement in either source. Which one you assay
+      next is the decision this lab makes.
+    </motion.p>
+  );
+}
+
+/** The one output that is not retrospective. It sits at the bottom of a very
+ *  long page, so the hero points at it. 288 is total_ranked from
+ *  /api/candidates: predicted bee-safe and inside the model's domain. */
+function CandidateLink({ scarcity }) {
+  const ranked = scarcity?.ranked;
+  if (ranked == null) return null;
+  return (
+    <a
+      href="#candidates"
+      className="tap group mt-4 gap-1.5 text-[14px] text-wax/60 transition-colors hover:text-wax"
+    >
+      <span>
+        <span className="text-hive-400">{count(ranked)}</span> pest-active
+        molecules come back ranked and inside the model’s domain, each one an
+        assay you could order
+      </span>
+      <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
+    </a>
+  );
+}
+
 /** The default run, as three measured lines. */
-function Readout({ facts, run, error }) {
+function Readout({ facts, run, error, control }) {
   if (error) {
     return (
       <p className="mt-10 border-l-2 border-warn/60 pl-3 text-sm text-warn/90">
@@ -149,6 +239,14 @@ function Readout({ facts, run, error }) {
               fewer assays than random order over all {facts.pool_molecules} pool
               molecules, which needs {run.random_assays_for_same_hits} (median over
               shuffles) to find the same {run.found}.
+              {control?.arbitrary_found != null && (
+                <span className="mt-1 block text-wax/45">
+                  Most of that gap is the insecticide filter: insecticides in
+                  arbitrary order already find {control.arbitrary_found} of{' '}
+                  {control.targets}. This ordering finds all {run.found} by assay{' '}
+                  {last}.
+                </span>
+              )}
             </>
           ),
         },
@@ -164,7 +262,7 @@ function Readout({ facts, run, error }) {
 
   return (
     <div className="mt-10">
-      <div className="flex items-baseline justify-between gap-3 border-b border-wax/12 pb-2 font-mono text-[11px] text-wax/45">
+      <div className="cap flex items-baseline justify-between gap-3 border-b border-wax/12 pb-2 font-mono text-wax/45">
         <span>retrospective preview, computed on load</span>
         {run && (
           <span>
@@ -190,7 +288,7 @@ function Readout({ facts, run, error }) {
             >
               {rows ? row.value : <span className="inline-block h-7 w-16 animate-pulse rounded bg-wax/8" />}
             </dt>
-            <dd className="text-[13.5px] leading-snug text-wax/65">
+            <dd className="text-[14px] leading-snug text-wax/65 sm:text-[13.5px]">
               {rows ? row.text : <span className="inline-block h-3 w-48 animate-pulse rounded bg-wax/8" />}
             </dd>
           </motion.div>
@@ -213,7 +311,7 @@ function OrderStrip({ facts, run, order, reduce }) {
 
   return (
     <figure className="mt-8">
-      <div className="relative h-5 font-mono text-[10.5px] text-wax/55">
+      <div className="cap-sm relative h-5 font-mono text-wax/55">
         <span className="absolute left-0 top-0">first {budget} assays</span>
         {randomAt != null && (
           <span
@@ -289,7 +387,7 @@ function OrderStrip({ facts, run, order, reduce }) {
         />
       </svg>
 
-      <div className="relative mt-1 h-4 font-mono text-[10px] text-wax/40">
+      <div className="cap-sm relative mt-1 h-4 font-mono text-wax/40">
         <span className="absolute left-0">1</span>
         <span className="absolute -translate-x-1/2" style={{ left: pct(budget) }}>
           {budget}
@@ -297,7 +395,7 @@ function OrderStrip({ facts, run, order, reduce }) {
         <span className="absolute right-0">{n}</span>
       </div>
 
-      <figcaption className="mt-3 text-[12px] leading-relaxed text-wax/45">
+      <figcaption className="cap mt-3 leading-relaxed text-wax/45">
         The {n} molecules first reported after {facts.cutoff_year}, in the order
         the lab would test them. <span className="text-hive-400">Tall marks</span>{' '}
         are the {facts.targets} insecticides carrying non-toxic dataset labels;{' '}

@@ -26,3 +26,8 @@ lab/results/*
 !lab/results/research_record.jsonl
 .web.log
 .omnigent-server.log
+
+# scratch handed to the fixers, not part of the project
+.findings.json
+.brief.md
+.ship-notes.md

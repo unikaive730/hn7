@@ -101,20 +101,26 @@ export default function SiteFooter() {
 
   return (
     <footer className="relative isolate mt-24 overflow-hidden border-t border-wax/10 bg-night-950">
-      <div className="grain pointer-events-none absolute right-0 top-0 -z-10 h-80 w-full md:w-[62%]">
+      {/* The picture had a hard horizontal seam at both ends of its block: it
+          started abruptly under the border and stopped abruptly 320px down,
+          because the gradient overlays faded the image but not the grain layer
+          on top of it. Masking the whole block fades image, grain and overlay
+          together, so there is no edge to see. Opacity is down from 45 to 30 so
+          the Licence column keeps its contrast where the lamp sits behind it. */}
+      <div className="grain mask-fade-y pointer-events-none absolute right-0 top-0 -z-10 h-80 w-full md:w-[62%]">
         <img
           src="/img/lab-bench.webp"
           alt=""
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover object-[60%_55%] opacity-45"
+          className="h-full w-full object-cover object-[60%_55%] opacity-30"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--color-night-950)_0%,rgba(7,7,11,0.6)_45%,rgba(7,7,11,0.25)_100%)]" />
-        <div className="absolute inset-0 bg-linear-to-t from-night-950 via-night-950/70 to-transparent" />
       </div>
 
       <div className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 md:px-8">
-        <h2 className="font-serif-display max-w-xl text-[2.1rem] leading-[1.05] text-wax sm:text-[2.6rem]">
+        {/* Smaller than a section heading on purpose: this is the appendix. */}
+        <h2 className="font-serif-display max-w-xl text-[1.85rem] leading-[1.08] text-wax sm:text-[2rem]">
           Where the data comes from
         </h2>
         <p className="mt-3 max-w-xl text-[13.5px] leading-relaxed text-wax/55">
@@ -133,7 +139,7 @@ export default function SiteFooter() {
 
         <div className="mt-12 grid gap-8 border-t border-wax/10 pt-8 text-[13px] leading-relaxed text-wax/55 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>
-            <h3 className="font-mono text-[11px] text-wax/40">Code</h3>
+            <h3 className="cap font-mono text-wax/40">Code</h3>
             <p className="mt-2">
               MIT license. Every number on this page is produced by this code from
               the data listed above.
@@ -145,21 +151,21 @@ export default function SiteFooter() {
             </div>
           </div>
           <div>
-            <h3 className="font-mono text-[11px] text-wax/40">Team</h3>
+            <h3 className="cap font-mono text-wax/40">Team</h3>
             <p className="mt-2">
               MarketPilot. Built for Hack-Nation 7, Challenge 3 (Databricks,
               Agentic Scientific Discovery).
             </p>
           </div>
           <div>
-            <h3 className="font-mono text-[11px] text-wax/40">Images</h3>
+            <h3 className="cap font-mono text-wax/40">Images</h3>
             <p className="mt-2">
               Illustrations generated with Gemini; data figures are computed live.
             </p>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-wax/8 pt-5 text-[11.5px] text-wax/35 sm:flex-row sm:items-center sm:justify-between">
+        <div className="cap mt-10 flex flex-col gap-3 border-t border-wax/8 pt-5 text-wax/35 sm:flex-row sm:items-center sm:justify-between">
           <span className="flex items-center gap-2">
             <BeeMark className="h-4 w-4 opacity-80" />
             <span className="font-serif-display text-[14px] text-wax/60">BeeGuard Lab</span>
@@ -187,7 +193,7 @@ function SourceTable({ rows }) {
 
   return (
     <div className="mt-8">
-      <div className="hidden grid-cols-[9rem_1fr_15rem_13rem] gap-6 border-b border-wax/12 pb-2 font-mono text-[11px] text-wax/40 md:grid">
+      <div className="cap-sm hidden grid-cols-[9rem_1fr_15rem_13rem] gap-6 border-b border-wax/12 pb-2 font-mono text-wax/40 md:grid">
         <span>Source</span>
         <span>Used for</span>
         <span>How it reaches the lab</span>
@@ -203,7 +209,7 @@ function SourceTable({ rows }) {
               href={row.url}
               target="_blank"
               rel="noreferrer"
-              className="text-[15px] font-medium text-wax/90 transition-colors hover:text-hive-400"
+              className="tap text-[15px] font-medium text-wax/90 transition-colors hover:text-hive-400"
             >
               {row.name}
             </a>
@@ -220,7 +226,7 @@ function SourceTable({ rows }) {
                       href={row.doi}
                       target="_blank"
                       rel="noreferrer"
-                      className="not-italic font-mono text-[10.5px] text-wax/50 underline decoration-wax/20 underline-offset-2 hover:text-hive-400"
+                      className="cap-sm not-italic font-mono text-wax/50 underline decoration-wax/20 underline-offset-2 hover:text-hive-400"
                     >
                       doi
                     </a>
@@ -228,12 +234,12 @@ function SourceTable({ rows }) {
                 </p>
               )}
             </div>
-            <div className="font-mono text-[11px] leading-relaxed text-wax/45">
+            <div className="cap font-mono leading-relaxed text-wax/45">
               <span className={(KIND[row.kind] ?? KIND.bundled).tone}>
                 {(KIND[row.kind] ?? { label: row.kind }).label}
               </span>
               {row.found_in?.length ? (
-                <span className="block break-all text-wax/35">
+                <span className="block break-words text-wax/35">
                   {row.found_in[0]}
                   {row.found_in.length > 1 ? ` +${row.found_in.length - 1} more` : ''}
                 </span>
@@ -243,7 +249,7 @@ function SourceTable({ rows }) {
               href={row.license_url}
               target="_blank"
               rel="noreferrer"
-              className="text-[12.5px] text-wax/55 underline decoration-wax/20 underline-offset-4 transition-colors hover:text-wax/85"
+              className="tap cap text-wax/55 underline decoration-wax/20 underline-offset-4 transition-colors hover:text-wax/85"
             >
               {row.license}
             </a>
@@ -261,7 +267,7 @@ function FooterLink({ href, children }) {
       href={href}
       target={external ? '_blank' : undefined}
       rel={external ? 'noreferrer' : undefined}
-      className="inline-flex items-center gap-1 text-wax/75 underline decoration-wax/20 underline-offset-4 transition-colors hover:text-hive-400 hover:decoration-hive-400/50"
+      className="tap inline-flex items-center gap-1 text-wax/75 underline decoration-wax/20 underline-offset-4 transition-colors hover:text-hive-400 hover:decoration-hive-400/50"
     >
       {children}
       <ArrowUpRight className="h-3 w-3" />

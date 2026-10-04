@@ -94,7 +94,11 @@ export default function RediscoveredGallery({ cutoffYear = 2000 }) {
       unseenN: unseen.length,
       seenMedian: median(seen),
       unseenMedian: median(unseen),
-      baseRate: (100 * data.targets) / data.pool_molecules,
+      // The ordering gates on insecticides, so the rate it has to beat is the
+      // answer rate inside that subset, not inside the whole pool.
+      classRate: data.pool_insecticides
+        ? (100 * data.targets) / data.pool_insecticides
+        : null,
       topRate: (100 * data.targets) / data.model_rank_of_last,
     };
   }, [data]);
@@ -103,10 +107,10 @@ export default function RediscoveredGallery({ cutoffYear = 2000 }) {
     <section className="relative">
       <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
         <div className="max-w-2xl">
-          <div className="font-mono text-[11px] text-hive-400/80">
+          <div className="font-mono cap text-hive-400/80">
             {data ? `The ${data.targets} hidden answers` : 'The hidden answers'}
           </div>
-          <h3 className="font-serif-display mt-2 text-[1.4rem] leading-tight text-wax sm:text-[1.8rem]">
+          <h3 className="mt-2 font-mono text-[13px] uppercase tracking-[0.14em] text-white/75">
             Found in the order the lab asked for them
           </h3>
           {data && reading ? (
@@ -116,8 +120,21 @@ export default function RediscoveredGallery({ cutoffYear = 2000 }) {
               {data.cutoff_year} or earlier. All {data.targets} came within its first{' '}
               <span className="text-white/85">{data.model_rank_of_last}</span> picks out of{' '}
               {data.pool_molecules}, a hit rate of{' '}
-              <span className="text-white/85">{reading.topRate.toFixed(0)}%</span> against a
-              base rate of {reading.baseRate.toFixed(1)}%. Random order needs a median of{' '}
+              <span className="text-white/85">{reading.topRate.toFixed(0)}%</span>
+              {reading.classRate != null ? (
+                <>
+                  {' '}
+                  against {reading.classRate.toFixed(0)}% among the {data.pool_insecticides}{' '}
+                  pool insecticides the ordering draws from
+                </>
+              ) : (
+                <>
+                  {' '}
+                  measured against the insecticides the ordering draws from, not against the
+                  whole pool
+                </>
+              )}
+              . Random order over the whole pool needs a median of{' '}
               <span className="text-white/85">{fmt(data.random_median_for_all)}</span> picks
               for the same {data.targets}.
             </p>
@@ -157,7 +174,7 @@ export default function RediscoveredGallery({ cutoffYear = 2000 }) {
           <div
             ref={scroller}
             onScroll={onScroll}
-            className="-mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pt-2 [scrollbar-width:none] sm:mx-0 sm:px-0 sm:pb-12 [&::-webkit-scrollbar]:hidden"
+            className="fade-right -mx-4 mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pt-2 [scrollbar-width:none] sm:mx-0 sm:px-0 sm:pb-12 [&::-webkit-scrollbar]:hidden"
           >
             {data.rows.map((row, index) => (
               <AnswerCard
@@ -183,7 +200,7 @@ export default function RediscoveredGallery({ cutoffYear = 2000 }) {
                 }}
               />
             </div>
-            <span className="font-mono text-[10.5px] text-white/35">swipe or scroll</span>
+            <span className="font-mono cap-sm text-white/35">swipe or scroll</span>
           </div>
 
           {reading && (
@@ -202,7 +219,8 @@ export default function RediscoveredGallery({ cutoffYear = 2000 }) {
               <p>
                 Rank is the position in the learned ordering of all {data.pool_molecules}{' '}
                 molecules dated after {data.cutoff_year}. Random is where the k-th answer lands
-                in a shuffled pool, median of {data.shuffles} shuffles. The closest training
+                in a shuffled pool, median of {data.shuffles} shuffles, the same count the
+                headline run uses; the 5,000-shuffle stress test is in Rigor. The closest training
                 molecule is the one with the highest Tanimoto similarity on the Morgan
                 fingerprints the model uses.
               </p>
@@ -349,7 +367,7 @@ function RankFan({ data, active, setActive, onPick }) {
           ))}
         </svg>
       )}
-      <div className="mt-1 flex flex-wrap items-center gap-x-5 gap-y-1 text-[11px] text-white/40">
+      <div className="mt-1 flex flex-wrap items-center gap-x-5 gap-y-1 cap text-white/40">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-full bg-hive-400" /> new scaffold, not in
           the training set
@@ -385,18 +403,18 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
     >
       <div className="flex items-start justify-between px-4 pt-4">
         <div>
-          <div className="font-mono text-[10px] text-white/35">
+          <div className="font-mono cap-sm text-white/35">
             {first ? 'first pick' : `find ${row.find_order} of ${targets}`}
           </div>
           <div className="mt-0.5 flex items-baseline gap-1.5">
-            <span className="text-[11px] text-white/40">rank</span>
+            <span className="cap text-white/40">rank</span>
             <span className={`tabular font-semibold text-hive-400 ${first ? 'text-5xl' : 'text-4xl'}`}>
               {row.model_rank}
             </span>
           </div>
         </div>
         <div className="text-right">
-          <div className="font-mono text-[10px] text-white/30">random</div>
+          <div className="font-mono cap-sm text-white/30">random</div>
           <div className="tabular mt-1 text-lg text-white/55">{fmt(row.random_rank_median)}</div>
         </div>
       </div>
@@ -409,7 +427,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
           className={`mx-auto block aspect-square ${first ? 'w-[17rem]' : 'w-[13.5rem]'}`}
         />
         <span
-          className={`absolute left-2 top-2 rounded border px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide ${
+          className={`absolute left-2 top-2 rounded border px-1.5 py-0.5 font-mono cap-sm uppercase tracking-wide ${
             row.seen_scaffold ? 'border-white/15 text-white/55' : 'border-hive-400/40 text-hive-400'
           }`}
         >
@@ -424,7 +442,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
         >
           {row.display_name}
         </h3>
-        <div className="mt-1 font-mono text-[11px] text-white/40">
+        <div className="mt-1 font-mono cap text-white/40">
           ApisTox year {row.year} · CID {row.cid}
         </div>
 
@@ -444,7 +462,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
           />
         </div>
 
-        <div className="mt-3 border-t border-white/[0.06] pt-2.5 text-[11px] leading-relaxed text-white/45">
+        <div className="mt-3 border-t border-white/[0.06] pt-2.5 cap leading-relaxed text-white/45">
           <span className="text-white/30">Closest training molecule</span>
           <div className="flex items-baseline justify-between gap-2">
             <span className="truncate text-white/70" title={row.nearest_known.name}>
@@ -454,7 +472,7 @@ function AnswerCard({ row, index, pool, targets, root, active, onHover }) {
               {row.nearest_known.tanimoto.toFixed(2)}
             </span>
           </div>
-          <div className="font-mono text-[10px] text-white/30">
+          <div className="font-mono cap-sm text-white/30">
             {row.nearest_known.year} · {row.nearest_known.label === 'toxic' ? 'toxic to bees' : 'non-toxic'}
           </div>
         </div>

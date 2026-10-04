@@ -6,11 +6,30 @@ PubChem lookups included) and keep it.
 """
 from __future__ import annotations
 
+from functools import lru_cache
+
 from fastapi import APIRouter, HTTPException, Query
 
 from . import external
+from .engine import _scaffold
 
 router = APIRouter()
+
+
+@lru_cache(maxsize=8)
+def _distinct_scaffolds(smiles: tuple[str, ...]) -> int:
+    """How many Bemis-Murcko scaffolds the ranked list actually covers.
+
+    The ranked count alone reads as that many independent hypotheses. It is
+    not: the list repeats chemotypes. An acyclic molecule has an empty Murcko
+    scaffold, so it is counted as its own group rather than pooled with every
+    other acyclic one.
+    """
+    groups = set()
+    for smi in smiles:
+        scaffold = _scaffold(smi)
+        groups.add(scaffold if scaffold else f"acyclic:{smi}")
+    return len(groups)
 
 
 def _payload() -> dict:
@@ -53,6 +72,8 @@ def candidates(
         "pubchem_cids_found": data["pubchem_cids_found"],
         "pubchem_lookups": data["pubchem_lookups"],
         "total_ranked": len(ranked),
+        "ranked_scaffolds": _distinct_scaffolds(tuple(r["smiles"] for r in ranked)),
+        "ranked_nearest_neighbours": len({r["nearest_name"] for r in ranked}),
         "label": "hypothesis, needs a bee assay",
         "rows": ranked[:limit],
     }

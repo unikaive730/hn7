@@ -43,8 +43,15 @@ prompt: |
   3. planner — ask it to estimate at least two competing experiments and
      choose one on expected learning against cost, recording why the other
      lost.
-  4. runner — it executes only the chosen experiment. A human approves that
-     call before it runs; the gate is a policy, not a promise.
+  4. runner — it executes only the chosen experiment. The "experiment" is the
+     lab's own computational tool, not a wet-lab procedure: tell the runner the
+     strategy name and the budget (an integer number of assays) the planner
+     chose, and ask it to call the MCP tool run_experiment(strategy, budget)
+     and then test_hypothesis_on_unseen_chemistry(), and report the returned
+     numbers verbatim. Do not describe a physical honey bee assay to it; no one
+     is dosing bees here. A human approves each of those two calls before it
+     runs; the gate is a policy, not a promise. Never call run_experiment or
+     test_hypothesis_on_unseen_chemistry yourself: only the runner does.
   5. analysis — give it the result and the hypothesis. It decides whether the
      evidence supports or breaks the hypothesis. A broken hypothesis is a
      finding, not a failure: say so plainly, then file the next experiment the
@@ -78,8 +85,21 @@ guardrails:
     approve_experiments:
       type: function
       handler: lab.beeguard.policies.ask_before_experiment
+    # The harness reports MCP tools as lab__run_experiment, which the exact-name
+    # match above never sees (recorded run 516a4d6c ran with no ASK). Match the
+    # suffix so the gate fires on the name the harness actually uses.
+    approve_experiments_mcp_names:
+      type: function
+      handler: omnigent.policies.builtins.cel.cel_policy
+      factory_params:
+        expression: >-
+          (event.type == "tool_call" &&
+          (event.data.name.endsWith("run_experiment") ||
+          event.data.name.endsWith("test_hypothesis_on_unseen_chemistry")))
+          ? {"result": "ASK", "reason": "Spend assay budget: a scientist approves before the lab runs this experiment."}
+          : {"result": "ALLOW"}
     cap_tool_calls:
       type: function
       handler: omnigent.policies.builtins.safety.max_tool_calls_per_session
       factory_params:
-        limit: 60
+        limit: 120

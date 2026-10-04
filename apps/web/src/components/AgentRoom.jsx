@@ -73,6 +73,31 @@ const glyphCount = (text) =>
   GLYPHS.slice(0, 4).reduce((n, [re]) => n + ((text ?? '').match(re)?.length ?? 0), 0);
 const HANGUL = /[가-힣]/;
 
+/* The strongest recorded moment in the run is a refusal, so the section opens
+ * with it. Both the quote and the turn index are read out of the loaded run;
+ * nothing here is typed in, and a run without such a turn shows no card. */
+function pullQuote(text) {
+  const clean = plain(text ?? '').replace(/\*\*/g, '');
+  for (const re of [
+    /[^.\n]*false experimental record[^.\n]*/i,
+    /[^.\n]*scientific misconduct[^.\n]*\./i,
+  ]) {
+    const match = clean.match(re);
+    if (match) return match[0].trim().replace(/^[-*•\s]+/, '');
+  }
+  return null;
+}
+
+function refusals(run) {
+  const out = [];
+  for (const t of run?.turns ?? []) {
+    if (t.kind !== 'message' || t.agent !== 'runner') continue;
+    const quote = pullQuote(t.text);
+    if (quote) out.push({ i: t.i, t_rel: t.t_rel, quote });
+  }
+  return out;
+}
+
 function reachedStages(run) {
   return ORDER.filter((n) => run.sessions?.some((s) => s.agent === n));
 }
@@ -116,7 +141,9 @@ export default function AgentRoom() {
   const [error, setError] = useState(null);
   const [cursor, setCursor] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(8);
+  // 122 turns take about 2 min 45 s at 8x and about 41 s at 32x, so the fast
+  // pass is the default and 2x/8x stay available for reading along.
+  const [speed, setSpeed] = useState(32);
   const [showPlumbing, setShowPlumbing] = useState(false);
   const [picked, setPicked] = useState(null);
 
@@ -208,6 +235,16 @@ export default function AgentRoom() {
     return { seen, calls, gate };
   }, [shown]);
 
+  /* The same reduction over the whole run, so a node at rest reads "0/36 calls"
+   * rather than claiming the agent did nothing. */
+  const totalCalls = useMemo(() => {
+    const calls = {};
+    for (const t of run?.turns ?? []) {
+      if (t.kind === 'tool_call' && !t.plumbing) calls[t.agent] = (calls[t.agent] ?? 0) + 1;
+    }
+    return calls;
+  }, [run]);
+
   if (error) {
     return (
       <section className="glass lift rounded-xl p-4 sm:p-5">
@@ -222,6 +259,8 @@ export default function AgentRoom() {
   return (
     <section className="glass lift rounded-xl p-4 sm:p-5">
       <Header run={run} topology={topology} />
+
+      {run && <RefusalCard run={run} />}
 
       {runs && topology && runs.length > 1 && (
         <RunPicker runs={runs} runId={runId} onPick={setRunId} total={topology.specialists.length} />
@@ -245,6 +284,7 @@ export default function AgentRoom() {
                 topology={topology}
                 stage={stage}
                 visited={visited}
+                totalCalls={totalCalls}
                 cursor={cursor}
                 picked={picked}
                 onPick={setPicked}
@@ -333,9 +373,76 @@ function Header({ run, topology }) {
   );
 }
 
-function RunPicker({ runs, runId, onPick, total }) {
+/** What the runner specialist said when it was told to produce assay numbers
+ *  it could not have measured. Quotes are lifted verbatim from the turns. */
+function RefusalCard({ run }) {
+  const quotes = useMemo(() => refusals(run), [run]);
+  const brief = run.turns.find((t) => t.kind === 'brief' && t.agent === 'runner');
+  if (quotes.length < 1) return null;
+
   return (
-    <div className="mt-3 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
+    <div className="mt-4 rounded-lg border border-warn/25 bg-warn/[0.05] p-3 sm:p-4">
+      <div className="flex items-center gap-2">
+        <ShieldAlert className="h-4 w-4 shrink-0 text-warn" />
+        <h3 className="text-sm font-medium text-white/90">
+          The runner refused to invent the measurement
+        </h3>
+      </div>
+      <p className="mt-1.5 text-[13px] leading-relaxed text-white/60">
+        {brief ? `In turn ${brief.i} of this run the` : 'The'} orchestrator briefed the runner
+        specialist to carry out an acute oral LD50 assay in honey bees on five molecules. The
+        runner refused {quotes.length === 2 ? 'twice' : `${quotes.length} times`}, in its own
+        words.
+      </p>
+      <div className="mt-3 space-y-2">
+        {quotes.map((q) => (
+          <blockquote
+            key={q.i}
+            className="border-l-2 pl-3"
+            style={{ borderColor: HUE.runner }}
+          >
+            <p className="text-[13.5px] leading-relaxed text-white/85">{q.quote}</p>
+            <div className="cap-sm mt-1 font-mono text-white/45">
+              runner · turn {q.i} · +{q.t_rel.toFixed(0)}s
+            </div>
+          </blockquote>
+        ))}
+      </div>
+      <p className="mt-3 text-[13px] leading-relaxed text-white/55">
+        The orchestrator then narrowed the brief to published values only. The refusal is the
+        part of the loop that is worth keeping: a specialist that will not write a number it did
+        not measure. The counts and the replay below are the rest of the same run.
+      </p>
+    </div>
+  );
+}
+
+function RunPicker({ runs, runId, onPick, total }) {
+  const [open, setOpen] = useState(false);
+  const selected = runs.find((r) => r.id === runId);
+  const others = runs.filter((r) => r.id !== runId);
+  const allEarlier =
+    selected && others.every((r) => (r.started_at ?? '') < (selected.started_at ?? ''));
+  if (!others.length) return null;
+
+  return (
+    <div className="mt-4">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-1.5 font-mono text-[13px] text-white/45 transition hover:text-white/75"
+        aria-expanded={open}
+      >
+        {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+        {others.length} {allEarlier ? 'earlier attempts' : 'other recorded runs'}
+      </button>
+      {open && <RunChips runs={runs} runId={runId} onPick={onPick} total={total} />}
+    </div>
+  );
+}
+
+function RunChips({ runs, runId, onPick, total }) {
+  return (
+    <div className="fade-right mt-2 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
       {runs.map((r) => {
         const active = r.id === runId;
         return (
@@ -348,12 +455,12 @@ function RunPicker({ runs, runId, onPick, total }) {
                 : 'border-white/8 bg-white/[0.02] hover:border-white/20'
             }`}
           >
-            <div className={`font-mono text-[11px] ${active ? 'text-hive-200' : 'text-white/60'}`}>
+            <div className={`cap font-mono ${active ? 'text-hive-200' : 'text-white/60'}`}>
               {day(r.started_at).slice(5)} {clock(r.started_at)}
             </div>
-            <div className="text-[10px] text-white/35">
+            <div className="cap-sm text-white/45">
               {outcome(r, total)}
-              {r.model ? <span className="text-white/25"> · {r.model.replace(/^claude-/, '').replace(/-\d{8}$/, '')}</span> : null}
+              {r.model ? <span className="text-white/35"> · {r.model.replace(/^claude-/, '').replace(/-\d{8}$/, '')}</span> : null}
             </div>
           </button>
         );
@@ -364,11 +471,14 @@ function RunPicker({ runs, runId, onPick, total }) {
 
 function Counts({ run }) {
   const c = run.counts;
+  // Opens on what the agents actually did, and keeps the approval count next
+  // to the sentence underneath that explains it.
   const cells = [
-    ['turns', c.turns],
-    ['tool calls', c.tool_calls],
-    ['of them lab.*', c.lab_calls],
+    ['lab.* tool calls', c.lab_calls],
+    ['dispatches', c.dispatches],
     ['agents', c.agents],
+    ['turns', c.turns],
+    ['tool calls in all', c.tool_calls],
     ['wall clock', fmtDuration(run.duration_s)],
     ['approvals granted / asked', `${c.approvals_granted}/${c.approvals_requested}`],
   ];
@@ -376,7 +486,7 @@ function Counts({ run }) {
     <dl className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1.5 border-y border-white/6 py-2.5">
       {cells.map(([label, value]) => (
         <div key={label} className="flex flex-row-reverse items-baseline justify-end gap-1.5">
-          <dt className="text-[11px] text-white/40">{label}</dt>
+          <dt className="cap text-white/45">{label}</dt>
           <dd className="tabular font-mono text-[15px] text-wax/90">{value}</dd>
         </div>
       ))}
@@ -400,7 +510,7 @@ function GateNote({ run, topology }) {
     text = `${gatedCalls} gated call${gatedCalls > 1 ? 's' : ''} recorded without a logged approval prompt.`;
   }
   return (
-    <div className="mt-2 flex flex-wrap items-start gap-x-2 gap-y-1 text-[11.5px] leading-relaxed text-white/50">
+    <div className="mt-2 flex flex-wrap items-start gap-x-2 gap-y-1 text-[13px] leading-relaxed text-white/55">
       <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/35" />
       <span className="min-w-0 flex-1">
         {text} A number in an agent's message is the agent's own text and may come from the
@@ -410,7 +520,7 @@ function GateNote({ run, topology }) {
   );
 }
 
-function Topology({ topology, stage, visited, cursor, picked, onPick }) {
+function Topology({ topology, stage, visited, totalCalls = {}, cursor, picked, onPick }) {
   const specialists = ORDER.filter((n) => topology.specialists.some((s) => s.name === n));
   const labAccess = new Set(
     topology.specialists.filter((s) => s.lab_access).map((s) => s.name),
@@ -478,7 +588,7 @@ function Topology({ topology, stage, visited, cursor, picked, onPick }) {
           ) : (
             <ShieldAlert x={-9} y={-9} width={18} height={18} color={gateColor} />
           )}
-          <text y={31} textAnchor="middle" className="fill-white/45" style={{ font: '500 10px var(--font-mono)' }}>
+          <text y={31} textAnchor="middle" className="fill-white/45" style={{ font: '500 11px var(--font-mono)' }}>
             approval
           </text>
         </g>
@@ -489,9 +599,9 @@ function Topology({ topology, stage, visited, cursor, picked, onPick }) {
           style={{ font: '600 12px var(--font-display)', pointerEvents: 'none' }}>
           orchestrator
         </text>
-        <text x={C} y={C + 13} textAnchor="middle" className="fill-white/35"
-          style={{ font: '400 10px var(--font-mono)', pointerEvents: 'none' }}>
-          {visited.calls.orchestrator ?? 0} calls
+        <text x={C} y={C + 14} textAnchor="middle" className="fill-white/45"
+          style={{ font: '400 11px var(--font-mono)', pointerEvents: 'none' }}>
+          {visited.calls.orchestrator ?? 0}/{totalCalls.orchestrator ?? 0} calls
         </text>
 
         {specialists.map((name) => {
@@ -506,22 +616,22 @@ function Topology({ topology, stage, visited, cursor, picked, onPick }) {
               <Hex x={p.x} y={p.y} r={28} active={active} hue={HUE[name]}
                 dim={!visited.seen.has(name) && !active} lab={active && stage.lab} />
               <text x={p.x} y={p.y + 4} textAnchor="middle"
-                style={{ font: '600 11px var(--font-mono)', fill: HUE[name] }}>
+                style={{ font: '600 12px var(--font-mono)', fill: HUE[name] }}>
                 {STEP[name]}
               </text>
               <text x={p.x} y={nameY} textAnchor="middle" className="fill-white/75"
-                style={{ font: '500 11.5px var(--font-display)' }}>
+                style={{ font: '500 12.5px var(--font-display)' }}>
                 {name}
               </text>
-              <text x={p.x} y={callsY} textAnchor="middle" className="fill-white/30"
-                style={{ font: '400 9.5px var(--font-mono)' }}>
-                {calls} calls{labAccess.has(name) ? ' · lab' : ''}
+              <text x={p.x} y={callsY} textAnchor="middle" className="fill-white/45"
+                style={{ font: '400 11px var(--font-mono)' }}>
+                {calls}/{totalCalls[name] ?? 0} calls{labAccess.has(name) ? ' · lab' : ''}
               </text>
             </g>
           );
         })}
       </svg>
-      <div className="pointer-events-none absolute bottom-2 right-3 font-mono text-[10px] text-white/25">
+      <div className="cap-sm pointer-events-none absolute bottom-2 right-3 font-mono text-white/40">
         select a node for its config
       </div>
     </div>
@@ -574,35 +684,35 @@ function AgentDetail({ topology, run, name }) {
       <div className="flex items-baseline gap-2">
         <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: HUE[name] }} />
         <span className="text-sm text-white/85">{name}</span>
-        {!isOrch && <span className="font-mono text-[10px] text-white/30">step {STEP[name]}</span>}
+        {!isOrch && <span className="cap-sm font-mono text-white/45">step {STEP[name]}</span>}
       </div>
-      <div className="mt-0.5 break-words font-mono text-[10px] text-white/30">
+      <div className="cap-sm mt-0.5 break-words font-mono text-white/45">
         {[harness, modelNote].filter(Boolean).join(' · ')}
       </div>
       <p className="mt-1.5 text-xs leading-relaxed text-white/50">{description}</p>
       <div className="mt-2 flex flex-wrap gap-1">
         {(isOrch ? topology.orchestrator.dispatches : spec?.tools_named_in_prompt ?? []).map((t) => (
-          <span key={t} className="rounded border border-white/10 px-1.5 py-0.5 font-mono text-[10px] text-white/55">
+          <span key={t} className="cap-sm rounded border border-white/10 px-1.5 py-0.5 font-mono text-white/65">
             {t}
           </span>
         ))}
         {!isOrch && spec && !spec.lab_access && (
-          <span className="text-[10px] text-white/35">no lab tools: reasons over what it is sent</span>
+          <span className="cap-sm text-white/45">no lab tools: reasons over what it is sent</span>
         )}
       </div>
       <div className="mt-2.5 border-t border-white/5 pt-2">
-        <div className="font-mono text-[10px] text-white/30">called in this run</div>
+        <div className="cap-sm font-mono text-white/45">called in this run</div>
         {observedRows.length ? (
           <div className="mt-1 space-y-0.5">
             {observedRows.map(([tool, n]) => (
-              <div key={tool} className="flex justify-between font-mono text-[11px]">
+              <div key={tool} className="cap flex justify-between font-mono">
                 <span className="truncate text-white/55">{tool}</span>
                 <span className="tabular text-white/80">{n}</span>
               </div>
             ))}
           </div>
         ) : (
-          <div className="mt-1 text-[11px] text-white/35">nothing</div>
+          <div className="cap mt-1 text-white/45">nothing</div>
         )}
       </div>
     </div>
@@ -613,7 +723,7 @@ function Controls({
   cursor, total, playing, speed, onPlay, onStep, onRestart, onSeek, onSpeed,
   showPlumbing, plumbingCount, onPlumbing, current,
 }) {
-  const btn = 'grid h-8 w-8 place-items-center rounded-md border border-white/10 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-30';
+  const btn = 'grid h-9 w-9 place-items-center rounded-md border border-white/10 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-30 md:h-8 md:w-8';
   return (
     <div className="rounded-lg border border-white/6 bg-night-800/70 p-2.5">
       <div className="flex items-center gap-1.5">
@@ -633,12 +743,12 @@ function Controls({
         <button className={btn} onClick={() => onStep(1)} disabled={cursor >= total} aria-label="Next turn">
           <SkipForward className="h-3.5 w-3.5" />
         </button>
-        <div className="ml-auto flex items-center gap-0.5 font-mono text-[10px]">
+        <div className="cap-sm ml-auto flex items-center gap-0.5 font-mono">
           {[2, 8, 32].map((s) => (
             <button
               key={s}
               onClick={() => onSpeed(s)}
-              className={`rounded px-1.5 py-1 transition ${
+              className={`tap rounded px-2 py-1 transition ${
                 speed === s ? 'bg-white/10 text-white/85' : 'text-white/35 hover:text-white/60'
               }`}
             >
@@ -653,10 +763,10 @@ function Controls({
         max={total}
         value={cursor}
         onChange={(e) => onSeek(Number(e.target.value))}
-        className="mt-2.5 w-full accent-amber-400"
+        className="mt-2.5 h-10 w-full accent-amber-400 md:h-4"
         aria-label="Seek through turns"
       />
-      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] text-white/35">
+      <div className="cap-sm mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-white/45">
         <span className="tabular">
           turn {cursor}/{total}
         </span>
@@ -710,7 +820,7 @@ function Turn({ t, trim }) {
   }
   if (t.kind === 'notice') {
     return (
-      <div className="flex items-center gap-2 px-1 font-mono text-[10.5px] text-white/40">
+      <div className="cap-sm flex items-center gap-2 px-1 font-mono text-white/45">
         <span className="h-px flex-1 bg-white/8" />
         <span className={t.failed ? 'text-warn/80' : ''}>
           {t.from_agent ?? 'sub-agent'} {t.failed ? 'failed' : 'replied'}: result in orchestrator inbox
@@ -740,7 +850,7 @@ function Turn({ t, trim }) {
 
 function Meta({ t, label, tone = 'text-white/40', korean = false }) {
   return (
-    <div className="flex items-baseline gap-2 font-mono text-[10px]">
+    <div className="cap-sm flex items-baseline gap-2 font-mono">
       <span className="font-medium" style={{ color: HUE[t.agent] ?? '#aaa' }}>{t.agent}</span>
       <span className={tone}>{label}</span>
       {korean && (
@@ -759,9 +869,9 @@ function MessageTurn({ t, trim }) {
   return (
     <div className={`rounded-lg px-3 py-2 ${t.kind === 'prompt' ? 'border border-hive-400/25 bg-hive-400/[0.05]' : 'bg-white/[0.025]'}`}>
       <Meta t={t} label={label} korean={HANGUL.test(t.text ?? '')} />
-      <Clamp markdown text={t.text} lines={lines} className="mt-1 text-[12.5px] leading-relaxed text-white/75" />
+      <Clamp markdown text={t.text} lines={lines} className="mt-1 text-[13.5px] leading-relaxed text-white/80" />
       {t.text_truncated && (
-        <div className="mt-1 font-mono text-[10px] text-white/30">
+        <div className="cap-sm mt-1 font-mono text-white/45">
           message cut in the record: first {(trim?.message ?? t.text.length).toLocaleString()} chars kept
         </div>
       )}
@@ -776,28 +886,28 @@ function ToolTurn({ t, trim }) {
     <div className={`rounded-lg px-3 py-2 ${t.plumbing ? 'opacity-60' : ''} ${dispatch ? 'border border-white/10 bg-white/[0.03]' : 'bg-white/[0.015]'}`}>
       <Meta t={t} label={dispatch ? 'dispatch' : t.plumbing ? 'loads tool schemas' : 'tool call'} />
       <div className="mt-1 flex flex-wrap items-center gap-1.5">
-        <span className={`rounded border px-1.5 py-0.5 font-mono text-[11px] ${
+        <span className={`cap rounded border px-1.5 py-0.5 font-mono ${
           t.error ? 'border-warn/40 text-warn' : t.ns === 'lab' ? 'border-signal/35 text-signal' : 'border-white/12 text-white/70'
         }`}>
           {t.ns === 'lab' ? 'lab.' : ''}{t.tool}
         </span>
         {dispatch && (
-          <span className="font-mono text-[11px]" style={{ color: HUE[t.target] ?? '#ccc' }}>
+          <span className="cap font-mono" style={{ color: HUE[t.target] ?? '#ccc' }}>
             to {t.target}
           </span>
         )}
-        {t.unparsed_input && <span className="text-[10px] text-warn/80">rejected as invalid JSON</span>}
+        {t.unparsed_input && <span className="cap-sm text-warn/80">rejected as invalid JSON</span>}
       </div>
       {t.args_summary && !dispatch && (
-        <div className="mt-1 break-words font-mono text-[10.5px] leading-relaxed text-white/40">{t.args_summary}</div>
+        <div className="cap-sm mt-1 break-words font-mono leading-relaxed text-white/45">{t.args_summary}</div>
       )}
       {dispatch && t.args?.title && (
-        <div className="mt-1 font-mono text-[10.5px] text-white/40">session title: {t.args.title}</div>
+        <div className="cap-sm mt-1 font-mono text-white/45">session title: {t.args.title}</div>
       )}
       {t.result != null && (
         <div className="mt-1.5">
           <button onClick={() => setOpen((o) => !o)}
-            className="flex items-center gap-1 font-mono text-[10px] text-white/35 hover:text-white/65">
+            className="cap-sm flex items-center gap-1 font-mono text-white/45 hover:text-white/70">
             {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
             result · {t.result_chars?.toLocaleString()} chars
             {t.result_truncated
@@ -805,7 +915,7 @@ function ToolTurn({ t, trim }) {
               : ''}
           </button>
           {open && (
-            <pre className="mt-1 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded bg-night-900/80 p-2 font-mono text-[10.5px] leading-relaxed text-white/55">
+            <pre className="mt-1 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded bg-night-900/80 cap-sm p-2 font-mono leading-relaxed text-white/60">
               {plain(pretty(t.result))}
             </pre>
           )}
@@ -828,22 +938,22 @@ function Checkpoint({ t }) {
         <span className={`text-xs font-medium ${color}`}>
           {ask ? 'Checkpoint: approval required' : denied ? 'Refused by policy' : 'Approved'}
         </span>
-        <span className="tabular ml-auto font-mono text-[10px] text-white/30">+{t.t_rel.toFixed(0)}s</span>
+        <span className="cap-sm tabular ml-auto font-mono text-white/45">+{t.t_rel.toFixed(0)}s</span>
       </div>
-      <div className="mt-1.5 space-y-1 text-[11.5px] leading-relaxed text-white/65">
+      <div className="mt-1.5 space-y-1 text-[13px] leading-relaxed text-white/70">
         {ask && (
           <>
             <div>{t.text}</div>
-            <div className="font-mono text-[10px] text-white/40">
+            <div className="cap-sm font-mono text-white/45">
               policy {t.policy ?? 'n/a'} · {t.phase ?? ''} · raised in the {t.agent} session
             </div>
-            {t.preview && <Clamp text={t.preview} lines={2} className="font-mono text-[10px] text-white/35" />}
+            {t.preview && <Clamp text={t.preview} lines={2} className="cap-sm font-mono text-white/45" />}
           </>
         )}
         {!ask && !denied && (
           <>
             <div>Accepted; the call ran after this point.</div>
-            <div className="break-all font-mono text-[10px] text-white/40">{t.mechanism}</div>
+            <div className="cap-sm break-all font-mono text-white/45">{t.mechanism}</div>
           </>
         )}
         {denied && <div>{t.text}</div>}
@@ -872,7 +982,7 @@ function Clamp({ text, lines = 4, className = '', markdown = false }) {
         )}
       </div>
       {long && (
-        <button onClick={() => setOpen((o) => !o)} className="mt-0.5 font-mono text-[10px] text-white/35 hover:text-white/65">
+        <button onClick={() => setOpen((o) => !o)} className="cap-sm mt-0.5 font-mono text-white/45 hover:text-white/70">
           {open ? 'less' : 'more'}
         </button>
       )}
@@ -977,7 +1087,7 @@ function Markdown({ text }) {
           const [head, ...body] = b.rows;
           return (
             <div key={i} className="overflow-x-auto">
-              <table className="w-full border-collapse text-left text-[11.5px]">
+              <table className="w-full border-collapse text-left text-[12.5px]">
                 <thead>
                   <tr>
                     {head.map((c, k) => (
@@ -1027,7 +1137,7 @@ function Provenance({ run, topology }) {
   }, [run]);
   const trim = run.trim_chars?.tool_payload;
   return (
-    <p className="mt-4 break-words font-mono text-[10px] leading-relaxed text-white/25">
+    <p className="cap-sm mt-4 break-words font-mono leading-relaxed text-white/45">
       run {run.id.slice(0, 8)} · harness {run.harness}
       {run.model ? ` · ${run.model}` : ''} · {run.counts.sub_agent_sessions} sub-agent sessions ·
       turns read from {run.source} · relay copies of each tool call dropped

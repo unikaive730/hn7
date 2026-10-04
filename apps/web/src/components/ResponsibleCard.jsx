@@ -63,8 +63,8 @@ export default function ResponsibleCard() {
   return (
     <section className="glass lift overflow-hidden rounded-xl">
       <header className="border-b border-white/[0.06] px-5 py-4">
-        <div className="font-mono text-[10px] text-hive-400/80">Responsibility</div>
-        <h2 className="font-serif-display mt-1 text-2xl text-wax">Intended use, known limits, dual-use risk</h2>
+        <div className="font-mono cap-sm text-hive-400/80">Responsibility</div>
+        <h3 className="mt-1.5 font-mono text-[13px] uppercase tracking-[0.14em] text-white/75">Intended use, known limits, dual-use risk</h3>
       </header>
 
       {error && (
@@ -73,7 +73,7 @@ export default function ResponsibleCard() {
         </div>
       )}
       {!card && !error && (
-        <p className="px-5 py-6 font-mono text-[11px] text-white/35">reading the dataset and the trained model…</p>
+        <p className="px-5 py-6 font-mono cap text-white/35">reading the dataset and the trained model…</p>
       )}
 
       {card && (
@@ -138,6 +138,24 @@ function DataCard({ card }) {
           )}{' '}
           Our code is MIT, which does not change the data's terms. Other files in lab/data have their own licences; the
           ledger lists them.
+          {d.citation && (
+            <div className="mt-1.5 cap leading-relaxed text-white/45">
+              Cite the creators as the licence asks: {d.citation}
+              {d.citation_doi && (
+                <>
+                  {' '}
+                  <a
+                    className="text-white/70 underline decoration-white/20 underline-offset-2 hover:text-hive-400"
+                    href={d.citation_doi}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {d.citation_doi.replace('https://doi.org/', 'doi:')}
+                  </a>
+                </>
+              )}
+            </div>
+          )}
         </Def>
         <Term>Exposure</Term>
         <Def>
@@ -152,7 +170,9 @@ function DataCard({ card }) {
       </dl>
 
       <div className="mt-4">
-        <div className="font-mono text-[10px] uppercase tracking-wider text-white/35">Toxic share by source database</div>
+        <div className="font-mono cap-sm uppercase tracking-wider text-white/35">
+          Toxic share by source database · bars to {pct(scale)}
+        </div>
         <div className="mt-2 space-y-2">
           {card.by_source.map((source, i) => (
             <div key={source.value}>
@@ -173,7 +193,9 @@ function DataCard({ card }) {
             </div>
           ))}
         </div>
-        <div className="mt-4 font-mono text-[10px] uppercase tracking-wider text-white/35">Toxic share by exposure type</div>
+        <div className="mt-4 font-mono cap-sm uppercase tracking-wider text-white/35">
+          Toxic share by exposure type · bars to {pct(scale)}
+        </div>
         <div className="mt-2 space-y-2">
           {card.by_exposure.map((route, i) => (
             <div key={route.value}>
@@ -229,7 +251,7 @@ function ModelCard({ card }) {
         </Def>
       </dl>
 
-      <div className="mt-4 font-mono text-[10px] uppercase tracking-wider text-white/35">Known limitations</div>
+      <div className="mt-4 font-mono cap-sm uppercase tracking-wider text-white/35">Known limitations</div>
       <ul className="mt-2 space-y-2 text-sm leading-relaxed text-white/60">
         <Limit>
           <b className="font-semibold text-white/80">Small answer set.</b> {split.targets} hidden answers in a pool of{' '}
@@ -243,7 +265,8 @@ function ModelCard({ card }) {
         <Limit>
           <b className="font-semibold text-white/80">Scaffold shift.</b> {int(split.unseen_scaffold_molecules)} of{' '}
           {int(split.pool)} pool molecules have a scaffold the training set never had. AUROC there is{' '}
-          <Mono>{hold?.unseen_auroc}</Mono>, against <Mono>{hold?.seen_auroc}</Mono> on familiar scaffolds.
+          <Mono>{hold?.unseen_auroc}</Mono>, against <Mono>{hold?.seen_auroc}</Mono> on familiar scaffolds. The two
+          bootstrap intervals in the rigor checks overlap, so read this as a tendency, not a measured gap.
         </Limit>
         <Limit>
           <b className="font-semibold text-white/80">Applicability domain.</b> {int(dom.pool_below_0_4)} of{' '}
@@ -267,10 +290,10 @@ function DomainChart({ domain }) {
   return (
     <div className="mt-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-white/35">
+        <span className="font-mono cap-sm uppercase tracking-wider text-white/35">
           Nearest training neighbour, per pool molecule
         </span>
-        <span className="font-mono text-[10px] text-white/30">
+        <span className="font-mono cap-sm text-white/30">
           median {domain.median_pool} pool · {domain.median_answers} answers
         </span>
       </div>
@@ -306,7 +329,7 @@ function DomainChart({ domain }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <p className="mt-1 text-[11px] leading-relaxed text-white/35">
+      <p className="mt-1 cap leading-relaxed text-white/35">
         Max Tanimoto similarity to any molecule reported by the cutoff, on the same fingerprints the model uses. Left of
         the dashed line, no training molecule reaches {domain.threshold}.
       </p>
@@ -387,24 +410,24 @@ function Reproduce({ sha }) {
         {REPRODUCE.map((step, index) => (
           <li key={step.cmd} className="rounded-lg border border-white/[0.06] bg-night-900/70">
             <div className="flex items-start justify-between gap-3 px-3 pt-2">
-              <span className="text-[11px] leading-snug text-white/45">
+              <span className="cap leading-snug text-white/45">
                 <span className="mr-1.5 font-mono text-white/25">{index + 1}.</span>
                 {step.note}
               </span>
               <button
                 onClick={() => copy(step.cmd, index)}
-                className="shrink-0 rounded p-1 text-white/35 transition hover:bg-white/5 hover:text-white/70"
+                className="tap-y shrink-0 rounded p-1 max-md:min-w-10 text-white/35 transition hover:bg-white/5 hover:text-white/70"
                 aria-label="Copy command"
               >
                 {copied === index ? <Check className="h-3.5 w-3.5 text-signal" /> : <Copy className="h-3.5 w-3.5" />}
               </button>
             </div>
-            <pre className="overflow-x-auto px-3 pb-2 pt-1 font-mono text-[11.5px] text-hive-200/90">{step.cmd}</pre>
+            <pre className="overflow-x-auto px-3 pb-2 pt-1 font-mono cap text-hive-200/90">{step.cmd}</pre>
           </li>
         ))}
       </ol>
       {sha && (
-        <p className="mt-3 break-all font-mono text-[10px] leading-relaxed text-white/30">
+        <p className="mt-3 break-all font-mono cap-sm leading-relaxed text-white/30">
           <ShieldCheck className="mr-1 inline h-3 w-3 text-signal/70" />
           dataset_final.csv sha256 {sha}
         </p>
@@ -419,13 +442,13 @@ function Heading({ icon: Icon, tone, children }) {
   return (
     <div className={`flex items-center gap-2 ${tone === 'warn' ? 'text-warn' : 'text-white/55'}`}>
       <Icon className="h-4 w-4" />
-      <h3 className="font-mono text-[11px]">{children}</h3>
+      <h3 className="font-mono cap">{children}</h3>
     </div>
   );
 }
 
 function Term({ children }) {
-  return <dt className="pt-1.5 font-mono sm:pt-0.5 text-[10px] uppercase tracking-wider text-white/35">{children}</dt>;
+  return <dt className="pt-1.5 font-mono sm:pt-0.5 cap-sm uppercase tracking-wider text-white/35">{children}</dt>;
 }
 
 function Def({ children }) {

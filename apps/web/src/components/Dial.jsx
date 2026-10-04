@@ -66,7 +66,7 @@ export function SpeedupDial({ speedup, found, total, budget, label = 'fewer assa
         <div className="text-[2.6rem] font-semibold leading-none text-hive-400">
           <Counter value={speedup ?? 0} decimals={2} suffix="×" />
         </div>
-        <div className="mt-1.5 max-w-[6.5rem] font-mono text-[10.5px] leading-tight text-white/45">{label}</div>
+        <div className="mt-1.5 cap max-w-[8rem] font-mono leading-tight text-white/50">{label}</div>
       </div>
       </div>
       <div className="mt-2 text-xs text-white/55">

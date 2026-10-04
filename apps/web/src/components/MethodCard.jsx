@@ -39,8 +39,8 @@ export default function MethodCard() {
 
   return (
     <section className="glass lift rounded-xl px-5 pb-6 pt-5">
-      <div className="font-mono text-[10px] text-hive-400/80">Method</div>
-      <h2 className="font-serif-display mt-1 text-2xl text-wax">Each setting, and the line of code it comes from</h2>
+      <div className="font-mono cap-sm text-hive-400/80">Method</div>
+      <h3 className="mt-1.5 font-mono text-[13px] uppercase tracking-[0.14em] text-white/75">Each setting, and the line of code it comes from</h3>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/55">
         The server reads these values out of the source when the page loads. A grey tag gives the file and line.
       </p>
@@ -51,7 +51,7 @@ export default function MethodCard() {
         </div>
       )}
       {!method && !error && (
-        <p className="mt-6 font-mono text-[11px] text-white/35">
+        <p className="mt-6 font-mono cap text-white/35">
           reading settings from source and training the model once…
         </p>
       )}
@@ -248,7 +248,7 @@ function Step({ index, step }) {
       </div>
       <div className={`min-w-0 ${step.gate ? 'rounded-lg border border-hive-400/20 bg-hive-400/[0.04] p-3 -mt-1' : ''}`}>
         <div className="flex items-baseline gap-2">
-          <span className="font-mono text-[10px] text-white/25">{String(index + 1).padStart(2, '0')}</span>
+          <span className="font-mono cap-sm text-white/25">{String(index + 1).padStart(2, '0')}</span>
           <h3 className="text-[15px] font-semibold text-white/90">{step.title}</h3>
         </div>
         <div className="mt-1 text-sm leading-relaxed text-white/60">{step.body}</div>
@@ -265,7 +265,7 @@ function Step({ index, step }) {
 
 function Tag({ k, v, where, ok }) {
   return (
-    <span className="inline-flex max-w-full items-center gap-1 overflow-hidden rounded border border-white/[0.08] bg-white/[0.02] px-1.5 py-0.5 font-mono text-[10px]">
+    <span className="inline-flex max-w-full items-center gap-1 overflow-hidden rounded border border-white/[0.08] bg-white/[0.02] px-1.5 py-0.5 font-mono cap-sm">
       <span className="text-white/35">{k}</span>
       <span className="truncate text-white/80">{String(v)}</span>
       {ok === true && <Check className="h-3 w-3 shrink-0 text-signal" />}
@@ -312,7 +312,7 @@ function DecadeChart({ decades, cutoff }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div className="mt-1 flex gap-4 font-mono text-[10px] text-white/40">
+      <div className="mt-1 flex gap-4 font-mono cap-sm text-white/40">
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-sm bg-white/30" /> training
         </span>
@@ -341,7 +341,7 @@ function HitStrip({ budget, foundAt }) {
           />
         ))}
       </div>
-      <div className="mt-1 flex justify-between font-mono text-[10px] text-white/30">
+      <div className="mt-1 flex justify-between font-mono cap-sm text-white/30">
         <span>assay 1</span>
         <span>amber = answer found at that position</span>
         <span>{budget}</span>

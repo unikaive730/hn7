@@ -1,21 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  LabelList,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
-import {
   AlertTriangle,
   Bot,
   Braces,
   Check,
-  Code2,
   Database,
   Lock,
   Package,
@@ -91,7 +80,7 @@ export default function Ledger() {
           {[0, 1, 2].map((i) => (
             <div key={i} className="h-4 animate-pulse rounded bg-white/[0.04]" style={{ width: `${80 - i * 18}%` }} />
           ))}
-          <p className="pt-1 font-mono text-[11px] text-white/30">counting files, reading imports…</p>
+          <p className="pt-1 font-mono cap text-white/30">counting files, reading imports…</p>
         </div>
       </Shell>
     );
@@ -118,9 +107,6 @@ export default function Ledger() {
       <Rack icon={Bot} label="Agents" note="agents/beeguard">
         <Agents agents={ledger.agents} mcp={ledger.mcp} />
       </Rack>
-      <Rack icon={Code2} label="Code" note="non-blank lines">
-        <CodeLines rows={ledger.lines_of_code} />
-      </Rack>
     </Shell>
   );
 }
@@ -130,11 +116,11 @@ function Shell({ ledger, children }) {
     <section className="glass lift overflow-hidden rounded-xl">
       <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-white/[0.06] px-5 py-4">
         <div>
-          <div className="font-mono text-[10px] text-hive-400/80">Ledger</div>
-          <h2 className="font-serif-display mt-1 text-2xl text-wax">What the lab runs on, counted on request</h2>
+          <div className="font-mono cap-sm text-hive-400/80">Ledger</div>
+          <h3 className="mt-1.5 font-mono text-[13px] uppercase tracking-[0.14em] text-white/75">What the lab runs on, counted on request</h3>
         </div>
         {ledger && (
-          <span className="font-mono text-[11px] text-white/35">
+          <span className="font-mono cap text-white/35">
             inventory built {clock(ledger.computed_at)} in {ledger.computed_ms} ms
           </span>
         )}
@@ -155,7 +141,6 @@ function Readout({ ledger, live }) {
   const probed = live?.sources ?? [];
   const answered = probed.filter((s) => s.ok).length;
   const limited = probed.filter((s) => s.status === 429).length;
-  const lines = ledger.lines_of_code.reduce((sum, r) => sum + r.lines, 0);
   const gated = ledger.mcp.tools.filter((t) => t.gated).length;
 
   const cells = [
@@ -172,20 +157,12 @@ function Readout({ ledger, live }) {
       sub: !live ? 'probing' : limited ? `${limited} rate limited` : `probed ${live.age_seconds}s ago`,
       tone: live && answered < probed.length ? 'warn' : null,
     },
-    { value: ledger.python.third_party.length, label: 'Python packages', sub: `+${ledger.python.standard_library.length} stdlib` },
-    { value: ledger.javascript.packages.length, label: 'JS packages', sub: 'apps/web' },
     { value: ledger.mcp.tools.length, label: 'MCP tools', sub: `${gated} need approval` },
-    {
-      value: (ledger.agents.orchestrator ? 1 : 0) + ledger.agents.specialists.length,
-      label: 'agents',
-      sub: `${ledger.agents.orchestrator ? 1 : 0} lead + ${ledger.agents.specialists.length}`,
-    },
-    { value: int(lines), label: 'lines of code', sub: `${ledger.derived.files} derived files` },
   ];
 
   return (
     <div className="overflow-hidden border-b border-white/[0.06]">
-      <div className="-mb-px -mr-px grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+      <div className="-mb-px -mr-px grid grid-cols-2 sm:grid-cols-4">
       {cells.map((cell, index) => (
         <motion.div
           key={cell.label}
@@ -197,8 +174,8 @@ function Readout({ ledger, live }) {
           <div className={`tabular font-mono text-xl font-semibold ${cell.tone === 'warn' ? 'text-warn' : 'text-white/90'}`}>
             {cell.value}
           </div>
-          <div className="mt-0.5 text-[11px] text-white/55">{cell.label}</div>
-          <div className="font-mono text-[10px] text-white/25">{cell.sub}</div>
+          <div className="mt-0.5 cap text-white/55">{cell.label}</div>
+          <div className="font-mono cap-sm text-white/25">{cell.sub}</div>
         </motion.div>
       ))}
       </div>
@@ -212,9 +189,9 @@ function Rack({ icon: Icon, label, note, children }) {
       <div className="flex items-start gap-2 md:flex-col md:gap-1">
         <div className="flex items-center gap-1.5">
           <Icon className="h-3.5 w-3.5 text-white/35" />
-          <span className="font-mono text-[10px] text-white/45">{label}</span>
+          <span className="font-mono cap-sm text-white/45">{label}</span>
         </div>
-        {note && <span className="truncate font-mono text-[10px] text-white/20 md:max-w-full">{note}</span>}
+        {note && <span className="truncate font-mono cap-sm text-white/20 md:max-w-full">{note}</span>}
       </div>
       <div className="min-w-0">{children}</div>
     </div>
@@ -231,7 +208,7 @@ function Datasets({ datasets, derived }) {
     <div>
       <div className="overflow-hidden rounded-lg border border-white/[0.06]">
         <table className="w-full text-left text-xs">
-          <thead className="bg-white/[0.03] font-mono text-[10px] uppercase tracking-wider text-white/35">
+          <thead className="bg-white/[0.03] font-mono cap-sm uppercase tracking-wider text-white/35">
             <tr>
               <th className="px-3 py-2 font-normal">file</th>
               <th className="px-3 py-2 text-right font-normal">rows</th>
@@ -253,11 +230,11 @@ function Datasets({ datasets, derived }) {
                     {file.sha256.slice(0, 10)}
                     {file.matches_manifest === true && <Check className="h-3 w-3 text-signal" />}
                     {file.matches_manifest === false && <AlertTriangle className="h-3 w-3 text-warn" />}
-                    {file.matches_manifest == null && <span className="text-[10px] text-white/25">no manifest</span>}
+                    {file.matches_manifest == null && <span className="cap-sm text-white/25">no manifest</span>}
                   </span>
                 </td>
                 <td
-                  className="hidden px-3 py-2 font-mono text-[11px] text-white/50 md:table-cell"
+                  className="hidden px-3 py-2 font-mono cap text-white/50 md:table-cell"
                   title={file.license_from ? `read from ${file.license_from}` : 'no licence found'}
                 >
                   {file.license ?? '?'}
@@ -267,7 +244,7 @@ function Datasets({ datasets, derived }) {
           </tbody>
         </table>
       </div>
-      <p className="mt-2 text-[11px] leading-relaxed text-white/40">
+      <p className="mt-2 cap leading-relaxed text-white/40">
         Checksums are recomputed on each request and compared with{' '}
         <span className="font-mono text-white/55">{datasets.manifests.join(', ') || 'no manifest'}</span>. Each
         licence comes from the file's manifest or from the script that downloads it; hover a licence to see which.
@@ -277,14 +254,14 @@ function Datasets({ datasets, derived }) {
 
       {derived.files > 0 && (
         <div className="mt-3">
-          <div className="font-mono text-[10px] uppercase tracking-wider text-white/30">
+          <div className="font-mono cap-sm uppercase tracking-wider text-white/30">
             {derived.path} · {int(derived.files)} files · {bytes(derived.bytes)}
           </div>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
             {shownDerived.map((entry) => (
               <span
                 key={entry.name}
-                className="rounded border border-white/[0.07] bg-white/[0.02] px-1.5 py-0.5 font-mono text-[10px] text-white/50"
+                className="rounded border border-white/[0.07] bg-white/[0.02] px-1.5 py-0.5 font-mono cap-sm text-white/50"
                 title={`modified ${entry.modified}`}
               >
                 {entry.name}
@@ -297,7 +274,7 @@ function Datasets({ datasets, derived }) {
             {derived.entries.length > 8 && (
               <button
                 onClick={() => setAllDerived((v) => !v)}
-                className="rounded border border-dashed border-white/15 px-1.5 py-0.5 font-mono text-[10px] text-white/45 hover:text-white/70"
+                className="rounded border border-dashed border-white/15 px-1.5 py-0.5 font-mono cap-sm text-white/45 hover:text-white/70"
               >
                 {allDerived ? 'show fewer' : `+${derived.entries.length - 8} more`}
               </button>
@@ -346,7 +323,7 @@ function Sources({ live, error, probing, onRefresh }) {
         </div>
       )}
       {!live && !error && (
-        <p className="font-mono text-[11px] text-white/35">sending one request to each source…</p>
+        <p className="font-mono cap text-white/35">sending one request to each source…</p>
       )}
 
       <div className="space-y-1.5">
@@ -369,10 +346,10 @@ function Sources({ live, error, probing, onRefresh }) {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <span className="text-sm font-medium text-white/85">{row.name}</span>
-                  <span className="truncate font-mono text-[10px] text-white/30">{row.host}</span>
+                  <span className="truncate font-mono cap-sm text-white/30">{row.host}</span>
                 </div>
               </div>
-              <div className="text-right font-mono text-[11px]">
+              <div className="text-right font-mono cap">
                 <span className={row.ok ? 'text-white/70' : limited ? 'text-hive-400' : 'text-warn'}>
                   {limited ? '429 rate limited' : row.status ?? 'no answer'}
                 </span>
@@ -389,7 +366,7 @@ function Sources({ live, error, probing, onRefresh }) {
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   />
                 </div>
-                <div className="mt-1 flex flex-wrap gap-x-3 text-[11px] text-white/40">
+                <div className="mt-1 flex flex-wrap gap-x-3 cap text-white/40">
                   {returned.map(([key, value]) => (
                     <span key={key}>
                       {RETURNED_LABEL[key] ?? key}:{' '}
@@ -406,7 +383,7 @@ function Sources({ live, error, probing, onRefresh }) {
       </div>
 
       {live && (
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/35">
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-2 cap text-white/35">
           <span>
             Cached {Math.round(live.ttl_seconds / 60)} min, this result is {live.age_seconds}s old. A 429 or a
             timeout is shown as it came back.
@@ -421,7 +398,7 @@ function Sources({ live, error, probing, onRefresh }) {
           <button
             onClick={onRefresh}
             disabled={probing}
-            className="inline-flex items-center gap-1.5 rounded-md border border-white/10 px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-white/55 transition hover:border-white/25 disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 rounded-md border border-white/10 px-2 py-1 font-mono cap-sm uppercase tracking-wider text-white/55 transition hover:border-white/25 disabled:opacity-40"
           >
             <RefreshCw className={`h-3 w-3 ${probing ? 'animate-spin' : ''}`} /> probe again
           </button>
@@ -451,17 +428,17 @@ function PythonPackages({ python }) {
             </span>
             <span className="flex items-baseline gap-2 font-mono">
               <span className="text-hive-400/90">{pkg.version ?? 'not installed'}</span>
-              <span className="w-12 whitespace-nowrap text-right text-[10px] text-white/30">{pkg.files.length} file{pkg.files.length > 1 ? 's' : ''}</span>
+              <span className="w-12 whitespace-nowrap text-right cap-sm text-white/30">{pkg.files.length} file{pkg.files.length > 1 ? 's' : ''}</span>
             </span>
           </div>
         ))}
       </div>
-      <p className="mt-2 text-[11px] leading-relaxed text-white/40">
+      <p className="mt-2 cap leading-relaxed text-white/40">
         Read from the import statements in the lab package with Python {python.python}. Plus{' '}
         {python.standard_library.length} standard-library modules.
       </p>
       {python.declared_not_imported?.length > 0 && (
-        <p className="mt-1 text-[11px] leading-relaxed text-white/30">
+        <p className="mt-1 cap leading-relaxed text-white/30">
           Listed in lab/requirements.txt but not imported by the lab code, so not counted above:{' '}
           <span className="font-mono text-white/40">{python.declared_not_imported.join(', ')}</span>.
         </p>
@@ -481,18 +458,18 @@ function JsPackages({ js }) {
           >
             <span className="min-w-0 truncate font-mono text-white/80">
               {pkg.name}
-              {pkg.kind === 'build' && <span className="ml-1.5 text-[10px] text-white/30">build</span>}
+              {pkg.kind === 'build' && <span className="ml-1.5 cap-sm text-white/30">build</span>}
             </span>
             <span className="flex shrink-0 items-baseline gap-2 font-mono">
               <span className="text-hive-400/90">{pkg.installed ?? pkg.declared}</span>
-              <span className={`w-14 whitespace-nowrap text-right text-[10px] ${pkg.imported_in ? 'text-white/30' : 'text-white/20'}`}>
+              <span className={`w-14 whitespace-nowrap text-right cap-sm ${pkg.imported_in ? 'text-white/30' : 'text-white/20'}`}>
                 {pkg.imported_in ? `${pkg.imported_in} file${pkg.imported_in > 1 ? 's' : ''}` : 'unused'}
               </span>
             </span>
           </div>
         ))}
       </div>
-      <p className="mt-2 text-[11px] text-white/40">
+      <p className="mt-2 cap text-white/40">
         Installed versions from node_modules. The file count is how many of the {js.source_files} source files import
         the package when the ledger was built.
       </p>
@@ -505,7 +482,7 @@ function JsPackages({ js }) {
 function McpTools({ mcp }) {
   return (
     <div>
-      <div className="mb-2 font-mono text-[11px] text-white/40">
+      <div className="mb-2 font-mono cap text-white/40">
         server <span className="text-white/70">{mcp.server}</span>
       </div>
       <ol className="space-y-1">
@@ -516,14 +493,14 @@ function McpTools({ mcp }) {
           >
             <div className="flex flex-wrap items-baseline gap-x-2">
               <span className="font-mono text-xs text-white/85">{tool.name}</span>
-              <span className="font-mono text-[10px] text-white/30">({tool.params.join(', ')})</span>
+              <span className="font-mono cap-sm text-white/30">({tool.params.join(', ')})</span>
               {tool.gated && (
-                <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-hive-400">
+                <span className="inline-flex items-center gap-1 font-mono cap-sm uppercase tracking-wider text-hive-400">
                   <Lock className="h-3 w-3" /> asks a person first
                 </span>
               )}
             </div>
-            <div className="text-[11px] leading-snug text-white/45">{tool.summary}</div>
+            <div className="cap leading-snug text-white/45">{tool.summary}</div>
           </li>
         ))}
       </ol>
@@ -550,11 +527,11 @@ function Agents({ agents, mcp }) {
       <div className="rounded-lg border border-hive-400/25 bg-hive-400/[0.04] px-3 py-2">
         <div className="flex flex-wrap items-baseline gap-x-2">
           <span className="font-mono text-xs text-hive-400">{root.name}</span>
-          <span className="font-mono text-[10px] text-white/30">
+          <span className="font-mono cap-sm text-white/30">
             orchestrator · {root.harness} · {root.prompt_words} prompt words
           </span>
         </div>
-        <div className="mt-0.5 text-[11px] leading-snug text-white/50">{root.description}</div>
+        <div className="mt-0.5 cap leading-snug text-white/50">{root.description}</div>
       </div>
 
       <div className="relative ml-3 mt-1 border-l border-white/10 pl-4">
@@ -570,13 +547,13 @@ function Agents({ agents, mcp }) {
             >
               <span className="absolute -left-4 top-[1.05rem] h-px w-3 bg-white/15" />
               <div className="flex flex-wrap items-baseline gap-x-2">
-                <span className="font-mono text-[10px] text-white/25">{String(index + 1).padStart(2, '0')}</span>
+                <span className="font-mono cap-sm text-white/25">{String(index + 1).padStart(2, '0')}</span>
                 <span className="font-mono text-xs text-white/85">{agent.name}</span>
-                <span className="font-mono text-[10px] text-white/30">
+                <span className="font-mono cap-sm text-white/30">
                   {usesLab ? `${mcp.tools.length} MCP tools` : 'no tools'} · {agent.prompt_words} words
                 </span>
               </div>
-              <div className="text-[11px] leading-snug text-white/45">{agent.description}</div>
+              <div className="cap leading-snug text-white/45">{agent.description}</div>
             </motion.div>
           );
         })}
@@ -587,7 +564,7 @@ function Agents({ agents, mcp }) {
           {agents.policies.map((policy) => (
             <span
               key={policy.name}
-              className="rounded border border-white/[0.08] px-1.5 py-0.5 font-mono text-[10px] text-white/50"
+              className="rounded border border-white/[0.08] px-1.5 py-0.5 font-mono cap-sm text-white/50"
               title={policy.handler}
             >
               policy {policy.name}
@@ -607,52 +584,3 @@ function Agents({ agents, mcp }) {
 
 /* ------------------------------------------------------------------ code */
 
-function CodeLines({ rows }) {
-  const data = rows.filter((r) => r.lines > 0);
-  const total = data.reduce((sum, r) => sum + r.lines, 0);
-  return (
-    <div>
-      <div className="w-full" style={{ height: 36 + data.length * 30 }}>
-        <ResponsiveContainer>
-          <BarChart data={data} layout="vertical" margin={{ top: 4, right: 56, bottom: 4, left: 4 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.04)" horizontal={false} />
-            <XAxis type="number" hide />
-            <YAxis
-              type="category"
-              dataKey="area"
-              width={132}
-              tickLine={false}
-              axisLine={false}
-              tick={{ fill: 'rgba(255,255,255,0.55)', fontSize: 11 }}
-            />
-            <Tooltip
-              cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-              contentStyle={{
-                background: '#12121a',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 8,
-                fontSize: 12,
-              }}
-              formatter={(value, _name, item) => [
-                `${int(value)} lines in ${item.payload.files} files`,
-                item.payload.path,
-              ]}
-            />
-            <Bar dataKey="lines" fill="#fbbf24" fillOpacity={0.75} radius={[0, 3, 3, 0]} barSize={14}>
-              <LabelList
-                dataKey="lines"
-                position="right"
-                formatter={(v) => int(v)}
-                style={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
-              />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <p className="mt-1 text-[11px] text-white/35">
-        {int(total)} non-blank lines across {rows.reduce((s, r) => s + r.files, 0)} files, counted when the ledger was
-        built. Dependencies and generated files are not included.
-      </p>
-    </div>
-  );
-}
