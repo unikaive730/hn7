@@ -49,20 +49,23 @@ Each specialist owns one scientific decision and is given only the tools that de
 | runner | Nothing scientific. It executes and reports verbatim | `run_experiment` (gated), `test_hypothesis_on_unseen_chemistry` (gated) | The chosen experiment | The numbers the tool returned, unmodified |
 | analysis | Whether the result supports or breaks the hypothesis | `test_hypothesis_on_unseen_chemistry` (gated), `note_next_experiment` | The result and the hypothesis | Supported, rejected or inconclusive, and the next experiment it justifies |
 
-Two policies bind the run, declared under `guardrails.policies` in the bundle config:
+Three policies bind the run, declared under `guardrails.policies` in the bundle config:
 
 | Policy | Handler | Effect |
 |---|---|---|
 | `approve_experiments` | `lab.beeguard.policies.ask_before_experiment` | Returns `ASK` for `run_experiment` and `test_hypothesis_on_unseen_chemistry`, with a readable summary of what is about to be spent. Everything else is reading and reasoning, and is allowed |
-| `cap_tool_calls` | `omnigent.policies.builtins.safety.max_tool_calls_per_session` | Stops a run at 60 tool calls |
+| `approve_experiments_mcp_names` | `omnigent.policies.builtins.cel.cel_policy` | The same gate for the namespaced names the harness actually emits |
+| `cap_tool_calls` | `omnigent.policies.builtins.safety.max_tool_calls_per_session` | Stops a run at 120 tool calls |
 
 The boundary is code the agents cannot edit, not a sentence in a prompt asking them to behave. Spending assay budget is a decision a person makes.
+
+The second policy exists because the first one leaked, and finding that is part of the result. An MCP server contributes its own namespace, so the harness hands the policy `lab__run_experiment` while `ask_before_experiment` compared the bare name. Recorded run `516a4d6c` spent 15 assays with no approval because of it. That run is still in the replay rather than deleted. The fix is in two places: `policies.py` now matches the suffix on the separators a harness uses, and the CEL policy covers the same ground from the config side. A guardrail nobody has tried to get past is not yet evidence that it holds.
 
 ## What we would run next
 
 Two experiments, in this order.
 
-**1. Settle whether the model adds anything beyond the insecticide filter.** This is the honest open question, and the page says so rather than hiding it. Random order over the whole 201-molecule pool needs a median of 191 assays to find all 13 answers and the lab needs 28, which is the 6.37×; none of 5,000 shuffles reached all 13 by assay 28 (p = 4.0 × 10⁻¹³). But most of that gap is the free `insecticide` annotation. Restricted to the 31 pool insecticides the ordering actually draws from, random needs a median of 30 and the lab needs 28, with 895 of 5,000 shuffles doing at least as well (p = 0.18) and a within-class AUROC of 0.628. Thirteen answers among thirty-one candidates cannot separate a real effect from noise. The experiment is a power problem, not a modelling one: pool several cutoff years so the within-class comparison runs on hundreds of answers instead of thirteen, and pre-register the within-class AUROC as the endpoint before looking.
+**1. Settle whether the model adds anything beyond the insecticide filter.** This is the honest open question, and the page says so rather than hiding it. Random order over the whole 201-molecule pool needs a median of 191 assays to find all 13 answers and the lab needs 28, which is 6.8× to find all of them; against the fixed budget of 30 that is the 6.37× headline; none of 5,000 shuffles reached all 13 by assay 28 (p = 4.0 × 10⁻¹³). But most of that gap is the free `insecticide` annotation. Restricted to the 31 pool insecticides the ordering actually draws from, random needs a median of 30 and the lab needs 28, with 895 of 5,000 shuffles doing at least as well (p = 0.18) and a within-class AUROC of 0.628. Thirteen answers among thirty-one candidates cannot separate a real effect from noise. The experiment is a power problem, not a modelling one: pool several cutoff years so the within-class comparison runs on hundreds of answers instead of thirteen, and pre-register the within-class AUROC as the endpoint before looking.
 
 **2. Put the top candidates in front of actual bees.** The candidate funnel starts from 12,851 ChEMBL activity records on eleven pest species, keeps the 3,463 molecules absent from ApisTox, the 470 active at 10 mg/L or better, the 348 the model scores as bee-safe, and the 288 that also sit inside the applicability domain. Every one is a prediction with no bee measurement behind it. The first assay to order is the top of that list, for example CHEMBL2228438, active on *Mythimna separata* at 10 mg/L, scored 0.97 bee-safe at a Tanimoto of 0.71 to its nearest ApisTox neighbour, which is itself labelled non-toxic. An OECD 213/214 acute oral and contact test on the top ranked molecules, alongside a matched set the model scores as unsafe, turns the ranking into a measurement. Sixty molecules the model calls bee-safe are deliberately left off the list because nothing in training sits within 0.3 Tanimoto of them; they are the second batch, and the honest test of whether the applicability-domain cut was doing real work.
 
