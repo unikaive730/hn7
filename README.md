@@ -113,7 +113,7 @@ npm run build
 & ./lab/.venv/Scripts/python.exe deploy/ec2/release.py --deploy
 ```
 
-The staged folder contains the FastAPI app, saved scientific artifacts, agent configs, built frontend, Dockerfile, entry point, and checksum manifest. Set `BEEGUARD_HOST` and `BEEGUARD_KEY` for the intended server. The current release preserved `/opt/beeguard/releases/backup-20261004T072757Z`. The alternative `deploy/hf-space/Dockerfile` serves port 7860; it is not the current public deployment.
+The staged folder contains the FastAPI app, saved scientific artifacts, agent configs, built frontend, Dockerfile, entry point, and checksum manifest. Set `BEEGUARD_HOST` and `BEEGUARD_KEY` for the intended server. The current release preserved `/opt/beeguard/releases/backup-20261004T074808Z`. The alternative `deploy/hf-space/Dockerfile` serves port 7860; it is not the current public deployment.
 
 Latest verification: production web build and four API regression test groups passed; 19 staged paths and the model result passed locally and remotely; six public paths passed smoke checks. A fresh model run at budget 30 reproduced 13 hits and 6.37×. Browser checks covered duplicate-run prevention and the full-budget insecticide-only ordering. Run the regression suite with `python -m unittest discover -s lab/tests` in the lab environment.
 
@@ -125,7 +125,7 @@ Submission materials are available at [the materials page](https://beeguard.mark
 - [Full walkthrough](https://beeguard.marketpilot.it/submission/walkthrough_2min.mp4): 120 seconds.
 - [One-page report](https://beeguard.marketpilot.it/submission/MarketPilot_OnePager.pdf), [source ZIP](https://beeguard.marketpilot.it/submission/code.zip), and [dataset ZIP](https://beeguard.marketpilot.it/submission/dataset.zip).
 
-The three short videos have English captions and synthetic narration; the full walkthrough has English captions. Source and dataset archives restore together into the original directory layout and reproduce the offline API smoke checks. Final platform submissions and GitHub synchronization/public-access verification remain pending.
+The three short videos have English captions and synthetic narration; the full walkthrough has English captions. Source and dataset archives restore together into the original directory layout and reproduce the offline API smoke checks. This GitHub repository is public; its page and README were verified without authentication. Final platform submissions remain pending.
 
 ## License
 
