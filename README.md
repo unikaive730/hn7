@@ -119,13 +119,17 @@ Latest verification: production web build and four API regression test groups pa
 
 Submission materials are available at [the materials page](https://beeguard.marketpilot.it/submission/):
 
-- [Demo](https://beeguard.marketpilot.it/submission/demo_video.mp4): 59 seconds, an actual live-app recording.
-- [Technical explanation](https://beeguard.marketpilot.it/submission/tech_video.mp4): 55.70 seconds.
-- [Team introduction](https://beeguard.marketpilot.it/submission/team_video.mp4): 53.53 seconds.
-- [Full walkthrough](https://beeguard.marketpilot.it/submission/walkthrough_2min.mp4): 120 seconds.
-- [One-page report](https://beeguard.marketpilot.it/submission/MarketPilot_OnePager.pdf), [source ZIP](https://beeguard.marketpilot.it/submission/code.zip), and [dataset ZIP](https://beeguard.marketpilot.it/submission/dataset.zip).
+| Material | On this site | On Google Drive |
+|---|---|---|
+| Demo, 59 s, recorded from the running app | [demo_video.mp4](https://beeguard.marketpilot.it/submission/demo_video.mp4) | [Drive](https://drive.google.com/file/d/1FXUM-YLbaaYuZLPVf-64Z8PbAeFA8dgv/view) |
+| Technical explanation, 55.7 s | [tech_video.mp4](https://beeguard.marketpilot.it/submission/tech_video.mp4) | [Drive](https://drive.google.com/file/d/15-QTQfYamEAdu1GIrwFNNftf3MZU_HRj/view) |
+| Team introduction, 53.5 s | [team_video.mp4](https://beeguard.marketpilot.it/submission/team_video.mp4) | [Drive](https://drive.google.com/file/d/1jlCaO8Tw0HV-pw_Xjj9vMnOvtV7p-n4E/view) |
+| Full walkthrough, 120 s | [walkthrough_2min.mp4](https://beeguard.marketpilot.it/submission/walkthrough_2min.mp4) | [Drive](https://drive.google.com/file/d/1Z1vxHRke7LMtEw3SQL9MyIXeR8X8k86u/view) |
+| One-page report | [MarketPilot_OnePager.pdf](https://beeguard.marketpilot.it/submission/MarketPilot_OnePager.pdf) | [Drive](https://drive.google.com/file/d/1bgC54rCSm73l9sj5FDausYuOX9AJT8gy/view) |
+| Team photo | — | [Drive](https://drive.google.com/file/d/11LeH4e1vA3buUfnuWMYuS9k9WEVpkuuI/view) |
+| Source and dataset archives | [code.zip](https://beeguard.marketpilot.it/submission/code.zip), [dataset.zip](https://beeguard.marketpilot.it/submission/dataset.zip) | — |
 
-The three short videos have English captions and synthetic narration; the full walkthrough has English captions. Source and dataset archives restore together into the original directory layout and reproduce the offline API smoke checks. This GitHub repository is public; its page and README were verified without authentication. Final platform submissions remain pending.
+Everything is mirrored on [Google Drive](https://drive.google.com/drive/folders/1KCqr99qdNdKVX6tMcUti00Z948a1edue) so the judges can reach it if this server is down. The three short videos have English captions and synthetic narration; the full walkthrough has English captions. Source and dataset archives restore together into the original directory layout and reproduce the offline API smoke checks.
 
 ## License
 
