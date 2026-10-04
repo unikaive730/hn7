@@ -145,7 +145,7 @@ def choose_experiment(options: list[dict], reason: str) -> dict:
 # ---------------------------------------------------------------- execution
 
 
-def run_experiment(strategy: str, budget: int, diversity_weight: float = 0.15) -> dict:
+def run_experiment(strategy: str, budget: int, diversity_weight: float = 1.0) -> dict:
     """Run the chosen experiment and file the result.
 
     This is the call gated behind human approval.

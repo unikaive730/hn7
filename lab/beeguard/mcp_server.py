@@ -64,7 +64,7 @@ def choose_experiment(options: list[dict], reason: str) -> str:
 
 
 @mcp.tool()
-def run_experiment(strategy: str, budget: int, diversity_weight: float = 0.15) -> str:
+def run_experiment(strategy: str, budget: int, diversity_weight: float = 1.0) -> str:
     """Spend the assay budget with the chosen ordering and report what was found.
 
     This is the call a human approves before it runs.

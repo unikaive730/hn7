@@ -139,7 +139,7 @@ class Lab:
             picked_scaffolds[scaffold] = picked_scaffolds.get(scaffold, 0) + 1
         return np.array(order, dtype=int)
 
-    def order(self, strategy: str, budget: int, diversity_weight: float = 0.15) -> np.ndarray:
+    def order(self, strategy: str, budget: int, diversity_weight: float = 1.0) -> np.ndarray:
         """Return the molecule indices to assay, in the order the lab picks."""
         if strategy == "model":
             priority = self.safe_score * (self.pool["insecticide"] == 1).to_numpy()
@@ -158,7 +158,7 @@ class Lab:
         self,
         strategy: str = "model",
         budget: int = 30,
-        diversity_weight: float = 0.15,
+        diversity_weight: float = 1.0,
         shuffles: int = 500,
     ) -> dict:
         """Order `budget` assays with `strategy` and report what was found."""

@@ -10,9 +10,26 @@ import {
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
-import { getFacts, runExperiment, searchEvidence } from './api.js';
+import {
+  compareStrategies,
+  getCurve,
+  getEras,
+  getFacts,
+  getMolecule,
+  getRecord,
+  runExperiment,
+  searchEvidence,
+} from './api.js';
 import { Counter, SpeedupDial } from './components/Dial.jsx';
 import { AssayStream } from './components/AssayStream.jsx';
+import { DiscoveryCurve } from './components/Curve.jsx';
+import {
+  EraPanel,
+  HeadlineStats,
+  MoleculePanel,
+  RecordPanel,
+  StrategyCompare,
+} from './components/Panels.jsx';
 
 const STRATEGIES = [
   { id: 'model', label: 'Learned ordering', hint: 'Rank by predicted bee safety' },
@@ -39,10 +56,17 @@ export default function App() {
   const [revealed, setRevealed] = useState(0);
   const [evidence, setEvidence] = useState(null);
   const [error, setError] = useState(null);
+  const [curve, setCurve] = useState(null);
+  const [comparison, setComparison] = useState(null);
+  const [eras, setEras] = useState(null);
+  const [record, setRecord] = useState([]);
+  const [molecule, setMolecule] = useState(null);
   const revealTimer = useRef(null);
 
   useEffect(() => {
     getFacts().then(setFacts).catch((e) => setError(e.message));
+    getEras(30).then(setEras).catch(() => {});
+    getRecord(40).then((r) => setRecord(r.rows ?? [])).catch(() => {});
     return () => clearInterval(revealTimer.current);
   }, []);
 
@@ -76,6 +100,10 @@ export default function App() {
       setResult(run);
       setStage('analysis');
 
+      getCurve(strategy, budget).then(setCurve).catch(() => {});
+      compareStrategies(budget).then(setComparison).catch(() => {});
+      getRecord(40).then((r) => setRecord(r.rows ?? [])).catch(() => {});
+
       let shown = 0;
       revealTimer.current = setInterval(() => {
         shown += 1;
@@ -93,6 +121,10 @@ export default function App() {
     setStage(null);
   }, []);
 
+  const openMolecule = useCallback((cid) => {
+    getMolecule(cid).then(setMolecule).catch((e) => setError(e.message));
+  }, []);
+
   const stageIndex = STAGES.findIndex((s) => s.id === stage);
 
   return (
@@ -105,6 +137,10 @@ export default function App() {
             <AlertTriangle className="h-4 w-4" /> {error}
           </div>
         )}
+
+        <div className="mb-5">
+          <HeadlineStats facts={facts} result={result} />
+        </div>
 
         <Pipeline stage={stage} stageIndex={stageIndex} />
 
@@ -134,10 +170,33 @@ export default function App() {
               )}
             </AnimatePresence>
 
-            <AssayPanel result={result} revealed={revealed} />
+            <AssayPanel result={result} revealed={revealed} onOpen={openMolecule} />
+            {molecule && (
+              <MoleculePanel molecule={molecule} onClose={() => setMolecule(null)} />
+            )}
+            {curve && (
+              <section className="glass lift rounded-xl p-5">
+                <div className="mb-3 flex items-baseline justify-between">
+                  <h2 className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+                    Discovery curve
+                  </h2>
+                  <span className="text-xs text-white/35">
+                    shaded band is random, 10th to 90th percentile over{' '}
+                    {curve.shuffles} shuffles
+                  </span>
+                </div>
+                <DiscoveryCurve data={curve} targets={facts?.targets} />
+              </section>
+            )}
             <BreakPanel facts={facts} result={result} />
+            <StrategyCompare data={comparison} />
             <EvidencePanel evidence={evidence} />
           </div>
+        </div>
+
+        <div className="mt-5 grid gap-5 lg:grid-cols-2">
+          <EraPanel data={eras} />
+          <RecordPanel rows={record} />
         </div>
 
         <Footer facts={facts} />
@@ -347,7 +406,7 @@ function ApprovalCard({ strategy, budget, onApprove, onDeny }) {
   );
 }
 
-function AssayPanel({ result, revealed }) {
+function AssayPanel({ result, revealed, onOpen }) {
   if (!result) {
     return (
       <section className="glass lift grid min-h-[13rem] place-items-center rounded-xl p-5 text-center">
@@ -373,7 +432,7 @@ function AssayPanel({ result, revealed }) {
         </span>
       </div>
       <div className="max-h-[22rem] overflow-y-auto pr-1">
-        <AssayStream assays={result.assays} revealed={revealed} />
+        <AssayStream assays={result.assays} revealed={revealed} onOpen={onOpen} />
       </div>
     </section>
   );

@@ -25,3 +25,13 @@ export const getMolecule = (cid, cutoffYear = 2000) =>
 
 export const searchEvidence = (query, limit = 4) =>
   request(`/api/evidence?query=${encodeURIComponent(query)}&limit=${limit}`);
+
+export const getCurve = (strategy, budget, cutoffYear = 2000) =>
+  request(`/api/curve?strategy=${strategy}&budget=${budget}&cutoff_year=${cutoffYear}`);
+
+export const compareStrategies = (budget, cutoffYear = 2000) =>
+  request(`/api/compare?budget=${budget}&cutoff_year=${cutoffYear}`);
+
+export const getEras = (budget = 30) => request(`/api/eras?budget=${budget}`);
+
+export const getRecord = (limit = 40) => request(`/api/record?limit=${limit}`);

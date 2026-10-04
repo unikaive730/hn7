@@ -7,20 +7,21 @@ import { Beaker, Check, HelpCircle } from 'lucide-react';
  *  ordering is doing work. A molecule on a scaffold the model never saw is
  *  marked, because that is where the hypothesis later breaks.
  */
-export function AssayStream({ assays, revealed }) {
+export function AssayStream({ assays, revealed, onOpen }) {
   const visible = assays.slice(0, revealed);
 
   return (
     <div className="space-y-1.5">
       <AnimatePresence initial={false}>
         {visible.map((assay) => (
-          <motion.div
+          <motion.button
             key={`${assay.cid}-${assay.position}`}
+            onClick={() => onOpen?.(assay.cid)}
             layout
             initial={{ opacity: 0, x: -14, scale: 0.98 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className={`flex items-center gap-3 rounded-lg border px-3 py-2 text-sm ${
+            className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition hover:border-white/20 ${
               assay.is_target
                 ? 'border-signal/40 bg-signal/10'
                 : 'border-white/5 bg-white/[0.02]'
@@ -54,7 +55,7 @@ export function AssayStream({ assays, revealed }) {
             <span className="w-12 shrink-0 text-right text-xs tabular text-white/40">
               {assay.safe_score.toFixed(2)}
             </span>
-          </motion.div>
+          </motion.button>
         ))}
       </AnimatePresence>
 
