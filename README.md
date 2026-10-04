@@ -66,6 +66,12 @@ Two experiments, in this order.
 
 **2. Put the top candidates in front of actual bees.** The candidate funnel starts from 12,851 ChEMBL activity records on eleven pest species, keeps the 3,463 molecules absent from ApisTox, the 470 active at 10 mg/L or better, the 348 the model scores as bee-safe, and the 288 that also sit inside the applicability domain. Every one is a prediction with no bee measurement behind it. The first assay to order is the top of that list, for example CHEMBL2228438, active on *Mythimna separata* at 10 mg/L, scored 0.97 bee-safe at a Tanimoto of 0.71 to its nearest ApisTox neighbour, which is itself labelled non-toxic. An OECD 213/214 acute oral and contact test on the top ranked molecules, alongside a matched set the model scores as unsafe, turns the ranking into a measurement. Sixty molecules the model calls bee-safe are deliberately left off the list because nothing in training sits within 0.3 Tanimoto of them; they are the second batch, and the honest test of whether the applicability-domain cut was doing real work.
 
+## Everything here was built during the hackathon
+
+The kickoff was 2026-10-04 01:00 KST and the challenge brief was published at 01:59. The first commit in this repository is 01:22 on the same day, and the history runs continuously to the deadline, so the whole timeline is visible in `git log`. Nothing was carried in from an earlier project.
+
+Two things predate it and are reused under their own licences, as they should be: the public datasets (ApisTox, ChEMBL) and the open-source libraries in `requirements.txt` and `package.json`. The scaffold in the first commit is the stock Vite, React and Node starter; the scientific work begins at 02:24 with the Python lab environment.
+
 ## Repository
 
 | Path | Role |
